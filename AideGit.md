@@ -27,7 +27,7 @@ git config --global user.email "[username]@unistra.fr"
 
 Vous pouvez maintenant **cloner** votre dépôt sur votre ordinateur :
 ```sh
-git clone git@git.unistra.fr:[username]/W31.git
+git clone git@git.unistra.fr:[username]/T3.git
 ```
 Vous vous retrouvez alors avec un dossier W31 qui contient une copie locale de votre dépôt dans laquelle vous allez pouvoir travailler.
 
