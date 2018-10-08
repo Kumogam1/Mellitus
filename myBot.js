@@ -6,11 +6,18 @@ const config = require("./token.json");
 
 const fs = require("fs");
 
-var prenom = ['Archibald', 'Karim', 'Bernold', 'Magellan', 'Philastère', 'Cheyenne', 'Gabry-Aile', 'Loréole', 'Shar-Lee-Rose-Megane', 'Zénobie'];
-var nom = ['Gossa', 'Haristoy', 'Bertot', 'Zimmerman', 'Wemmert', 'Kraemer', 'Grançarski', 'Schneider', 'Mazo', 'Wessler', 'Thal', 'Richard', 'Lachiche', 'Divoux', 'Zaroli', 'Blindauer', 'Torregrossa'];
-var emoteEvent = ['🏀','🍴'];
+//listes pour le nom du personnage
+const prenom = ['Archibald', 'Karim', 'Bernold', 'Magellan', 'Philastère', 'Cheyenne', 'Gabry-Aile', 'Loréole', 'Shar-Lee-Rose-Megane', 'Zénobie'];
+const nom = ['Gossa', 'Haristoy', 'Bertot', 'Zimmerman', 'Wemmert', 'Kraemer', 'Grançarski', 'Schneider', 'Mazo', 'Wessler', 'Thal', 'Richard', 'Lachiche', 'Divoux', 'Zaroli', 'Blindauer', 'Torregrossa'];
 
+//listes pour les activités que le joueur peut pratiquer
+const emoteEvent = ['🥇','🍴'];
 
+const emoteActivite = ['⚽','🏀','🏈','⚾','🎾','🏐','⛳','🏓','🏸','🚴','🏋','🏹','🎳','🎮','🎣'];
+const nomActivite = ['du foot','du basket','du rugby','du baseball','du tennis','du volley','du golf','du pingpong','du badmington','du vélo','de la muscu',"du tir à l'arc",'du bowling','une partie de jeux videos','de la peche'];
+
+const emoteRepas = ['🍏','🍞','🍔','🍰','🍨','🍫','🥐','🍕','🍖','🍅','🍌'];
+const nomRepas = ['une pomme','du pain','un hamburger','un gateau','une glace','un chocolat','un croissant','une pizza','de la viande', 'une tomate', 'une banane'];
 
 const pseudoJ = prenom[getRandomInt(prenom.length)] + " " + nom[getRandomInt(nom.length)];
 
@@ -54,12 +61,37 @@ client.on("messageReactionAdd", (reaction, user) => {
 
 	if(user.bot) return;
 
-	if(reaction.emoji.name == emoteEvent[0]){
-		reaction.message.channel.send("Vous avez choisi de faire du sport");
+	switch(reaction.emoji.name){
+		case emoteEvent[0]:
+			reaction.message.delete();
+			eventSport(reaction.message);
+			break;
+		case emoteEvent[1]:
+			reaction.message.delete();
+			eventRepas(reaction.message);
+			break;
+		default:
+			break;
 	}
-	else{
-		reaction.message.channel.send("Vous avez choisi de manger");
+
+
+
+	if(emoteActivite.includes(reaction.emoji.name)){
+		reaction.message.delete();
+		var i = 0;
+		while(emoteActivite[i] != reaction.emoji.name)
+			i++;
+		reaction.message.channel.send(`Vous avez choisi de faire ${nomActivite[i]}`);
 	}
+
+	if(emoteRepas.includes(reaction.emoji.name)){
+		reaction.message.delete();
+		var i = 0;
+		while(emoteRepas[i] != reaction.emoji.name)
+			i++;
+		reaction.message.channel.send(`Vous avez choisi de manger ${nomRepas[i]}`);
+	}
+
 	//console.log(reaction.emoji.name);
 	//messageReaction
 });
@@ -88,7 +120,13 @@ function initJeu(message){
 function initRole(message, eventName){
 
 	let nomRole = eventName + "-" + message.author.username;
-	let myRole = message.guild.roles.find("name", "Joueur");
+	//let myRole = message.guild.roles.find('name', 'Joueur');
+
+	let myRole = message.guild.roles.find(role => {
+		if(role.name == 'Joueur'){
+			return role;
+		}
+	});
 	message.member.addRole(myRole);
 
 	message.guild.createRole({
@@ -110,14 +148,26 @@ function initChannel(message, rolePers, channelName){
 	server.createChannel(channelName, 'text') // Creation d'un channel textuel
 
 	.then((chan) => {
-		let categ = message.guild.channels.find('name', 'Jeu');
+		let categ = message.guild.channels.find(channel => {
+			if(channel.name == 'Jeu'){
+				return channel;
+			}
+		});
 		chan.setParent(categ.id)	// Place le channel textuel dans la catégorie de jeu
 	    .then((chan2) => {
-	        chan2.overwritePermissions(message.guild.roles.find('name', '@everyone'), {
+	        chan2.overwritePermissions(message.guild.roles.find(role => {
+				if(role.name == '@everyone'){
+					return role;
+				}
+			}), {
 			   'CREATE_INSTANT_INVITE' : false,        'VIEW_CHANNEL': false,
 			   'CONNECT': false,                       'WRITE': false
 			});
-			chan2.overwritePermissions(message.guild.roles.find('name', rolePers),   {
+			chan2.overwritePermissions(message.guild.roles.find(role => {
+				if(role.name == rolePers){
+					return role;
+				}
+			}),   {
 			    'VIEW_CHANNEL': true,                   'CONNECT': true,            'WRITE': true,
 			});
 	    }
@@ -152,8 +202,18 @@ function finJeu(message){
 }
 
 function deletRole(message){
-	let suppRoleJoueur = message.guild.roles.find("name", "Joueur");
-	let suppRolePerso = message.guild.roles.find("name", "Joueur-" + message.author.username);
+	let suppRoleJoueur = message.guild.roles.find(role => {
+		if(role.name == 'Joueur'){
+			return role;
+		}
+	});
+	//let suppRolePerso = message.guild.roles.find("name", "Joueur-" + message.author.username);
+
+	let suppRolePerso = message.guild.roles.find(role => {
+		if(role.name == 'Joueur-' + message.author.username){
+			return role;
+		}
+	});
 	message.member.removeRole(suppRoleJoueur);
 	suppRolePerso.delete();
 }
@@ -165,7 +225,11 @@ function deletChannel(message){
 	// Suppression des channels nommés 'hub', 'informations' et 'personnage'
 	listedChannels.forEach(channel => {
 		if(channel === 'hub' || channel === 'informations' || channel === 'personnage'){
-			let chan = message.guild.channels.find("name", channel);
+			let chan = message.guild.channels.find(chann => {
+				if(chann.name == channel){
+					return chann;
+				}
+			});;
 			chan.delete();
 		}
 	});
@@ -205,7 +269,7 @@ function event(message){
     .setColor(0x00AE86)
     .setTitle("Que voulez-vous faire ?")
 
-    .addField("Faire du sport : ", "🏀")
+    .addField("Faire une activité : ", "🥇")
     .addField("Manger : ", "🍴")
 
 
@@ -214,6 +278,80 @@ function event(message){
     	for(var i = 0; i < emoteEvent.length; i++){
     		await mess.react(emoteEvent[i]);
     	}
+    });
+}
+
+function eventSport(message){
+
+	var rand1 = getRandomInt(nomActivite.length);
+
+	var rand2 = rand1;
+	while(rand2 == rand1)
+		rand2 = getRandomInt(nomActivite.length);
+
+    var rand3 = rand1;
+    while(rand3 == rand1 || rand3 == rand2)
+    	rand3 = getRandomInt(nomActivite.length);
+
+    var rand4 = rand1;
+    while(rand4 == rand1 || rand4 == rand2 || rand4 == rand3)
+    	rand4 = getRandomInt(nomActivite.length);
+
+	const embed = new Discord.RichEmbed()
+    .setColor(0x00AE86)
+    .setTitle("Que voulez-vous faire ?")
+
+    .addField("Faire du " + nomActivite[rand1] + " : ", emoteActivite[rand1])
+    .addField("Faire du " + nomActivite[rand2] + " : ", emoteActivite[rand2])
+    .addField("Faire du " + nomActivite[rand3] + " : ", emoteActivite[rand3])
+    .addField("Faire du " + nomActivite[rand4] + " : ", emoteActivite[rand4])
+    .addField("Ne rien faire : ", '❌')
+
+
+    message.channel.send({embed})
+    .then(async function (mess) {
+    	await mess.react(emoteActivite[rand1]);
+    	await mess.react(emoteActivite[rand2]);
+    	await mess.react(emoteActivite[rand3]);
+    	await mess.react(emoteActivite[rand4]);
+    	await mess.react('❌');
+    });
+}
+
+function eventRepas(message){
+
+	var rand1 = getRandomInt(nomRepas.length);
+
+	var rand2 = rand1;
+	while(rand2 == rand1)
+		rand2 = getRandomInt(nomRepas.length);
+
+    var rand3 = rand1;
+    while(rand3 == rand1 || rand3 == rand2)
+    	rand3 = getRandomInt(nomRepas.length);
+
+    var rand4 = rand1;
+    while(rand4 == rand1 || rand4 == rand2 || rand4 == rand3)
+    	rand4 = getRandomInt(nomRepas.length);
+
+	const embed = new Discord.RichEmbed()
+    .setColor(0x00AE86)
+    .setTitle("Que voulez-vous faire ?")
+
+    .addField("Faire " + nomRepas[rand1] + " : ", emoteRepas[rand1])
+    .addField("Faire " + nomRepas[rand2] + " : ", emoteRepas[rand2])
+    .addField("Faire " + nomRepas[rand3] + " : ", emoteRepas[rand3])
+    .addField("Faire " + nomRepas[rand4] + " : ", emoteRepas[rand4])
+    .addField("Ne rien faire : ", '❌')
+
+
+    message.channel.send({embed})
+    .then(async function (mess) {
+    	await mess.react(emoteRepas[rand1]);
+    	await mess.react(emoteRepas[rand2]);
+    	await mess.react(emoteRepas[rand3]);
+    	await mess.react(emoteRepas[rand4]);
+    	await mess.react('❌');
     });
 }
 
