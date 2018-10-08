@@ -36,7 +36,7 @@ Vous vous retrouvez alors avec un dossier W31 qui contient une copie locale de v
 Placez-vous dans le répertoire cloné et ajoutez le dépôt initial en tant que remote (nommé ici "prof") :
 ```sh
 cd W31
-git remote add prof git@git.unistra.fr:W31/W31.git
+git remote add prof git@git.unistra.fr:T3/T3.git
 git fetch prof
 ```
 Vérifiez grâce à la commande suivante que vous avez bien 2 remotes, "origin" qui est votre dépôt personnel sur GitLab, et "prof" qui est celui de départ :
