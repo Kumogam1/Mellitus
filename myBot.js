@@ -1,10 +1,11 @@
 const Discord = require("discord.js");
+const fs = require("fs");
+const initJeu = require('./initJeu.js');
 
 const client = new Discord.Client();
 
 const config = require("./token.json");
 
-const fs = require("fs");
 
 //listes pour le nom du personnage
 const prenom = ['Archibald', 'Karim', 'Bernold', 'Magellan', 'Philastère', 'Cheyenne', 'Gabry-Aile', 'Loréole', 'Shar-Lee-Rose-Megane', 'Zénobie'];
@@ -22,7 +23,7 @@ const nomRepas = ['une pomme','du pain','un hamburger','un gateau','une glace','
 const pseudoJ = prenom[getRandomInt(prenom.length)] + " " + nom[getRandomInt(nom.length)];
 
 client.on("ready", () => {
-  	console.log(`Bot has started, with ${client.users.size} users, in ${client.channels.size} channels of ${client.guilds.size} guilds.`); 
+  	console.log(`Bot has started, with ${client.users.size} users, in ${client.channels.size} channels of ${client.guilds.size} guilds.`);
   	client.user.setActivity(`manger des ventilateurs`);
 });
 
@@ -37,7 +38,7 @@ client.on("message", (message) => {
 
     	switch(command) {
         	case "start":
-        		initJeu(message);
+        		initJeu.initJeu(message, client, config);
         		break;
         	case "end":
         		finJeu(message);
@@ -96,98 +97,6 @@ client.on("messageReactionAdd", (reaction, user) => {
 	//messageReaction
 });
 
-//Fonctions pour débuter la partie
-function initJeu(message){
-	
-	if(!message.member.roles.some(r=>["Joueur"].includes(r.name)) )  {
-		let eventName = 'Joueur';
-	  	let rolePers = initRole(message, eventName);
-
-		initChannel(message, rolePers, 'Hub');
-		initChannel(message, rolePers, 'Informations');
-		initChannel(message, rolePers, 'Personnage');
-
-		message.delete();
-	    message.channel.send(pseudoJ + " a lancé une partie !");
-
-	    bienvenue(message);
-	} 
-	else {
-	 	message.channel.send("Vous êtes déjà en jeu.")
-	}
-}
-
-function initRole(message, eventName){
-
-	let nomRole = eventName + "-" + message.author.username;
-	//let myRole = message.guild.roles.find('name', 'Joueur');
-
-	let myRole = message.guild.roles.find(role => {
-		if(role.name == 'Joueur'){
-			return role;
-		}
-	});
-	message.member.addRole(myRole);
-
-	message.guild.createRole({
-	    name: nomRole,
-	    color: 0x00FF00,
-	    permissions: []
-	}).then(role => {
-	    message.member.addRole(role,nomRole)
-	    .catch(error => client.catch(error));
-	})
-	.catch(error => client.catch(error));
-
-	return nomRole;
-}
-
-function initChannel(message, rolePers, channelName){
-
-	let server = message.guild;
-	server.createChannel(channelName, 'text') // Creation d'un channel textuel
-
-	.then((chan) => {
-		let categ = message.guild.channels.find(channel => {
-			if(channel.name == 'Jeu'){
-				return channel;
-			}
-		});
-		chan.setParent(categ.id)	// Place le channel textuel dans la catégorie de jeu
-	    .then((chan2) => {
-	        chan2.overwritePermissions(message.guild.roles.find(role => {
-				if(role.name == '@everyone'){
-					return role;
-				}
-			}), {
-			   'CREATE_INSTANT_INVITE' : false,        'VIEW_CHANNEL': false,
-			   'CONNECT': false,                       'WRITE': false
-			});
-			chan2.overwritePermissions(message.guild.roles.find(role => {
-				if(role.name == rolePers){
-					return role;
-				}
-			}),   {
-			    'VIEW_CHANNEL': true,                   'CONNECT': true,            'WRITE': true,
-			});
-	    }
-	    ).catch(console.error);
-	}).catch(console.error);
-
-	return '```Added```';
-}
-
-function bienvenue(message){
-	const embed = new Discord.RichEmbed()
-    .setColor(0x00AE86)
-    .setTitle("Bienvenue dans Mellitus")
-
-    .addField("Résumé", "Texte qui explique le jeu")
-    .addField(config.prefix + "dgame", "Commancer une partie")
-    .addField(config.prefix + "fgame", "Terminer une partie")
-
-    message.channel.send({embed});
-}
 
 //Fonctions pour terminer la partie
 function finJeu(message){
@@ -195,7 +104,7 @@ function finJeu(message){
 	if(message.member.roles.some(r=>["Joueur"].includes(r.name)) )  {
 	  	deletChannel(message);
 	  	deletRole(message);
-	} 
+	}
 	else {
 	 	message.channel.send("Vous n'êtes pas en jeu.")
 	}
@@ -240,8 +149,8 @@ function listChan(message){
 
 	// Creation d'une liste des channels que le joueur peut voir
 	var listedChannels = [];
-	message.guild.channels.forEach(channel => { 
-		if(channel.permissionsFor(message.author).has('VIEW_CHANNEL')) 
+	message.guild.channels.forEach(channel => {
+		if(channel.permissionsFor(message.author).has('VIEW_CHANNEL'))
 			listedChannels.push(channel.name);
 	});
 
@@ -250,7 +159,7 @@ function listChan(message){
 
 //Fonction qui cherche un channel
 function messageChannel(message, chanName){
-	
+
 	var listChan2 = listChan(message);
 
 	listChan2.forEach(channel => {
@@ -393,6 +302,6 @@ function lireFichier(message) {
             await message.react(numRep[i]);
         }
     });
-}    
+}
 
 */
