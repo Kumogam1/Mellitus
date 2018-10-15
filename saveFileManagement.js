@@ -4,7 +4,7 @@ const fs = require('fs');
 * loadSave : function pour recuperer l'ojet de sauvegarde deupuis le lireFichier
 * userId : id du joueur
 **/
-exports.loadSave = function(userId) {
+exports.loadSave = function loadSave(userId) {
   let save = fs.readFileSync('./sauvegardesPartie/' + userId + '.json');
   save = JSON.parse(save);
   return save;
@@ -16,10 +16,8 @@ exports.loadSave = function(userId) {
 * partie : objet json de la partie
 **/
 exports.save = function save(userId, partie) {
-  fs.writeFileSync('./sauvegardesPartie/' + userId + '.json', JSON.stringify(partie, null, 2), function(err) {
-    if (err) throw err;
-    console.log('Save file updatd for ' + userId);
-  });
+  const fileName = './sauvegardesPartie/' + userId + '.json';
+  fs.writeFileSync(fileName, JSON.stringify(partie, null, 2));
 };
 
 
