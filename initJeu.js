@@ -1,5 +1,5 @@
 const Discord = require('discord.js');
-const fs = require('fs');
+const sfm = require('./saveFileManagement.js');
 
 // Fonctions pour débuter la partie
 exports.initJeu = function initJeu(message, client, config) {
@@ -9,7 +9,6 @@ exports.initJeu = function initJeu(message, client, config) {
 		// creation d'un fichier de sauvegarde de sauvegarde
 		// lecture de ce fichier de sauvegarde
 		const partie = {};
-		partie.player = message.author.id;
 		const eventName = 'Joueur';
 		const rolePers = initRole(message, eventName, client);
 
@@ -98,14 +97,13 @@ function initChannelGrp(message, partie, channelGrpName, rolePers) {
 	server.createChannel(channelGrpName, 'category')
 	.then(chanGrp => {
 		res = chanGrp.id;
-		partie.chanGrp = res;
+		partie.chanGrp = chanGrp.id;
+		partie.player = message.author.id;
 		initChannel(message, partie, rolePers, 'Hub', res);
 		initChannel(message, partie, rolePers, 'Informations', res);
 		initChannel(message, partie, rolePers, 'Personnage', res);
-		fs.writeFileSync('./sauvegardesPartie/' + message.author.id + '.json', JSON.stringify(partie, null, 2), function(err) {
-			if (err) throw err;
-			console.log('Save file written for ' + message.author.username);
-		});
+		console.log(JSON.stringify(partie, null, 2));
+		sfm.save(message.author.id, partie);
 	})
 	.catch(console.error);
 	console.log(res);
