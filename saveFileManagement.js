@@ -21,3 +21,12 @@ exports.save = function save(userId, partie) {
     console.log('Save file updatd for ' + userId);
   });
 };
+
+
+/**
+* deleteSave : suprime un fichier de sauvegarde
+* userId : id du Joueur
+**/
+exports.deleteSave = function deleteSave(userId) {
+  fs.unlinkSync('./sauvegardesPartie/' + userId + '.json');
+};
