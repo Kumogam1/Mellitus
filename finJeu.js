@@ -1,9 +1,13 @@
+const sfm = require('./saveFileManagement.js');
+
+
 // Fonctions pour terminer la partie
 exports.finJeu = function finJeu(message) {
 
 	if(message.member.roles.some(r=>['Joueur'].includes(r.name))) {
     deletChannel(message);
     deletRole(message);
+    sfm.deleteSave(message.author.id);
 	}
 	else {
     message.channel.send('Vous n\'êtes pas en jeu.');
@@ -31,26 +35,21 @@ function deletChannel(message) {
 
 	const listedChannels = listChan(message);
 
-	// Suppression des channels nommés 'hub', 'informations' et 'personnage'
+	// Suppression des channels et du groupe de channels pour la partie
 	listedChannels.forEach(channel => {
-		if(channel === 'hub' || channel === 'informations' || channel === 'personnage') {
-			const chan = message.guild.channels.find(chann => {
-				if(chann.name == channel) {
-					return chann;
-				}
-			});
-			chan.delete();
+			channel.delete();
 		}
-	});
+  );
 }
-
-// Fonction qui liste les channels visibles du joueur
+// Fonction qui liste les channels de la partie + le group de channels
 function listChan(message) {
-
+  const partie = sfm.loadSave(message.author.id);
 	// Creation d'une liste des channels que le joueur peut voir
 	const listedChannels = [];
 	message.guild.channels.forEach(channel => {
-		if(channel.permissionsFor(message.author).has('VIEW_CHANNEL')) {listedChannels.push(channel.name);}
+		if (channel.parent == partie.chanGrp || channel.id == partie.chanGrp) {
+      listedChannels.push(channel);
+    }
 	});
 
 	return listedChannels;
