@@ -1,7 +1,7 @@
 const fs = require('fs');
 
 /**
-* loadSave : function pour recuperer l'ojet de sauvegarde deupuis le lireFichier
+* loadSave : fonction pour recuperer l'ojet de sauvegarde deupuis le lireFichier
 * userId : id du joueur
 **/
 exports.loadSave = function loadSave(userId) {
