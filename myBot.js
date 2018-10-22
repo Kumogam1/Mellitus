@@ -49,7 +49,7 @@ client.on("message", (message) => {
         	case "event":
         		event(message);
         		break;
-          case "insuline":
+          case 'insuline':
             insuline.priseInsuline(message);
             break;
 
