@@ -2,7 +2,7 @@ const Discord = require('discord.js');
 const fs = require('fs');
 const repas = require('./calcul.js');
 const client = new Discord.Client();
-
+const insuline = require('./priseInsuline.js');
 // récupération du token d'authentification pour le bot
 
 let numToken = fs.readFileSync('./token.json');
@@ -21,4 +21,7 @@ client.on('message', msg => {
     msg.channel.send('Le taux de glycémie initial est de : ' + res[0]) ;
     msg.channel.send('Le taux de glycémie théorique est de : ' + res[1]);
   }
+ if (msg.content === 'testInsuline') {
+   msg.channel.send(insuline.getInsuline(msg));
+ }
 });

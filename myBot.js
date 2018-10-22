@@ -2,6 +2,8 @@ const Discord = require("discord.js");
 const fs = require("fs");
 const initJeu = require('./initJeu.js');
 const finJeu = require('./finJeu.js');
+const insuline = require('./priseInsuline.js');
+
 
 const client = new Discord.Client();
 
@@ -47,12 +49,10 @@ client.on("message", (message) => {
         	case "event":
         		event(message);
         		break;
-        	case "info":
-        		messageChannel(message, 'hub');
-        		break;
-        	case "faux":
-        		messageChannel(message, 'hubhub');
-        		break;
+          case "insuline":
+            insuline.priseInsuline(message);
+            break;
+
     		default:
     			message.channel.send("Commande inconnue");
 		}
@@ -170,7 +170,7 @@ function eventSport(message){
     });
 }
 
-function eventRepas(message){
+function eventRepas(message) {
 
 	var rand1 = getRandomInt(nomRepas.length);
 
@@ -214,37 +214,3 @@ function getRandomInt(max){
 }
 
 client.login(config.token);
-
-
-/*
-function lireFichier(message) {
-    var content = fs.readFileSync('question.txt','utf-8');
-
-    var numRep = ['1⃣','2⃣','3⃣','4⃣','5⃣','6⃣','7⃣','8⃣','9⃣'];
-    var question = '';
-    var i = 0;
-    var nbRep = 0;
-
-    while(content.charAt(i) != ';') {
-        if(content.charAt(i) == '>')
-            nbRep++;
-        question += content.charAt(i);
-        i++;
-    }
-
-    //console.log(question);
-    //message.channel.send(question);
-
-    const embed = new Discord.RichEmbed()
-        .setColor(0x00AE86)
-        .addField(question);
-
-    message.channel.send({embed})
-    .then(async function (message) {
-        for(var i = 0; i < nbRep; i++){
-            await message.react(numRep[i]);
-        }
-    });
-}
-
-*/
