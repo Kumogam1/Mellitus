@@ -3,10 +3,11 @@ const fs = require("fs");
 const initJeu = require('./initJeu.js');
 const finJeu = require('./finJeu.js');
 const sfm = require('./saveFileManagement.js');
+const as = require('./affichageStats.js');
 
 const client = new Discord.Client();
 
-const config = require("./token.json");
+const config = require("../token.json");
 
 
 //listes pour le nom du personnage
@@ -14,13 +15,21 @@ const prenom = ['Archibald', 'Karim', 'Bernold', 'Magellan', 'Philastère', 'Che
 const nom = ['Gossa', 'Haristoy', 'Bertot', 'Zimmerman', 'Wemmert', 'Kraemer', 'Grançarski', 'Schneider', 'Mazo', 'Wessler', 'Thal', 'Richard', 'Lachiche', 'Divoux', 'Zaroli', 'Blindauer', 'Torregrossa'];
 
 //listes pour les activités que le joueur peut pratiquer
-const emoteEvent = ['🥇','🍴'];
 
-const emoteActivite = ['⚽','🏀','🏈','⚾','🎾','🏐','⛳','🏓','🏸','🚴','🏋','🏹','🎳','🎮','🎣'];
-const nomActivite = ['du foot','du basket','du rugby','du baseball','du tennis','du volley','du golf','du pingpong','du badmington','du vélo','de la muscu',"du tir à l'arc",'du bowling','une partie de jeux videos','de la peche'];
+const emoteActiviteM = ['🚴', '🎮', '🎸', '🏃'];
+const nomActiviteM = ['Faire du vélo', 'Faire une partie de jeux videos', 'Faire un peu de musique', 'Faire un jogging'];
 
-const emoteRepas = ['🍏','🍞','🍔','🍰','🍨','🍫','🥐','🍕','🍖','🍅','🍌'];
-const nomRepas = ['une pomme','du pain','un hamburger','un gateau','une glace','un chocolat','un croissant','une pizza','de la viande', 'une tomate', 'une banane'];
+const emoteActiviteA = ['⚽', '🏀', '🏈', '⚾', '🎾', '🏐', '⛳', '🏓', '🏸', '🏋', '🏹', '🎳', '🎮', '🎣'];
+const nomActiviteA = ['Faire du foot', 'Faire du basket', 'Faire du rugby', 'Faire du baseball', 'Faire du tennis', 'Faire du volley', 'Faire du golf', 'Faire du pingpong', 'Faire du badmington', 'Faire de la muscu', 'Faire du tir à l\'arc', 'Faire du bowling', 'Faire une partie de jeux videos', 'Faire de la peche'];
+
+const emoteActiviteS = ['🕺', '🍷', '📺', '🛏'];
+const nomActiviteS = ['Faire la fête', 'Aller dans un bar', 'Regarder la tv', 'Aller dormir'];
+
+const emoteRepasM = ['🍏', '🍞', '🍫', '🥐', '🍌'];
+const nomRepasM = ['Prendre une pomme', 'Prendre du pain', 'Prendre du chocolat', 'Prendre un croissant', 'Prendre une banane'];
+
+const emoteRepasS = ['🍔','🍰','🍨','🍕','🍖'];
+const nomRepasS = ['Manger un hamburger', 'Manger un gateau', 'Manger une glace', 'Manger une pizza', 'Manger de la viande'];
 
 const pseudoJ = prenom[getRandomInt(prenom.length)] + " " + nom[getRandomInt(nom.length)];
 let partJour = 0;
@@ -38,6 +47,7 @@ client.on("message", (message) => {
 
   		const args = message.content.slice(config.prefix.length).trim().split(/ +/g);
 		const command = args.shift().toLowerCase();
+        const partie = sfm.loadSave(message.author.id);
 
     	switch(command) {
         	case "start":
@@ -46,15 +56,13 @@ client.on("message", (message) => {
         	case "end":
         		finJeu.finJeu(message);
         		break;
-        	/*case "event":
-        		event(message, 0, message.author);
-        		break;*/
-        	case "info":
-        		messageChannel(message, 'hub');
+        	case "stats":
+                const f = [10,30,45];
+        		as.graphString(100, 0, 20, f, message);
         		break;
-        	case "faux":
-        		messageChannel(message, 'hubhub');
-        		break;
+            case "consequence":
+                consequence(partie);
+                break;
     		default:
     			message.channel.send("Commande inconnue");
 		}
@@ -67,42 +75,78 @@ client.on("messageReactionAdd", (reaction, user) => {
 
     const partie = sfm.loadSave(user.id);
 
-	switch(reaction.emoji.name){
-		case '✅':
+    switch(reaction.emoji.name){
+        case '✅':
             reaction.message.delete();
             reaction.message.channel.send('Debut de partie');
-            event(reaction.message, partie, 0);
+            event(reaction.message, partie, 0, nomRepasM, emoteRepasM);
             break;
         case '❌':
             reaction.message.delete();
             consequence(user.id);
             break;
-		default:
-			break;
-	}
+        default:
+            break;
+    }
+
+    let tabNR = []; //tableau de nom de repas
+    let tabNA = []; //tableau de nom d'activités
+    let tabER = []; //tableau d'emote de repas
+    let tabEA = []; //tableau d'emote d'activités
+    let tabNR2 = []; //tableau de nom de repas de la partie du jour suivant
+    let tabER2 = []; //tableau d'emote de repas de la partie du jour suivant
+
+    switch(partie.partJour){
+        case 0:
+            tabNR = nomRepasM;
+            tabER = emoteRepasM;
+            tabNA = nomActiviteM;
+            tabEA = emoteActiviteM;
+            tabNR2 = nomRepasS;
+            tabER2 = emoteRepasS;
+            break;
+        case 1:
+            tabNR = nomRepasS;
+            tabER = emoteRepasS;
+            tabNA = nomActiviteA;
+            tabEA = emoteActiviteA;
+            tabNR2 = nomRepasS;
+            tabER2 = emoteRepasS;
+            break;
+        case 2:
+            tabNR = nomRepasS;
+            tabER = emoteRepasS;
+            tabNA = nomActiviteS;
+            tabEA = emoteActiviteS;
+            tabNR2 = nomRepasM;
+            tabER2 = emoteRepasM;
+            break;
+        default:
+            console.log("Partie du jour inconnue.");
+    }
 
     //Quand on choisi le repas
-    if(emoteRepas.includes(reaction.emoji.name)){
+    if(tabER.includes(reaction.emoji.name)){
         reaction.message.delete();
         var i = 0;
-        while(emoteRepas[i] != reaction.emoji.name)
+        while(tabER[i] != reaction.emoji.name)
             i++;
-        reaction.message.channel.send(`Vous avez choisi de manger ${nomRepas[i]}`);
-        writeAct(user.id, nomRepas[i]);
-        event(reaction.message, partie, 1);
+        reaction.message.channel.send(`Vous avez choisi de manger ${tabNR[i]}`);
+        writeAct(user.id, tabNR[i], partie);
+        event(reaction.message, partie, 1, tabNA, tabEA);
     }
 
     //Quand on choisi la sport
-	if(emoteActivite.includes(reaction.emoji.name)){
+	if(tabEA.includes(reaction.emoji.name)){
         reaction.message.delete();
         var i = 0;
-        while(emoteActivite[i] != reaction.emoji.name)
+        while(tabEA[i] != reaction.emoji.name)
             i++;
-        reaction.message.channel.send(`Vous avez choisi de faire ${nomActivite[i]}`);
-        writeAct(user.id, nomActivite[i]);
+        reaction.message.channel.send(`Vous avez choisi de faire ${tabNA[i]}`);
+        writeAct(user.id, tabNA[i], partie);
         partie.partJour = (partie.partJour + 1) % 3;
         sfm.save(user.id, partie);
-        event(reaction.message, partie, 0);
+        event(reaction.message, partie, 0, tabNR2, tabER2);
     }
 
 	//console.log(reaction.emoji.name);
@@ -138,7 +182,7 @@ exports.messageChannel = function messageChannel(message, chanName){
 }
 
 //Fonction test qui avertit le joueur d'un evenement
-function event(message, partie, numAct){
+function event(message, partie, numAct, tabN, tabE){
 
     let fieldTitle = "";
     let fielText = "";
@@ -167,117 +211,103 @@ function event(message, partie, numAct){
         .addField(fieldTitle, fielText)
 
         message.channel.send({embed});
+
+        console.log(tabN);
+        console.log(tabE);
     }
 
     if(numAct == 0){
-        eventRepas(message);
+        eventRepas(message, tabN, tabE);
     }
     else{
-        eventSport(message);
+        eventSport(message, tabN, tabE);
     }
 }
 
-function eventSport(message){
+function eventSport(message, tabN, tabE){
 
-	var rand1 = getRandomInt(nomActivite.length);
+	var rand1 = getRandomInt(tabN.length);
 
 	var rand2 = rand1;
 	while(rand2 == rand1)
-		rand2 = getRandomInt(nomActivite.length);
+		rand2 = getRandomInt(tabN.length);
 
     var rand3 = rand1;
     while(rand3 == rand1 || rand3 == rand2)
-    	rand3 = getRandomInt(nomActivite.length);
+    	rand3 = getRandomInt(tabN.length);
 
     var rand4 = rand1;
     while(rand4 == rand1 || rand4 == rand2 || rand4 == rand3)
-    	rand4 = getRandomInt(nomActivite.length);
+    	rand4 = getRandomInt(tabN.length);
 
 	const embed = new Discord.RichEmbed()
     .setColor(0x00AE86)
     .setTitle("Que voulez-vous faire ?")
 
-    .addField("Faire du " + nomActivite[rand1] + " : ", emoteActivite[rand1])
-    .addField("Faire du " + nomActivite[rand2] + " : ", emoteActivite[rand2])
-    .addField("Faire du " + nomActivite[rand3] + " : ", emoteActivite[rand3])
-    .addField("Faire du " + nomActivite[rand4] + " : ", emoteActivite[rand4])
+    .addField(tabN[rand1] + " : ", tabE[rand1])
+    .addField(tabN[rand2] + " : ", tabE[rand2])
+    .addField(tabN[rand3] + " : ", tabE[rand3])
+    .addField(tabN[rand4] + " : ", tabE[rand4])
     .addField("Ne rien faire : ", '❌')
 
 
     message.channel.send({embed})
     .then(async function (mess) {
-    	await mess.react(emoteActivite[rand1]);
-    	await mess.react(emoteActivite[rand2]);
-    	await mess.react(emoteActivite[rand3]);
-    	await mess.react(emoteActivite[rand4]);
+    	await mess.react(tabE[rand1]);
+    	await mess.react(tabE[rand2]);
+    	await mess.react(tabE[rand3]);
+    	await mess.react(tabE[rand4]);
     	await mess.react('❌');
     });
 }
 
-function eventRepas(message){
+function eventRepas(message, tabN, tabE){
 
-	var rand1 = getRandomInt(nomRepas.length);
+	var rand1 = getRandomInt(tabN.length);
 
 	var rand2 = rand1;
 	while(rand2 == rand1)
-		rand2 = getRandomInt(nomRepas.length);
+		rand2 = getRandomInt(tabN.length);
 
     var rand3 = rand1;
     while(rand3 == rand1 || rand3 == rand2)
-    	rand3 = getRandomInt(nomRepas.length);
+    	rand3 = getRandomInt(tabN.length);
 
     var rand4 = rand1;
     while(rand4 == rand1 || rand4 == rand2 || rand4 == rand3)
-    	rand4 = getRandomInt(nomRepas.length);
+    	rand4 = getRandomInt(tabN.length);
 
 	const embed = new Discord.RichEmbed()
     .setColor(0x00AE86)
     .setTitle("Que voulez-vous faire ?")
 
-    .addField("Manger " + nomRepas[rand1] + " : ", emoteRepas[rand1])
-    .addField("Manger " + nomRepas[rand2] + " : ", emoteRepas[rand2])
-    .addField("Manger " + nomRepas[rand3] + " : ", emoteRepas[rand3])
-    .addField("Manger " + nomRepas[rand4] + " : ", emoteRepas[rand4])
+    .addField(tabN[rand1] + " : ", tabE[rand1])
+    .addField(tabN[rand2] + " : ", tabE[rand2])
+    .addField(tabN[rand3] + " : ", tabE[rand3])
+    .addField(tabN[rand4] + " : ", tabE[rand4])
     .addField("Ne rien manger : ", '❌')
 
 
     message.channel.send({embed})
     .then(async function (mess) {
-    	await mess.react(emoteRepas[rand1]);
-    	await mess.react(emoteRepas[rand2]);
-    	await mess.react(emoteRepas[rand3]);
-    	await mess.react(emoteRepas[rand4]);
+    	await mess.react(tabE[rand1]);
+    	await mess.react(tabE[rand2]);
+    	await mess.react(tabE[rand3]);
+    	await mess.react(tabE[rand4]);
     	await mess.react('❌');
     });
 }
 
-function writeAct(userId, text) {
-    fs.appendFileSync('./AC/act-' + userId + '.txt', text+";", function (err) {
-        if (err) console.log(err);
-    });
+function writeAct(userId, text, partie){
+    partie.activite.push(text);
+    partie.consequence.push(text);
+    sfm.save(userId, partie);
 }
 
-function consequence(userId){
-    const content = fs.readFileSync('./AC/act-' + userId + '.txt', 'utf-8');
-
-    let i = 0;
-    let j = 0;
-    let listActions = [];
-
-    while(i != content.length) {
-        if(content.charAt(i) == ';') {
-            listActions.push(content.substring(j, i));
-            j = i+1;
-        }
-        i++;
+function consequence(partie){
+    for(let i = 0; i < partie.activite.length; i++){
+        console.log(partie.consequence[i]);
     }
-
-    listActions.forEach(str => {
-        let x = getRandomInt(10);
-        if(x == 1){
-            console.log(str);
-        }
-    });
 }
 
 //Fonction random

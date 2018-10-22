@@ -38,13 +38,18 @@ ex : rugby -> 1 chance sur 10 = fracture
 
 ************************************************
 ************************************************
+
+Separation des tableaux sport et manger en fonction de la partie de la journée
+
+************************************************
+************************************************
 -----------------> A faire : <------------------
 ************************************************
 ************************************************
 
 Un fichier personnage avec : 
 taux de glycemie
-recap repas
-recap sport
-num jour		-> Fait
+recap repas				-> Fait
+recap sport				-> Fait
+num jour				-> Fait
 partie de la journee	-> Fait
