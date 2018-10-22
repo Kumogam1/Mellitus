@@ -1,5 +1,6 @@
 const Discord = require('discord.js');
 const sfm = require('./saveFileManagement.js');
+const myBot = require('./myBot.js');
 
 // Fonctions pour débuter la partie
 exports.initJeu = function initJeu(message, client, config) {
@@ -8,19 +9,14 @@ exports.initJeu = function initJeu(message, client, config) {
 
 		// creation d'un fichier de sauvegarde de sauvegarde
 		// lecture de ce fichier de sauvegarde
-		const partie = {};
+		const partie = sfm.loadSave(message.author.id);
 		const eventName = 'Joueur';
 		const rolePers = initRole(message, eventName, client);
 
-		initChannelGrp(message, partie, message.author.username, rolePers);
-
-		// reecriture de la sauvergarde mise a jour
-		console.log(partie['chanGrp']);
+		initChannelGrp(message, partie, message.author.username, rolePers, config);
 
 		message.delete();
 		message.channel.send(message.author.username + ' a lancé une partie !');
-
-		bienvenue(message, config);
 
 	}
 	else {
@@ -49,11 +45,10 @@ function initRole(message, eventName, client) {
 		.catch(error => client.catch(error));
 	})
 	.catch(error => client.catch(error));
-
 	return nomRole;
 }
 
-function initChannel(message, partie, rolePers, channelName, chanGrpId) {
+function initChannel(message, partie, rolePers, channelName, chanGrpId, config) {
 
 	const server = message.guild;
 	// Creation d'un channel textuel
@@ -84,6 +79,9 @@ function initChannel(message, partie, rolePers, channelName, chanGrpId) {
 			});
 			// on ajoute le channel a la sauvegarde de partie
 			partie[channelName] = chan2.id;
+
+			if(channelName == 'Hub')
+				bienvenue(message, config);
 		}
 		).catch(console.error);
 	}).catch(console.error);
@@ -91,33 +89,38 @@ function initChannel(message, partie, rolePers, channelName, chanGrpId) {
 	return '```Added```';
 }
 
-function initChannelGrp(message, partie, channelGrpName, rolePers) {
+function initChannelGrp(message, partie, channelGrpName, rolePers, config) {
 	const server = message.guild;
 	let res = '';
 	server.createChannel(channelGrpName, 'category')
-	.then(chanGrp => {
+	.then(async chanGrp => {
 		res = chanGrp.id;
 		partie.chanGrp = chanGrp.id;
 		partie.player = message.author.id;
-		initChannel(message, partie, rolePers, 'Hub', res);
-		initChannel(message, partie, rolePers, 'Informations', res);
-		initChannel(message, partie, rolePers, 'Personnage', res);
+		partie.partJour = 0;
+		initChannel(message, partie, rolePers, 'Hub', res, config);
+		initChannel(message, partie, rolePers, 'Informations', res, config);
+		initChannel(message, partie, rolePers, 'Personnage', res, config);
 		console.log(JSON.stringify(partie, null, 2));
 		sfm.save(message.author.id, partie);
 	})
 	.catch(console.error);
-	console.log(res);
 	return res;
 }
 
 function bienvenue(message, config) {
+	const chanId = myBot.messageChannel(message, "hub");
+
 	const embed = new Discord.RichEmbed()
     .setColor(0x00AE86)
-    .setTitle('Bienvenue dans Mellitus')
+    .setTitle("Bienvenue dans Mellitus")
 
-    .addField('Résumé', 'Texte qui explique le jeu')
-    .addField(config.prefix + 'dgame', 'Commancer une partie')
-    .addField(config.prefix + 'fgame', 'Terminer une partie');
+    .addField("Tutoriel", "Ceci est le tutoriel du jeu Mellitus.")
+    .addField("Mellitus", "Mellitus est un jeu sérieux qui apprend au joueur comment vivre avec un diabète.")
+    .addField("Debut", "Commencer la partie")
 
-    message.channel.send(embed);
+    message.guild.channels.get(chanId).send({embed})
+    .then(async function (mess) {
+    	await mess.react('✅');
+    });	//----------Modifié----------//
 }

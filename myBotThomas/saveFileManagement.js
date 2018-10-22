@@ -1,7 +1,7 @@
 const fs = require('fs');
 
 /**
-* loadSave : fonction pour recuperer l'ojet de sauvegarde deupuis le lireFichier
+* loadSave : function pour recuperer l'ojet de sauvegarde depuis le lireFichier
 * userId : id du joueur
 **/
 exports.loadSave = function loadSave(userId) {
@@ -11,7 +11,7 @@ exports.loadSave = function loadSave(userId) {
 };
 
 /**
-* save : function pour enrengister la sauvegarde modifiée
+* save : function pour enregister la sauvegarde modifiée
 * userId : id du joueur
 * partie : objet json de la partie
 **/
@@ -22,7 +22,7 @@ exports.save = function save(userId, partie) {
 
 
 /**
-* deleteSave : suprime un fichier de sauvegarde
+* deleteSave : supprime un fichier de sauvegarde
 * userId : id du Joueur
 **/
 exports.deleteSave = function deleteSave(userId) {
