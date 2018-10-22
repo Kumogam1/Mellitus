@@ -7,7 +7,7 @@ const insuline = require('./priseInsuline.js');
 
 const client = new Discord.Client();
 
-const config = require("./token.json");
+const config = require('./token.json');
 
 
 //listes pour le nom du personnage
@@ -52,7 +52,9 @@ client.on("message", (message) => {
           case 'insuline':
             insuline.priseInsuline(message);
             break;
-
+          case 'medecin':
+            eventMedecin(message);
+            break;
     		default:
     			message.channel.send("Commande inconnue");
 		}
@@ -101,7 +103,7 @@ client.on("messageReactionAdd", (reaction, user) => {
 
 
 //Fonction qui cherche un channel
-function messageChannel(message, chanName){
+function messageChannel(message, chanName) {
 
 	var listChan2 = listChan(message);
 
@@ -115,7 +117,7 @@ function messageChannel(message, chanName){
 	message.channel.send("J'ai pas trouvé");
 }
 
-//Fonction test qui avertit le joueur d'un evenement
+// Fonction test qui avertit le joueur d'un evenement
 function event(message){
 	const embed = new Discord.RichEmbed()
     .setColor(0x00AE86)
@@ -207,7 +209,36 @@ function eventRepas(message) {
     });
 }
 
-//Fonction random
+function eventMedecin(message) {
+  const embed = new Discord.RichEmbed()
+  .setTitle('Bilan médical')
+  .setAuthor('Docteur Momo', 'https://s3.amazonaws.com/pix.iemoji.com/images/emoji/apple/ios-11/256/man-health-worker-medium-dark-skin-tone.png')
+  /*
+   * Alternatively, use "#00AE86", [0, 174, 134] or an integer number.
+   */
+  .setColor(0x00AE86)
+  .setDescription('Voici votre bilan médical journalier: ')
+  .setFooter('Bilan réalisé par Dr Momo')
+  .setImage('https://www.emojimeaning.com/img/img-apple-64/1f44f.png')
+  .setThumbnail('https://upload.wikimedia.org/wikipedia/commons/thumb/5/57/Caduceus.svg/299px-Caduceus.svg.png')
+  /*
+   * Takes a Date object, defaults to current date.
+   */
+  .setTimestamp()
+  .addField('Poids',
+    '65kg')
+  /*
+   * Inline fields may not display as inline if the thumbnail and/or image is too big.
+   */
+  .addField('Taux de glycémie', '25g')
+  /*
+   * Blank field, useful to create some space.
+   */
+  .addField('Commentaire', 'Très bonne journée');
+
+  message.channel.send({ embed });
+}
+// Fonction random
 function getRandomInt(max){
 	var x = Math.floor(Math.random() * Math.floor(max));
 	return x;
