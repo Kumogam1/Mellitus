@@ -6,7 +6,7 @@
 * tabDonnes : tab[int] : tableau contenant les donnes pour le graphique
 * res : string
 **/
-exports.graphString = function(bornMax, bornMin, nbLignes, tabDonnes) {
+exports.graphString = function(bornMax, bornMin, nbLignes, tabDonnes, message) {
   const equartBornes = bornMax - bornMin;
   const tabValLigne = [];
   let res = '';
@@ -18,14 +18,15 @@ exports.graphString = function(bornMax, bornMin, nbLignes, tabDonnes) {
     res = res + '>' + tabValLigne[i] + '\t';
     tabDonnes.forEach(function(value) {
       if (value >= tabValLigne[i]) {
-        res = res + '▮ ';
+        res = res + '1 ';
       }
       else {
-        res = res + '▯ ';
+        res = res + '  ';
       }
     });
     res = res + '\n';
   }
   console.log(res);
+  message.channel.send(res);
   return res;
 };
