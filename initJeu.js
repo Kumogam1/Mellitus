@@ -1,4 +1,3 @@
-const Discord = require('discord.js');
 const fs = require('fs');
 
 // Fonctions pour débuter la partie
