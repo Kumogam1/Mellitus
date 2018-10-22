@@ -79,6 +79,8 @@ exports.initStat = function initStat(user) {
     partie.partJour = 0;
     partie.nbJour = 0;
     partie.numJour = 0;
+    partie.activite = [];
+    partie.consequence = [];
 
     sfm.save(user.id, partie);
 }
