@@ -2,6 +2,8 @@ const Discord = require('discord.js');
 const sfm = require('./saveFileManagement.js');
 const myBot = require('./myBot.js');
 const event = require('./event.js');
+const finJeu = require('./finJeu.js')
+const insuline = require('./priseInsuline.js');
 
 const conseq = ['crampe', 'courbatures'];
 
@@ -14,8 +16,8 @@ exports.event = function event(message, partie, tabN, tabE){
     let fielText = "";
 
 	async function clear() {
-        message.delete();
-        const fetched = await message.channel.fetchMessages({limit: 1});
+        //message.delete();
+        const fetched = await message.channel.fetchMessages();
         message.channel.bulkDelete(fetched);
     }
     
@@ -27,65 +29,73 @@ exports.event = function event(message, partie, tabN, tabE){
     partie.numEvent = (partie.numEvent + 1) % 3;
 	sfm.save(partie.player, partie);
 
-	//console.log('partie du jour : ' + partie.partJour);
-    //console.log('event : ' + partie.numEvent);
+	//console.log('nbjour : ' + partie.nbJour);
+    //console.log('numjour : ' + partie.numJour);
 
-    switch(partie.partJour){
-        case 0:
-            switch(partie.numEvent){
-                case 0:
-                	fieldTitle = "C'est le matin!";
-                	fielText = "Chaque matin, vous pouvez choisir votre petit déjeuner, faire une activité matinale au choix et prendre votre prise d'insuline.";
-                    title(message, fieldTitle, fielText);
-                    consequence(message, partie, tabN, tabE);
-                    //insuline
-                    break;
-                case 1:
-                    eventRepas(message, tabN, tabE);
-                    break;
-                case 2:
-                    eventSport(message, tabN, tabE);
-                    break;
-            }
-            break;
-        case 1:
-            switch(partie.numEvent){
-                case 0:
-                	fieldTitle = "C'est l'après-midi!";
-                	fielText = "Tous les après-midi, vous pouvez choisir ce que vous allez manger et si vous voulez faire une activité.";
-                	title(message, fieldTitle, fielText);
-                	//on va enlever
-                	consequence(message, partie, tabN, tabE);
-        			//insuline
-                    break;
-                case 1:
-                    eventRepas(message, tabN, tabE);
-                    break;
-                case 2:
-                    eventSport(message, tabN, tabE);
-                    break;
-            }
-            break;
-        case 2:
-            switch(partie.numEvent){
-                case 0:
-                	fieldTitle = "C'est le soir!";
-               		fielText = "Tous les soirs, vous pouvez diner et sortir avec des amis.";
-               		title(message, fieldTitle, fielText);
-               		//on va enlever
-               		consequence(message, partie, tabN, tabE);
-                    //insuline
-                    break;
-                case 1:
-                    eventRepas(message, tabN, tabE);
-                    break;
-                case 2:
-                    eventSport(message, tabN, tabE);
-                    break;
-            }
-            break;
+    if(partie.nbJour != partie.numJour){
+    	switch(partie.partJour){
+	        case 0:
+	            switch(partie.numEvent){
+	                case 0:
+	                	fieldTitle = "C'est le matin!";
+	                	fielText = "Chaque matin, vous pouvez choisir votre petit déjeuner, faire une activité matinale au choix et prendre votre prise d'insuline.";
+	                    title(message, fieldTitle, fielText);
+	                    consequence(message, partie, tabN, tabE);
+	                    insuline.priseInsuline(message, partie, tabN, tabE);
+	                    break;
+	                case 1:
+	                    eventRepas(message, tabN, tabE);
+	                    break;
+	                case 2:
+	                    eventSport(message, tabN, tabE);
+	                    break;
+	            }
+	            break;
+	        case 1:
+	            switch(partie.numEvent){
+	                case 0:
+	                	fieldTitle = "C'est l'après-midi!";
+	                	fielText = "Tous les après-midi, vous pouvez choisir ce que vous allez manger et si vous voulez faire une activité.";
+	                	title(message, fieldTitle, fielText);
+	                	//on va enlever
+	                	//consequence(message, partie, tabN, tabE);
+	        			insuline.priseInsuline(message, partie, tabN, tabE);
+	                    break;
+	                case 1:
+	                    eventRepas(message, tabN, tabE);
+	                    break;
+	                case 2:
+	                    eventSport(message, tabN, tabE);
+	                    break;
+	            }
+	            break;
+	        case 2:
+	            switch(partie.numEvent){
+	                case 0:
+	                	fieldTitle = "C'est le soir!";
+	               		fielText = "Tous les soirs, vous pouvez diner et sortir avec des amis.";
+	               		title(message, fieldTitle, fielText);
+	               		//on va enlever
+	               		//consequence(message, partie, tabN, tabE);
+	                    insuline.priseInsuline(message, partie, tabN, tabE);
+	                    break;
+	                case 1:
+	                    eventRepas(message, tabN, tabE);
+	                    break;
+	                case 2:
+	                	partie.numJour++;
+	                	sfm.save(partie.player, partie);
+	                    eventSport(message, tabN, tabE);
+	                    break;
+	            }
+	            break;
+    	}
     }
-}
+    else {
+    	eventFin(message);
+    }
+    
+};
 
 function consequence(message, partie, tabN, tabE){
 	let x = 0;
@@ -104,14 +114,14 @@ function consequence(message, partie, tabN, tabE){
 
 	    .addField('Aïe ça fait mal !', partie.consequence[1])//ça va changer
 
-	    message.channel.send({embed})
-	    .then(async function (mess) {
+	    message.channel.send({embed});
+	    /*.then(async function (mess) {
 	    	mess.react('➡');
-	    });
+	    });*/
 	}
 	else{
 		message.delete();
-        event.event(message, partie, tabN, tabE);
+        //event.event(message, partie, tabN, tabE);
         //tabn et tabe sont ceux de la partie de la journee precedante
 	}
 }
@@ -171,7 +181,7 @@ function eventRepas(message, tabN, tabE){
 
 	const embed = new Discord.RichEmbed()
     .setColor(0x00AE86)
-    .setTitle("Que voulez-vous faire ?")
+    .setTitle("Que voulez-vous manger ?")
 
     .addField(tabN[rand1] + " : ", tabE[rand1])
     .addField(tabN[rand2] + " : ", tabE[rand2])
@@ -188,6 +198,16 @@ function eventRepas(message, tabN, tabE){
     	await mess.react(tabE[rand4]);
     	await mess.react('❌');
     });
+}
+
+function eventFin(message){
+	const embed = new Discord.RichEmbed()
+    .setColor(0x00AE86)
+
+    .addField("C'est la fin du tutoriel", "J'espère que vous avez apprécié la partie.")
+    .addField("Pour quitter la partie, tapez : ", "/end")
+
+    message.channel.send({embed});
 }
 
 function title(message, title, text){

@@ -1,38 +1,48 @@
 const Discord = require('discord.js');
-const client = new Discord.Client();
 const fs = require('fs');
+const event = require('./event.js');
 const sfm = require('./saveFileManagement.js');
+const config = require("./token.json");
 
-exports.priseInsuline = function priseInsuline(msg) {
+const client = new Discord.Client();
+client.login(config.token);
+
+exports.priseInsuline = function priseInsuline(message, partie, tabN, tabE) {
+
   let insuline = '-1';
-  msg.channel.send('Je dois prendre de l\'insuline (entre 0 et 80 unités): ');
+
+  const embed = new Discord.RichEmbed()
+    .setColor(0x00AE86)
+    .addField("C'est l'heure de la prise d'insuline.", "Je dois prendre de l'insuline (entre 0 et 80 unités): ")
+
+  message.channel.send({embed});
+
+  partie.insuline = 1;
+  sfm.save(message.author.id, partie);
 
   client.on ('message', message => {
 
     if (message.author.bot) return;
 
-    console.log('df');
+    if(message.member.roles.some(r=>['Joueur'].includes(r.name))) {
 
-    const partie = sfm.loadSave(message.author.id);
+      if (partie.insuline == 1) {
+        insuline = parseInt(message.content);
 
-    //if (partie.insuline == true) {
-      insuline = parseInt(message.content);
-
-      console.log('df2');
-
-      if(insuline < 0 || insuline > 80) {
-        msg.channel.send('Entrez une valeur comprise entre 0 et 80 !');
+        if(insuline < 0 || insuline > 80 || isNaN(insuline)) {
+          message.channel.send('Entrez une valeur comprise entre 0 et 80 !');
+        }
+        else {
+          //calcul(insuline, message);
+          partie.insuline = 0;
+          sfm.save(message.author.id, partie);
+          message.react('➡');
+          //event.event(message, partie, tabN, tabE);
+        }
       }
-      else {
-        calcul(insuline, msg);
-        partie.insuline = false;
-        sfm.save(message.author.id, partie);
-      }
-      console.log(insuline);
-    //}
-    });
+    }
+  });
 }
-;
 
 function calcul(poids, message) {
   const doseIntermediaireInitiale = poids / 10;

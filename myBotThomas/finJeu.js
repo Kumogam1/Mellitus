@@ -70,7 +70,7 @@ exports.listChan = function listChan(message) {
 	});
 
 	return listedChannels;
-}
+};
 
 exports.initStat = function initStat(user) {
     const partie = {};
@@ -80,9 +80,10 @@ exports.initStat = function initStat(user) {
     partie.partJour = 0;
     partie.numEvent = 0;
     partie.nbJour = 0;
-    partie.numJour = 0;
+    partie.numJour = -1;
+    partie.insuline = 0;
     partie.activite = [];
     partie.consequence = [];
 
     sfm.save(user.id, partie);
-}
+};

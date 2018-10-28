@@ -49,6 +49,8 @@ client.on("message", (message) => {
 
     	switch(command) {
         	case "start":
+                partie.nbJour = 0;
+                sfm.save(message.author.id, partie);
         		initJeu.initJeu(message, client, config);
         		break;
         	case "end":
@@ -58,11 +60,15 @@ client.on("message", (message) => {
                 const f = [10,30,45];
         		as.graphString(100, 0, 20, f, message);
         		break;
-            case "consequence":
-                consequence(partie);
+            case "cons":
+                console.log(partie.activite);
+                console.log(partie.consequence);
                 break;
-            case 'insuline':
+            case 'insu':
                 insuline.priseInsuline(message);
+                break;
+            case 'text':
+                text(message);
                 break;
     		default:
     			message.channel.send("Commande inconnue");
@@ -80,8 +86,6 @@ client.on("messageReactionAdd", (reaction, user) => {
     let tabNA = []; //tableau de nom d'activités
     let tabER = []; //tableau d'emote de repas
     let tabEA = []; //tableau d'emote d'activités
-    let tabNR2 = []; //tableau de nom de repas de la partie du jour suivant
-    let tabER2 = []; //tableau d'emote de repas de la partie du jour suivant
 
     switch(partie.partJour){
         case 0:
@@ -89,24 +93,18 @@ client.on("messageReactionAdd", (reaction, user) => {
             tabER = emoteRepasM;
             tabNA = nomActiviteM;
             tabEA = emoteActiviteM;
-            tabNR2 = nomRepasS;
-            tabER2 = emoteRepasS;
             break;
         case 1:
             tabNR = nomRepasS;
             tabER = emoteRepasS;
             tabNA = nomActiviteA;
             tabEA = emoteActiviteA;
-            tabNR2 = nomRepasS;
-            tabER2 = emoteRepasS;
             break;
         case 2:
             tabNR = nomRepasS;
             tabER = emoteRepasS;
             tabNA = nomActiviteS;
             tabEA = emoteActiviteS;
-            tabNR2 = nomRepasM;
-            tabER2 = emoteRepasM;
             break;
         default:
             console.log("Partie du jour inconnue.");
@@ -115,14 +113,25 @@ client.on("messageReactionAdd", (reaction, user) => {
     switch(reaction.emoji.name){
         case '✅':
             //reaction.message.delete();
-            reaction.message.channel.send('Debut de partie');
             event.event(reaction.message, partie, tabNR, tabER);
             break;
         case '❌':
-            event.event(reaction.message, partie, tabNR, tabER);
+            if(partie.numEvent == 1){
+                writeAct(user.id, 'rienM', partie);
+                event.event(reaction.message, partie, tabNA, tabEA);
+            }
+            else{
+                writeAct(user.id, 'rienA', partie);
+                partie.partJour = (partie.partJour + 1) % 3;
+                sfm.save(partie.player, partie);
+                event.event(reaction.message, partie, tabNR, tabER);
+            }
             break;
         case '➡':
             event.event(reaction.message, partie, tabNR, tabER);
+            break;
+        case '🔚':
+            finJeu.finJeu(reaction.message);
             break;
         default:
             break;
@@ -145,7 +154,7 @@ client.on("messageReactionAdd", (reaction, user) => {
         writeAct(user.id, tabNA[i], partie);
         partie.partJour = (partie.partJour + 1) % 3;
         sfm.save(partie.player, partie);
-        event.event(reaction.message, partie, tabNR2, tabER2);
+        event.event(reaction.message, partie, tabNR, tabER);
     }
 
 	//console.log(reaction.emoji.name);
@@ -178,7 +187,7 @@ exports.messageChannel = function messageChannel(message, chanName){
         }
     });
     return id;  //----------Modifié----------//
-}
+};
 
 function writeAct(userId, text, partie){
     partie.activite.push(text);
@@ -252,6 +261,20 @@ function nextPart(reaction, user, choix){
 exports.getRandomInt = function getRandomInt(max){
     var x = Math.floor(Math.random() * Math.floor(max));
     return x;
+};
+
+function text(message) {
+
+    const embed = new Discord.RichEmbed()
+    .setColor(0x00AE86)
+    .setTitle("Bienvenue dans Mellitus")
+
+    .addField("Qu'est ce que Mellitus ?", "Mellitus est un jeu sérieux qui vous met dans la peau d'une personne diabétique. Votre but est de stabiliser votre niveau d'insuline jusqu'à la fin de la partie.")
+    .addField("Comment jouer ?", "La partie est divisée en jour et chaque jour est une suite de choix.")
+    .addField("Lancer le tutoriel : ", "/start")
+    .addField("Commande d'arrêt d'urgence : ", "/end")
+
+    message.channel.send({embed});
 }
 
 client.login(config.token);

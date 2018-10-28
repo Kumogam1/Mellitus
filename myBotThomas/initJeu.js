@@ -98,7 +98,9 @@ function initChannelGrp(message, partie, channelGrpName, rolePers, config) {
 		partie.chanGrp = chanGrp.id;
 		partie.player = message.author.id;
 		partie.partJour = 0;
+		partie.numJour = 0;
     	partie.numEvent = -1;
+    	partie.insuline = 0;
 		partie.activite = [];
 		partie.consequence = [];
 		initChannel(message, partie, rolePers, 'Hub', res, config);
