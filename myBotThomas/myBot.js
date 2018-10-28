@@ -49,7 +49,7 @@ client.on("message", (message) => {
 
     	switch(command) {
         	case "start":
-                partie.nbJour = 0;
+                partie.nbJour = 1;
                 sfm.save(message.author.id, partie);
         		initJeu.initJeu(message, client, config);
         		break;
@@ -192,69 +192,6 @@ exports.messageChannel = function messageChannel(message, chanName){
 function writeAct(userId, text, partie){
     partie.activite.push(text);
     sfm.save(userId, partie);
-}
-
-function nextPart(reaction, user, choix){
-
-    const partie = sfm.loadSave(user.id);
-
-    let tabNR = []; //tableau de nom de repas
-    let tabNA = []; //tableau de nom d'activités
-    let tabER = []; //tableau d'emote de repas
-    let tabEA = []; //tableau d'emote d'activités
-    let tabNR2 = []; //tableau de nom de repas de la partie du jour suivant
-    let tabER2 = []; //tableau d'emote de repas de la partie du jour suivant
-
-    switch(partie.partJour){
-        case 0:
-            tabNR = nomRepasM;
-            tabER = emoteRepasM;
-            tabNA = nomActiviteM;
-            tabEA = emoteActiviteM;
-            tabNR2 = nomRepasS;
-            tabER2 = emoteRepasS;
-            break;
-        case 1:
-            tabNR = nomRepasS;
-            tabER = emoteRepasS;
-            tabNA = nomActiviteA;
-            tabEA = emoteActiviteA;
-            tabNR2 = nomRepasS;
-            tabER2 = emoteRepasS;
-            break;
-        case 2:
-            tabNR = nomRepasS;
-            tabER = emoteRepasS;
-            tabNA = nomActiviteS;
-            tabEA = emoteActiviteS;
-            tabNR2 = nomRepasM;
-            tabER2 = emoteRepasM;
-            break;
-        default:
-            console.log("Partie du jour inconnue.");
-    }
-
-    reaction.message.delete();
-
-    //Quand on choisi le repas
-    if(tabER.includes(reaction.emoji.name)){
-        var i = 0;
-        while(tabER[i] != reaction.emoji.name)
-            i++;
-        writeAct(user.id, tabNR[i], partie);
-        event.event(reaction.message, partie, 2, tabNA, tabEA);
-    }
-
-    //Quand on choisi la sport
-    if(tabEA.includes(reaction.emoji.name)){
-        var i = 0;
-        while(tabEA[i] != reaction.emoji.name)
-            i++;
-        writeAct(user.id, tabNA[i], partie);
-        partie.partJour = (partie.partJour + 1) % 3;
-        sfm.save(user.id, partie);
-        event.event(reaction.message, partie, 0, tabNR2, tabER2);
-    }
 }
 
 //Fonction random
