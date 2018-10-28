@@ -23,15 +23,16 @@ function deletRole(message) {
 			return role;
 		}
 	});
-	// let suppRolePerso = message.guild.roles.find("name", "Joueur-" + message.author.username);
 
-	const suppRolePerso = message.guild.roles.find(role => {
-		if(role.name == 'Joueur-' + message.author.username) {
-			return role;
-		}
+	message.member.removeRole(suppRoleJoueur)
+	.then(() => {
+		const suppRolePerso = message.guild.roles.find(role => {
+			if(role.name == 'Joueur-' + message.author.username) {
+				return role;
+			}
+		});
+		suppRolePerso.delete();
 	});
-	message.member.removeRole(suppRoleJoueur);
-	suppRolePerso.delete();
 }
 
 function deletChannel(message) {
@@ -69,7 +70,7 @@ exports.listChan = function listChan(message) {
 	});
 
 	return listedChannels;
-}
+};
 
 exports.initStat = function initStat(user) {
     const partie = {};
@@ -77,10 +78,12 @@ exports.initStat = function initStat(user) {
     partie.chanGrp = "";
     partie.player = user.id;
     partie.partJour = 0;
+    partie.numEvent = 0;
     partie.nbJour = 0;
-    partie.numJour = 0;
+    partie.numJour = -1;
+    partie.insuline = 0;
     partie.activite = [];
     partie.consequence = [];
 
     sfm.save(user.id, partie);
-}
+};
