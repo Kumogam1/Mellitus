@@ -98,17 +98,23 @@ function initChannelGrp(message, partie, channelGrpName, rolePers, config) {
 		partie.chanGrp = chanGrp.id;
 		partie.player = message.author.id;
 <<<<<<< HEAD
+<<<<<<< HEAD
 		partie.partJour = 0;
 		partie.poids = 0;
 		partie.glycemie = 0;
 =======
+=======
+		partie.partJour = 0;
+		partie.numJour = 0;
+    	partie.numEvent = -1;
+    	partie.insuline = 0;
+>>>>>>> 200c2004bd07aaaf3859c1fc235de87a165adaa0
 		partie.activite = [];
 		partie.consequence = [];
 >>>>>>> 1798c246493b7de548603f51c0b67ba49c76ee00
 		initChannel(message, partie, rolePers, 'Hub', res, config);
 		initChannel(message, partie, rolePers, 'Informations', res, config);
 		initChannel(message, partie, rolePers, 'Personnage', res, config);
-		console.log(JSON.stringify(partie, null, 2));
 		sfm.save(message.author.id, partie);
 	})
 	.catch(console.error);
@@ -116,14 +122,16 @@ function initChannelGrp(message, partie, channelGrpName, rolePers, config) {
 }
 
 function bienvenue(message, config) {
-	const chanId = myBot.messageChannel(message, "hub");
+
+	const partie = sfm.loadSave(message.author.id);
+
+	const chanId = myBot.messageChannel(message, "hub", partie);
 
 	const embed = new Discord.RichEmbed()
     .setColor(0x00AE86)
     .setTitle("Bienvenue dans Mellitus")
 
     .addField("Tutoriel", "Ceci est le tutoriel du jeu Mellitus.")
-    .addField("Mellitus", "Mellitus est un jeu sérieux qui apprend au joueur comment vivre avec un diabète.")
     .addField("Debut", "Commencer la partie")
 
     message.guild.channels.get(chanId).send({embed})
