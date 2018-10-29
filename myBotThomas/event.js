@@ -93,8 +93,7 @@ exports.event = function event(message, partie, tabN, tabE){
     }
     else {
     	eventFin(message);
-    }
-    
+    } 
 };
 
 function consequence(message, partie, tabN, tabE){
