@@ -113,14 +113,16 @@ function initChannelGrp(message, partie, channelGrpName, rolePers, config) {
 }
 
 function bienvenue(message, config) {
-	const chanId = myBot.messageChannel(message, "hub");
+
+	const partie = sfm.loadSave(message.author.id);
+
+	const chanId = myBot.messageChannel(message, "hub", partie);
 
 	const embed = new Discord.RichEmbed()
     .setColor(0x00AE86)
     .setTitle("Bienvenue dans Mellitus")
 
     .addField("Tutoriel", "Ceci est le tutoriel du jeu Mellitus.")
-    .addField("Mellitus", "Mellitus est un jeu sérieux qui apprend au joueur comment vivre avec un diabète.")
     .addField("Debut", "Commencer la partie")
 
     message.guild.channels.get(chanId).send({embed})

@@ -1,9 +1,11 @@
 {
-  "chanGrp": "503943647230820365",
+  "chanGrp": "506489656825872386",
   "player": "357486231119986688",
   "partJour": 0,
-  "nbJour": 0,
+  "numEvent": -1,
+  "nbJour": 1,
   "numJour": 0,
+  "insuline": 0,
   "activite": [],
   "consequence": []
 }

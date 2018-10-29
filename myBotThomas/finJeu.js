@@ -37,7 +37,9 @@ function deletRole(message) {
 
 function deletChannel(message) {
 
-	const listedChannels = fj.listChan(message);
+	const partie = sfm.loadSave(message.author.id);
+
+	const listedChannels = fj.listChan(message, partie);
 
 	// Suppression des channels et du groupe de channels pour la partie
 	listedChannels.forEach(channel => {
@@ -58,11 +60,11 @@ function deletChannel(message) {
 }
 
 // Fonction qui liste les channels de la partie + le group de channels
-exports.listChan = function listChan(message) {
+exports.listChan = function listChan(message, partie) {
 
-  	const partie = sfm.loadSave(message.author.id);
 	// Creation d'une liste des channels que le joueur peut voir
-	const listedChannels = [];
+	let listedChannels = [];
+
 	message.guild.channels.forEach(channel => {
 		if (channel.parentID == partie.chanGrp || channel.id == partie.chanGrp) {
 			listedChannels.push(channel);

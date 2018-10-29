@@ -11,6 +11,7 @@ const as = require('./affichageStats.js');
 const client = new Discord.Client();
 
 const config = require("./token.json");
+const perso = require("./perso.json");
 
 //listes pour les activités que le joueur peut pratiquer
 
@@ -56,7 +57,10 @@ client.on("message", (message) => {
         	case "end":
         		finJeu.finJeu(message);
         		break;
-        	case "stats":
+            case "perso" :
+                choixPerso(message);
+                break;
+        	/*case "stats":
                 const f = [10,30,45];
         		as.graphString(100, 0, 20, f, message);
         		break;
@@ -69,7 +73,7 @@ client.on("message", (message) => {
                 break;
             case 'text':
                 text(message);
-                break;
+                break;*/
     		default:
     			message.channel.send("Commande inconnue");
 		}
@@ -113,7 +117,8 @@ client.on("messageReactionAdd", (reaction, user) => {
     switch(reaction.emoji.name){
         case '✅':
             //reaction.message.delete();
-            event.event(reaction.message, partie, tabNR, tabER);
+            //event.event(reaction.message, partie, tabNR, tabER);
+            choixPerso(reaction.message);
             break;
         case '❌':
             if(partie.numEvent == 1){
@@ -137,6 +142,59 @@ client.on("messageReactionAdd", (reaction, user) => {
             break;
     }
 
+    if(reaction.emoji.name == '🇦'
+    || reaction.emoji.name == '🇧'
+    || reaction.emoji.name == '🇨'
+    || reaction.emoji.name == '🇩'){
+        let numPerso = -1;
+        switch(reaction.emoji.name){
+            case '🇦':
+                numPerso = 0;
+                break;
+            case '🇧':
+                numPerso = 1;
+                break;
+            case '🇨':
+                numPerso = 2;
+                break;
+            case '🇩':
+                numPerso = 3;
+                break;
+        }
+        
+        const partie = sfm.loadSave(user.id);
+        const chanId = myBot.messageChannel(reaction.message, "personnage", partie);
+
+        reaction.message.guild.channels.get(chanId).send({embed: {
+            color: 0x00AE86,
+            title: "__**Personnage**__",
+            fields: [{
+                name: "Nom",
+                value: perso.nom[numPerso]
+              },
+              {
+                name: "Sexe",
+                value: perso.sexe[numPerso]
+              },
+              {
+                name: "Age",
+                value: perso.age[numPerso]
+              },
+              {
+                name: "Taille",
+                value: perso.taille[numPerso]
+              },
+              {
+                name: "Poids",
+                value: perso.poids[numPerso]
+              }
+            ]
+          }
+        }).then(() => {
+            event.event(reaction.message, partie, tabNR, tabER);
+        });
+    }
+
     //Quand on choisi le repas
     if(tabER.includes(reaction.emoji.name)){
         var i = 0;
@@ -156,9 +214,6 @@ client.on("messageReactionAdd", (reaction, user) => {
         sfm.save(partie.player, partie);
         event.event(reaction.message, partie, tabNR, tabER);
     }
-
-	//console.log(reaction.emoji.name);
-	//messageReaction
 });
 
 client.on("guildMemberAdd", (member) => {
@@ -170,9 +225,9 @@ client.on("guildMemberRemove", (member) => {
 });
 
 //Fonction qui cherche un channel
-exports.messageChannel = function messageChannel(message, chanName){
+exports.messageChannel = function messageChannel(message, chanName, partie){
 
-	const listChan2 = finJeu.listChan(message);
+	const listChan2 = finJeu.listChan(message, partie);
 
     let id = 1;
 
@@ -212,6 +267,113 @@ function text(message) {
     .addField("Commande d'arrêt d'urgence : ", "/end")
 
     message.channel.send({embed});
+}
+
+function choixPerso(message){
+
+    async function clear() {
+        //message.delete();
+        const fetched = await message.channel.fetchMessages();
+        message.channel.bulkDelete(fetched);
+    }
+    
+    clear()
+    .catch((err) => {
+        console.log(err)
+    });
+
+    const embed = new Discord.RichEmbed()
+    .setColor(15013890)
+
+    .setTitle("__**Phase personnage**__")
+    .addField("👶 👦 👧 👨 👩 👴 👵", "C'est ici que vous devez choisir un personnage.\nChaque personnage a des caractéristiques différentes, qui influeront sur votre partie.\nPour choisir un personnage, cliquez sur la réaction correspondant au numéro du personnage choisit.")
+
+    message.channel.send({embed})
+    .then((msg) => {
+        for(let i = 0; i < 3; i++){
+            writePerso(msg, i);
+        }
+
+        msg.channel.send({embed: {
+            color: 0x00AE86,
+            title: "__**Personnage D**__",
+            fields: [{
+                name: "Nom",
+                value: perso.nom[3]
+              },
+              {
+                name: "Sexe",
+                value: perso.sexe[3]
+              },
+              {
+                name: "Age",
+                value: perso.age[3]
+              },
+              {
+                name: "Taille",
+                value: perso.taille[3]
+              },
+              {
+                name: "Poids",
+                value: perso.poids[3]
+              }
+            ]
+          }
+        })
+        .then(async function(mess) {
+            await mess.react('🇦');
+            await mess.react('🇧');
+            await mess.react('🇨');
+            await mess.react('🇩');
+        })
+    });
+}
+
+function writePerso(message, numPerso){
+
+    let i = "";
+
+    switch(numPerso){
+        case 0:
+            i = "A";
+            break;
+        case 1:
+            i = "B";
+            break;
+        case 2:
+            i = "C";
+            break;
+        case 3:
+            i = "D";
+            break;
+    }
+
+    message.channel.send({embed: {
+        color: 0x00AE86,
+        title: "__**Personnage " + i + "**__",
+        fields: [{
+            name: "Nom",
+            value: perso.nom[numPerso]
+          },
+          {
+            name: "Sexe",
+            value: perso.sexe[numPerso]
+          },
+          {
+            name: "Age",
+            value: perso.age[numPerso]
+          },
+          {
+            name: "Taille",
+            value: perso.taille[numPerso]
+          },
+          {
+            name: "Poids",
+            value: perso.poids[numPerso]
+          }
+        ]
+      }
+    });
 }
 
 client.login(config.token);
