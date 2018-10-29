@@ -35,7 +35,7 @@ let partJour = 0;
 
 client.on("ready", () => {
   	console.log(`Bot has started, with ${client.users.size} users, in ${client.channels.size} channels of ${client.guilds.size} guilds.`);
-  	client.user.setActivity(`manger des ventilateurs`);
+  	client.user.setActivity(`Briser des nuques`);
 });
 
 client.on("message", (message) => {
@@ -161,7 +161,7 @@ client.on("messageReactionAdd", (reaction, user) => {
                 numPerso = 3;
                 break;
         }
-        
+
         const partie = sfm.loadSave(user.id);
         const chanId = myBot.messageChannel(reaction.message, "personnage", partie);
 
@@ -276,7 +276,7 @@ function choixPerso(message){
         const fetched = await message.channel.fetchMessages();
         message.channel.bulkDelete(fetched);
     }
-    
+
     clear()
     .catch((err) => {
         console.log(err)
