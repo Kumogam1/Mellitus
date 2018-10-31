@@ -58,6 +58,7 @@ function initChannel(message, partie, rolePers, channelName, chanGrpId, config) 
 		// Place le channel textuel dans la catégorie de jeu
 		chan.setParent(chanGrpId)
 		.then((chan2) => {
+
 			chan2.overwritePermissions(message.guild.roles.find(role => {
 				if(role.name == '@everyone') {
 					return role;
@@ -68,6 +69,7 @@ function initChannel(message, partie, rolePers, channelName, chanGrpId, config) 
 				'CONNECT': false,
 				'WRITE': false,
 			});
+
 			chan2.overwritePermissions(message.guild.roles.find(role => {
 				if(role.name == rolePers) {
 					return role;
@@ -119,11 +121,11 @@ function bienvenue(message, config) {
 	const chanId = myBot.messageChannel(message, "hub", partie);
 
 	const embed = new Discord.RichEmbed()
-    .setColor(0x00AE86)
+    .setColor(15013890)
     .setTitle("Bienvenue dans Mellitus")
 
     .addField("Tutoriel", "Ceci est le tutoriel du jeu Mellitus.")
-    .addField("Debut", "Commencer la partie")
+    .addField("Commencer la partie", "✅")
 
     message.guild.channels.get(chanId).send({embed})
     .then(async function (mess) {

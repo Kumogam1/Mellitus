@@ -31,7 +31,6 @@ const emoteRepasS = ['🍔','🍰','🍨','🍕','🍖'];
 const nomRepasS = ['Manger un hamburger', 'Manger un gateau', 'Manger une glace', 'Manger une pizza', 'Manger de la viande'];
 
 const pseudoJ = 'Alain';
-let partJour = 0;
 
 client.on("ready", () => {
   	console.log(`Bot has started, with ${client.users.size} users, in ${client.channels.size} channels of ${client.guilds.size} guilds.`);
@@ -166,33 +165,43 @@ client.on("messageReactionAdd", (reaction, user) => {
         const chanId = myBot.messageChannel(reaction.message, "personnage", partie);
 
         reaction.message.guild.channels.get(chanId).send({embed: {
+            color: 15013890,
+            fields: [{
+                name: "Channel Personnage",
+                value: "Voici le channel personnage.\nC'est dans ce channel que vous pouvez voir les informations concernant votre personnage."
+              }
+            ]
+          }
+        }).then(() => {
+            reaction.message.guild.channels.get(chanId).send({embed: {
             color: 0x00AE86,
             title: "__**Personnage**__",
             fields: [{
                 name: "Nom",
                 value: perso.nom[numPerso]
-              },
-              {
+            },
+            {
                 name: "Sexe",
                 value: perso.sexe[numPerso]
-              },
-              {
+            },
+            {
                 name: "Age",
                 value: perso.age[numPerso]
-              },
-              {
+            },
+            {
                 name: "Taille",
                 value: perso.taille[numPerso]
-              },
-              {
+            },
+            {
                 name: "Poids",
                 value: perso.poids[numPerso]
-              }
-            ]
-          }
-        }).then(() => {
-            event.event(reaction.message, partie, tabNR, tabER);
+            }]}})
+            .then(() => {
+                event.event(reaction.message, partie, tabNR, tabER);
+            });
         });
+
+        
     }
 
     //Quand on choisi le repas
@@ -261,8 +270,8 @@ function text(message) {
     .setColor(0x00AE86)
     .setTitle("Bienvenue dans Mellitus")
 
-    .addField("Qu'est ce que Mellitus ?", "Mellitus est un jeu sérieux qui vous met dans la peau d'une personne diabétique. Votre but est de stabiliser votre niveau d'insuline jusqu'à la fin de la partie.")
-    .addField("Comment jouer ?", "La partie est divisée en jour et chaque jour est une suite de choix.")
+    .addField("Qu'est ce que Mellitus ?", "Mellitus est un jeu sérieux qui vous met dans la peau d'une personne diabétique.\nVotre but est de stabiliser votre niveau d'insuline jusqu'à la fin de la partie.")
+    .addField("Comment jouer ?", "La partie est divisée en jour et chaque jour est une suite de choix. A chaque choix, ses conséquences.\n Durant la partie, vous ferez vos choix de 2 façons différentes : sous forme de texte ou sous forme de boutons.")
     .addField("Lancer le tutoriel : ", "/start")
     .addField("Commande d'arrêt d'urgence : ", "/end")
 
