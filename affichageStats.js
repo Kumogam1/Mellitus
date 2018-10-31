@@ -16,12 +16,12 @@ const imgOpts = {
     height: 500,
 };
 
-exports.graphString = async function(bornMax, bornMin, nbLignes, tabDonnes) {
-  const equartBornes = bornMax - bornMin;
-  const tabValLigne = [];
-  let res = '';
-  const incr = Math.round(equartBornes / nbLignes);
+exports.graphString = function(bornMin, bornMax, tabDonnes, message) {
+  const tabValLigne = [bornMin, bornMax];
   /*
+  let res = '';
+  const equartBornes = bornMax - bornMin;
+  const incr = Math.round(equartBornes / nbLignes);
   for (let i = 0; i < nbLignes; i++) {
     tabValLigne.push(bornMin + incr * i);
   }
@@ -39,20 +39,32 @@ exports.graphString = async function(bornMax, bornMin, nbLignes, tabDonnes) {
     res = res + '\n';
   }
   */
-  // etyfyu
+
   const trace1 = {
-    x: tabValLigne,
     y: tabDonnes,
     type: 'scatter',
   };
-
-  const figure = { 'data': [trace1] };
+  const layout = {
+    showlegend: false,
+    xaxis: { // wip : nb jour?
+      title: 'Jour',
+      rangemode: 'tozero',
+      autorange: true,
+    },
+    yaxis: {
+      title: 'Taux',
+      range: tabValLigne,
+    },
+  };
+  const figure = { 'data': [trace1], 'layout':layout };
 
   plotly.getImage(figure, imgOpts, function(error, imageStream) {
       if (error) return console.log (error);
-
       const fileStream = fs.createWriteStream('1.png');
-      imageStream.pipe(fileStream);
+      const stream = imageStream.pipe(fileStream);
+      stream.on('finish', () =>{
+      message.channel.send('test', { files :['./1.png'] });
+    });
   });
 
 };
