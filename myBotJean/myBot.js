@@ -35,7 +35,7 @@ let partJour = 0;
 
 client.on("ready", () => {
   	console.log(`Bot has started, with ${client.users.size} users, in ${client.channels.size} channels of ${client.guilds.size} guilds.`);
-  	client.user.setActivity(`Briser des nuques`);
+  	client.user.setActivity(`Love people`);
 });
 
 client.on("message", (message) => {

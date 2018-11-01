@@ -1,12 +1,15 @@
 {
-  "chanGrp": "506524517191909406",
+  "chanGrp": "507567210164912167",
   "player": "357486231119986688",
-  "partJour": 0,
+  "partJour": 1,
   "numEvent": 0,
   "nbJour": 1,
   "numJour": 0,
   "insuline": 1,
-  "activite": [],
+  "activite": [
+    "Prendre une pomme",
+    "Faire un peu de musique"
+  ],
   "consequence": [],
   "poids": 0,
   "glycemie": 0
