@@ -1,5 +1,5 @@
 {
-  "chanGrp": "506489656825872386",
+  "chanGrp": "507560442927906817",
   "player": "357486231119986688",
   "partJour": 0,
   "numEvent": -1,
@@ -7,5 +7,7 @@
   "numJour": 0,
   "insuline": 0,
   "activite": [],
-  "consequence": []
+  "consequence": [],
+  "glycemie": -1,
+  "tabGlycemie": []
 }

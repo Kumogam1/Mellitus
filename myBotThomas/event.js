@@ -4,6 +4,7 @@ const myBot = require('./myBot.js');
 const event = require('./event.js');
 const finJeu = require('./finJeu.js')
 const insuline = require('./priseInsuline.js');
+const as = require('./affichageStats.js');
 
 const conseq = ['crampe', 'courbatures'];
 
@@ -41,7 +42,7 @@ exports.event = function event(message, partie, tabN, tabE){
 	                	fielText = "Chaque matin, vous devez faire votre prise d'insuline et vous pouvez choisir votre petit déjeuner et une activité matinale au choix.";
 	                    title(message, fieldTitle, fielText);
 	                    consequence(message, partie, tabN, tabE);
-	                    insuline.priseInsuline(message, partie, tabN, tabE);
+	                    eventInsu(message, partie);
 	                    break;
 	                case 1:
 	                    eventRepas(message, tabN, tabE);
@@ -59,7 +60,7 @@ exports.event = function event(message, partie, tabN, tabE){
 	                	title(message, fieldTitle, fielText);
 	                	//on va enlever
 	                	//consequence(message, partie, tabN, tabE);
-	        			insuline.priseInsuline(message, partie, tabN, tabE);
+	        			eventInsu(message, partie);
 	                    break;
 	                case 1:
 	                    eventRepas(message, tabN, tabE);
@@ -77,7 +78,7 @@ exports.event = function event(message, partie, tabN, tabE){
 	               		title(message, fieldTitle, fielText);
 	               		//on va enlever
 	               		//consequence(message, partie, tabN, tabE);
-	                    insuline.priseInsuline(message, partie, tabN, tabE);
+	                    eventInsu(message, partie);
 	                    break;
 	                case 1:
 	                    eventRepas(message, tabN, tabE);
@@ -123,6 +124,19 @@ function consequence(message, partie, tabN, tabE){
         //event.event(message, partie, tabN, tabE);
         //tabn et tabe sont ceux de la partie de la journee precedante
 	}
+}
+
+function eventInsu(message, partie){
+
+	partie.glycemie = (partie.glycemie + 30)%50;
+
+	partie.tabGlycemie.push(partie.glycemie);
+	sfm.save(message.author.id, partie);
+
+	as.graphString(0, 100, partie.tabGlycemie, message, partie)
+	.then(() => {
+		insuline.priseInsuline(message, partie);
+	});
 }
 
 function eventSport(message, tabN, tabE){
