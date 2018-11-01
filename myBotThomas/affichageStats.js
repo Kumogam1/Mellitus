@@ -6,27 +6,68 @@
 * tabDonnes : tab[int] : tableau contenant les donnes pour le graphique
 * res : string
 **/
-exports.graphString = function(bornMax, bornMin, nbLignes, tabDonnes, message) {
-  const equartBornes = bornMax - bornMin;
-  const tabValLigne = [];
+const plotly = require('plotly')('EdouardGU', 'QZcGQlBForcRLDGw5zTj');
+const fs = require('fs');
+const Discord = require("discord.js");
+const myBot = require('./myBot.js');
+
+
+const imgOpts = {
+    format: 'png',
+    width: 1000,
+    height: 500,
+};
+
+exports.graphString = async function(bornMin, bornMax, tabDonnes, message, partie) {
+  const tabValLigne = [bornMin, bornMax];
+  /*
   let res = '';
+  const equartBornes = bornMax - bornMin;
+  const incr = Math.round(equartBornes / nbLignes);
   for (let i = 0; i < nbLignes; i++) {
-    tabValLigne.push(bornMin + (Math.round(equartBornes / nbLignes) * i));
+    tabValLigne.push(bornMin + incr * i);
   }
   console.log(tabValLigne);
   for (let i = nbLignes - 1; i >= 0; i--) {
     res = res + '>' + tabValLigne[i] + '\t';
     tabDonnes.forEach(function(value) {
-      if (value >= tabValLigne[i]) {
+      if (Math.round(value / incr) == Math.round(tabValLigne[i] / incr)) {
         res = res + '1 ';
       }
       else {
-        res = res + '  ';
+        res = res + '0 ';
       }
     });
     res = res + '\n';
   }
-  console.log(res);
-  message.channel.send(res);
-  return res;
+  */
+
+  const trace1 = {
+    y: tabDonnes,
+    type: 'scatter',
+  };
+  const layout = {
+    showlegend: false,
+    xaxis: { // wip : nb jour?
+      title: "Prise d'insuline",
+      rangemode: 'tozero',
+      autorange: true,
+    },
+    yaxis: {
+      title: 'Taux de glycemie',
+      range: tabValLigne,
+    },
+  };
+  const figure = { 'data': [trace1], 'layout':layout };
+
+  const chanId = myBot.messageChannel(message, "informations", partie);
+
+  plotly.getImage(figure, imgOpts, function(error, imageStream) {
+      if (error) return console.log (error);
+      const fileStream = fs.createWriteStream('./' + partie.player + '.png');
+      const stream = imageStream.pipe(fileStream);
+      stream.on('finish', async function() {
+        await message.guild.channels.get(chanId).send({ files :['./' + partie.player + '.png'] });
+      });
+  });
 };

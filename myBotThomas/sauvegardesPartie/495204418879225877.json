@@ -1,5 +1,5 @@
 {
-  "chanGrp": "507139663891267584",
+  "chanGrp": "507574759689551883",
   "player": "448375998942019584",
   "partJour": 2,
   "numEvent": 0,
@@ -7,10 +7,16 @@
   "numJour": 0,
   "insuline": 1,
   "activite": [
-    "Prendre une pomme",
-    "Faire un peu de musique",
-    "Manger de la viande",
-    "Faire du bowling"
+    "rienM",
+    "Faire du vélo",
+    "rienM",
+    "rienA"
   ],
-  "consequence": []
+  "consequence": [],
+  "glycemie": 39,
+  "tabGlycemie": [
+    29,
+    9,
+    39
+  ]
 }

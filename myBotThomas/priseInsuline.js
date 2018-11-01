@@ -7,7 +7,7 @@ const config = require("./token.json");
 const client = new Discord.Client();
 client.login(config.token);
 
-exports.priseInsuline = function priseInsuline(message, partie, tabN, tabE) {
+exports.priseInsuline = function priseInsuline(message, partie) {
 
   let insuline = '-1';
 
