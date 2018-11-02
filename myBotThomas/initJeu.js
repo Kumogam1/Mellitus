@@ -105,7 +105,7 @@ function initChannelGrp(message, partie, channelGrpName, rolePers, config) {
     	partie.insuline = 0;
 		partie.activite = [];
 		partie.consequence = [];
-		partie.glycemie = -1;
+		partie.glycemie = 0;
 		partie.tabGlycemie = [];
 		initChannel(message, partie, rolePers, 'Hub', res, config);
 		initChannel(message, partie, rolePers, 'Informations', res, config);
