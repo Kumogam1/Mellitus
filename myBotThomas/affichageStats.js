@@ -46,6 +46,7 @@ exports.graphString = async function(bornMin, bornMax, tabDonnes, message, parti
     y: tabDonnes,
     type: 'scatter',
   };
+  
   const layout = {
     showlegend: false,
     xaxis: { // wip : nb jour?
@@ -62,12 +63,31 @@ exports.graphString = async function(bornMin, bornMax, tabDonnes, message, parti
 
   const chanId = myBot.messageChannel(message, "informations", partie);
 
+  async function clear() {
+    //message.delete();
+    const fetched = await message.guild.channels.get(chanId).fetchMessages({limit: 2});
+    message.guild.channels.get(chanId).bulkDelete(fetched);
+  }
+  
+  if(partie.numJour != 0 || partie.partJour != 0){
+    clear()
+    .catch((err) => {
+      console.log(err)
+    });
+  }
+
+
+  const embed = new Discord.RichEmbed()
+  .setColor(0x00AE86)
+  .addField("**Taux de glycémie**", "Taux de glycemie : " + partie.glycemie + " g/L\nIntervalle à atteindre : entre 0.7 g/L et 1.3 g/L")
+
   plotly.getImage(figure, imgOpts, function(error, imageStream) {
       if (error) return console.log (error);
       const fileStream = fs.createWriteStream('./' + partie.player + '.png');
       const stream = imageStream.pipe(fileStream);
       stream.on('finish', async function() {
         await message.guild.channels.get(chanId).send({ files :['./' + partie.player + '.png'] });
+        await message.guild.channels.get(chanId).send({embed});
       });
   });
 };

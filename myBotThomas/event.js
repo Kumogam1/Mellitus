@@ -128,12 +128,12 @@ function consequence(message, partie, tabN, tabE){
 
 function eventInsu(message, partie){
 
-	partie.glycemie = (partie.glycemie + 30)%50;
+	partie.glycemie = Math.round(((partie.glycemie + 2.7)%4.5)*10)/10;
 
 	partie.tabGlycemie.push(partie.glycemie);
 	sfm.save(message.author.id, partie);
 
-	as.graphString(0, 100, partie.tabGlycemie, message, partie)
+	as.graphString(0, 5, partie.tabGlycemie, message, partie)
 	.then(() => {
 		insuline.priseInsuline(message, partie);
 	});
