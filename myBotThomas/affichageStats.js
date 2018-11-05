@@ -8,7 +8,7 @@
 **/
 const plotly = require('plotly')('EdouardGU', 'QZcGQlBForcRLDGw5zTj');
 const fs = require('fs');
-const Discord = require("discord.js");
+const Discord = require('discord.js');
 const myBot = require('./myBot.js');
 
 
@@ -41,16 +41,46 @@ exports.graphString = async function(bornMin, bornMax, tabDonnes, message, parti
     res = res + '\n';
   }
   */
-
+  let jour;
+  const tabJour = ['matin'];
+  if(partie.partJour > 0) {
+    tabJour.push('midi');
+    jour = 'midi';
+    if(partie.partJour == 2) {
+      jour = 'soir';
+      tabJour.push('soir');
+    }
+  }
   const trace1 = {
+    x: tabJour,
     y: tabDonnes,
     type: 'scatter',
   };
-  
+
+  const trace2 = {
+    x: ['matin', jour],
+    y: [1.3, 1.3],
+    mode: 'lines',
+    type: 'scatter',
+    line: {
+      color: '#05ff00',
+    },
+  };
+
+  const trace3 = {
+    x: ['matin', jour],
+    y: [0.7, 0.7],
+    fill: 'tonexty',
+    mode: 'lines',
+    type: 'scatter',
+    line: {
+      color: '#05ff00',
+    },
+  };
   const layout = {
     showlegend: false,
-    xaxis: { // wip : nb jour?
-      title: "Prise d'insuline",
+    xaxis: {
+      title: 'Periodes',
       rangemode: 'tozero',
       autorange: true,
     },
@@ -59,27 +89,27 @@ exports.graphString = async function(bornMin, bornMax, tabDonnes, message, parti
       range: tabValLigne,
     },
   };
-  const figure = { 'data': [trace1], 'layout':layout };
+  const figure = { 'data': [trace1, trace2, trace3], 'layout':layout };
 
-  const chanId = myBot.messageChannel(message, "informations", partie);
+  const chanId = myBot.messageChannel(message, 'informations', partie);
 
   async function clear() {
-    //message.delete();
-    const fetched = await message.guild.channels.get(chanId).fetchMessages({limit: 2});
+    // message.delete();
+    const fetched = await message.guild.channels.get(chanId).fetchMessages({ limit: 2 });
     message.guild.channels.get(chanId).bulkDelete(fetched);
   }
-  
-  if(partie.numJour != 0 || partie.partJour != 0){
+
+  if(partie.numJour != 0 || partie.partJour != 0) {
     clear()
     .catch((err) => {
-      console.log(err)
+      console.log(err);
     });
   }
 
 
   const embed = new Discord.RichEmbed()
   .setColor(0x00AE86)
-  .addField("**Taux de glycémie**", "Taux de glycemie : " + partie.glycemie + " g/L\nIntervalle à atteindre : entre 0.7 g/L et 1.3 g/L")
+  .addField('**Taux de glycémie**', 'Taux de glycemie : ' + partie.glycemie + ' g/L\nIntervalle à atteindre : entre 0.7 g/L et 1.3 g/L');
 
   plotly.getImage(figure, imgOpts, function(error, imageStream) {
       if (error) return console.log (error);
@@ -87,7 +117,7 @@ exports.graphString = async function(bornMin, bornMax, tabDonnes, message, parti
       const stream = imageStream.pipe(fileStream);
       stream.on('finish', async function() {
         await message.guild.channels.get(chanId).send({ files :['./' + partie.player + '.png'] });
-        await message.guild.channels.get(chanId).send({embed});
+        await message.guild.channels.get(chanId).send({ embed });
       });
   });
 };

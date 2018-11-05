@@ -30,6 +30,13 @@ client.on("ready", () => {
   	client.user.setActivity(`manger des ventilateurs`);
 });
 
+client.on('error', error => {
+  const errorTime = new Date().toUTCString();
+  const errorLog = errorTime + ' : The server lost connexion\n \n';
+  console.log(errorLog);
+  throw error;
+});
+
 client.on("message", (message) => {
 
 	if (!message.content.startsWith(config.prefix) || message.author.bot) return;
