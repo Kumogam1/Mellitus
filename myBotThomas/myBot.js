@@ -37,6 +37,13 @@ client.on("ready", () => {
   	client.user.setActivity(`manger des ventilateurs`);
 });
 
+client.on('error', error => {
+  const errorTime = new Date().toUTCString();
+  const errorLog = errorTime + ' : The server lost connexion\n \n';
+  console.log(errorLog);
+  throw error;
+});
+
 client.on("message", (message) => {
 
 	if (!message.content.startsWith(config.prefix) || message.author.bot) return;
@@ -161,7 +168,7 @@ client.on("messageReactionAdd", (reaction, user) => {
                 numPerso = 3;
                 break;
         }
-        
+
         const partie = sfm.loadSave(user.id);
         const chanId = myBot.messageChannel(reaction.message, "personnage", partie);
 
@@ -294,7 +301,7 @@ function choixPerso(message){
         const fetched = await message.channel.fetchMessages();
         message.channel.bulkDelete(fetched);
     }
-    
+
     clear()
     .catch((err) => {
         console.log(err)
