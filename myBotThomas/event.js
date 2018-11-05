@@ -9,9 +9,9 @@ const as = require('./affichageStats.js');
 const conseq = ['crampe', 'courbatures'];
 
 //tabn et tabe sont ceux de la partie de la journee precedante
-	
 
-exports.event = function event(message, partie, tabN, tabE){
+
+exports.event = function event(message, partie, tabN, tabE) {
 
     let fieldTitle = "";
     let fielText = "";
@@ -21,7 +21,7 @@ exports.event = function event(message, partie, tabN, tabE){
         const fetched = await message.channel.fetchMessages();
         message.channel.bulkDelete(fetched);
     }
-    
+
     clear()
     .catch((err) => {
     	console.log(err)
@@ -94,7 +94,7 @@ exports.event = function event(message, partie, tabN, tabE){
     }
     else {
     	eventFin(message);
-    } 
+    }
 };
 
 function consequence(message, partie, tabN, tabE){

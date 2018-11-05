@@ -99,26 +99,17 @@ function initChannelGrp(message, partie, channelGrpName, rolePers, config) {
 		res = chanGrp.id;
 		partie.chanGrp = chanGrp.id;
 		partie.player = message.author.id;
-<<<<<<< HEAD
-<<<<<<< HEAD
 		partie.partJour = 0;
 		partie.poids = 0;
 		partie.glycemie = 0;
-=======
-=======
 		partie.partJour = 0;
 		partie.numJour = 0;
-    	partie.numEvent = -1;
-    	partie.insuline = 0;
->>>>>>> 200c2004bd07aaaf3859c1fc235de87a165adaa0
+  	partie.numEvent = -1;
+  	partie.insuline = 0;
 		partie.activite = [];
 		partie.consequence = [];
-<<<<<<< HEAD
->>>>>>> 1798c246493b7de548603f51c0b67ba49c76ee00
-=======
 		partie.glycemie = 0;
 		partie.tabGlycemie = [];
->>>>>>> f239a7530b2ead3e96e4389e3904285b739e62e4
 		initChannel(message, partie, rolePers, 'Hub', res, config);
 		initChannel(message, partie, rolePers, 'Informations', res, config);
 		initChannel(message, partie, rolePers, 'Personnage', res, config);
