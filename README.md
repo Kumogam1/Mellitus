@@ -1,41 +1,13 @@
-//Temporaire
+**Mellitus**
 
-But du jeu :
+*Mellitus*, se rapporte Ã  un jeu considÃ©rÃ© comme un serious game. Ce serious game est destinÃ© Ã  des personnes atteintes de diabÃ¨te, celui de type 2 principalement. 
 
-Le jeu est une simulation de vie d'un diabétique.
-Le but du jeu est de faire comprendre aux joueurs non diabétiques la difficulté de la vie d'un diabétique.
-Pour les joueurs diabétiques, le jeu leur apprend comment utiliser leur traitement.
-Le joueur incarne un diabétique dans sa vie de tous les jours.
-Chaque jour, il pourra effectuer des actions qui influeront sur sa santé.
-En fin de journée, il aura accés aux informations concernant son personnage et devra prendre une dose d'insuline.
+Jouant la consience du personnage choisi ou crÃ©Ã©, *Mellitus* a pour but de vous apporter une aide, afin de vous apprendre de maniÃ¨re assez ludique comment gÃ©rer votre taux dâ€™insuline, tout en gardant le cÃ´tÃ© serious game. 
+De plus, de nombreux Ã©vÃ©nements vont apparaÃ®tre lors de la partie afin de dÃ©velopper votre adaptation aux circonstances. En fin de journÃ©e, vous aurez accÃ©s aux informations concernant votre personnage ainsi qu'un rÃ©capitulatif de votre journÃ©e.
 
-Gameplay :
+**TÃ©lÃ©chargement**
 
--> Lancement de la partie
+Lien vers le serveur âž¡ï¸ https://discord.gg/WuvrdZH
 
--> Caractéristiques personnage (age, poids, taille, sexe, ...)
+**Screenshots**
 
-Le poids influe sur le taux d'insuline à prendre
-
--> Durée de partie (en jours)
-
----> Jour n
-
--> Choix du jour : actions (sport, manger, ...)
-
--> Recapitulatif des evenements
-
--> Choix du soir : dose insuline
-
--> Conséquences des actions du jour précedant : hausse/baisse du taux de glycemie, ...
-
-Etat : stress, envie de faire pipi, ...
-
-Action :	- Chercher à manger	-> Choix de la nourriture parmi une liste
-			- Chercher à boire	-> Choix de la boisson parmi une liste
-			- Faire du sport	-> Choix du sport
-			- (Soir) Aller en boite
-
-Niveau de glycemie :	- Hypoglycemie
-						- Hyperglycemie
-//
