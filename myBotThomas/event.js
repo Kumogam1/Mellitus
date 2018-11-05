@@ -4,6 +4,7 @@ const myBot = require('./myBot.js');
 const event = require('./event.js');
 const finJeu = require('./finJeu.js')
 const insuline = require('./priseInsuline.js');
+const as = require('./affichageStats.js');
 
 const conseq = ['crampe', 'courbatures'];
 
@@ -38,10 +39,10 @@ exports.event = function event(message, partie, tabN, tabE){
 	            switch(partie.numEvent){
 	                case 0:
 	                	fieldTitle = "C'est le matin!";
-	                	fielText = "Chaque matin, vous pouvez choisir votre petit déjeuner, faire une activité matinale au choix et prendre votre prise d'insuline.";
+	                	fielText = "Chaque matin, vous devez faire votre prise d'insuline et vous pouvez choisir votre petit déjeuner et une activité matinale au choix.";
 	                    title(message, fieldTitle, fielText);
 	                    consequence(message, partie, tabN, tabE);
-	                    insuline.priseInsuline(message, partie, tabN, tabE);
+	                    eventInsu(message, partie);
 	                    break;
 	                case 1:
 	                    eventRepas(message, tabN, tabE);
@@ -55,11 +56,11 @@ exports.event = function event(message, partie, tabN, tabE){
 	            switch(partie.numEvent){
 	                case 0:
 	                	fieldTitle = "C'est l'après-midi!";
-	                	fielText = "Tous les après-midi, vous pouvez choisir ce que vous allez manger et si vous voulez faire une activité.";
+	                	fielText = "Tous les après-midi, vous devez faire votre prise d'insuline et vous pouvez choisir votre repas et une activité.";
 	                	title(message, fieldTitle, fielText);
 	                	//on va enlever
 	                	//consequence(message, partie, tabN, tabE);
-	        			insuline.priseInsuline(message, partie, tabN, tabE);
+	        			eventInsu(message, partie);
 	                    break;
 	                case 1:
 	                    eventRepas(message, tabN, tabE);
@@ -73,11 +74,11 @@ exports.event = function event(message, partie, tabN, tabE){
 	            switch(partie.numEvent){
 	                case 0:
 	                	fieldTitle = "C'est le soir!";
-	               		fielText = "Tous les soirs, vous pouvez diner et sortir avec des amis.";
+	               		fielText = "Tous les soirs, vous devez faire votre prise d'insuline et vous pouvez choisir votre diner et si vous sortez avec des amis.";
 	               		title(message, fieldTitle, fielText);
 	               		//on va enlever
 	               		//consequence(message, partie, tabN, tabE);
-	                    insuline.priseInsuline(message, partie, tabN, tabE);
+	                    eventInsu(message, partie);
 	                    break;
 	                case 1:
 	                    eventRepas(message, tabN, tabE);
@@ -125,6 +126,19 @@ function consequence(message, partie, tabN, tabE){
 	}
 }
 
+function eventInsu(message, partie){
+
+	partie.glycemie = Math.round(((partie.glycemie + 2.7)%4.5)*10)/10;
+
+	partie.tabGlycemie.push(partie.glycemie);
+	sfm.save(message.author.id, partie);
+
+	as.graphString(0, 5, partie.tabGlycemie, message, partie)
+	.then(() => {
+		insuline.priseInsuline(message, partie);
+	});
+}
+
 function eventSport(message, tabN, tabE){
 
 	var rand1 = myBot.getRandomInt(tabN.length);
@@ -143,7 +157,7 @@ function eventSport(message, tabN, tabE){
 
 	const embed = new Discord.RichEmbed()
     .setColor(0x00AE86)
-    .setTitle("Que voulez-vous faire ?")
+    .setTitle("**J'ai le temps de faire une activité, qu'est ce que je fais ?**")
 
     .addField(tabN[rand1] + " : ", tabE[rand1])
     .addField(tabN[rand2] + " : ", tabE[rand2])
@@ -180,7 +194,7 @@ function eventRepas(message, tabN, tabE){
 
 	const embed = new Discord.RichEmbed()
     .setColor(0x00AE86)
-    .setTitle("Que voulez-vous manger ?")
+    .setTitle("**J'ai faim !**")
 
     .addField(tabN[rand1] + " : ", tabE[rand1])
     .addField(tabN[rand2] + " : ", tabE[rand2])
@@ -201,7 +215,7 @@ function eventRepas(message, tabN, tabE){
 
 function eventFin(message){
 	const embed = new Discord.RichEmbed()
-    .setColor(0x00AE86)
+    .setColor(15013890)
 
     .addField("C'est la fin du tutoriel", "J'espère que vous avez apprécié la partie.")
     .addField("Pour quitter la partie, tapez : ", "/end")
@@ -211,7 +225,7 @@ function eventFin(message){
 
 function title(message, title, text){
 	const embed = new Discord.RichEmbed()
-    .setColor(0x00AE86)
+    .setColor(15013890)
 
     .addField(title, text)
 

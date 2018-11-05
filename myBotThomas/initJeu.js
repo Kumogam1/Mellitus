@@ -58,6 +58,7 @@ function initChannel(message, partie, rolePers, channelName, chanGrpId, config) 
 		// Place le channel textuel dans la catégorie de jeu
 		chan.setParent(chanGrpId)
 		.then((chan2) => {
+
 			chan2.overwritePermissions(message.guild.roles.find(role => {
 				if(role.name == '@everyone') {
 					return role;
@@ -68,6 +69,7 @@ function initChannel(message, partie, rolePers, channelName, chanGrpId, config) 
 				'CONNECT': false,
 				'WRITE': false,
 			});
+
 			chan2.overwritePermissions(message.guild.roles.find(role => {
 				if(role.name == rolePers) {
 					return role;
@@ -111,7 +113,12 @@ function initChannelGrp(message, partie, channelGrpName, rolePers, config) {
 >>>>>>> 200c2004bd07aaaf3859c1fc235de87a165adaa0
 		partie.activite = [];
 		partie.consequence = [];
+<<<<<<< HEAD
 >>>>>>> 1798c246493b7de548603f51c0b67ba49c76ee00
+=======
+		partie.glycemie = 0;
+		partie.tabGlycemie = [];
+>>>>>>> f239a7530b2ead3e96e4389e3904285b739e62e4
 		initChannel(message, partie, rolePers, 'Hub', res, config);
 		initChannel(message, partie, rolePers, 'Informations', res, config);
 		initChannel(message, partie, rolePers, 'Personnage', res, config);
@@ -128,11 +135,11 @@ function bienvenue(message, config) {
 	const chanId = myBot.messageChannel(message, "hub", partie);
 
 	const embed = new Discord.RichEmbed()
-    .setColor(0x00AE86)
+    .setColor(15013890)
     .setTitle("Bienvenue dans Mellitus")
 
     .addField("Tutoriel", "Ceci est le tutoriel du jeu Mellitus.")
-    .addField("Debut", "Commencer la partie")
+    .addField("Commencer la partie", "✅")
 
     message.guild.channels.get(chanId).send({embed})
     .then(async function (mess) {
