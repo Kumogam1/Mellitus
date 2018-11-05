@@ -7,7 +7,7 @@ De plus, de nombreux événements vont apparaître lors de la partie afin de dé
 
 **Téléchargement**
 
-Lien vers le téléchargement ➡️ https://discord.gg/WuvrdZH
+Lien vers le serveur ➡️ https://discord.gg/WuvrdZH
 
 **Screenshots**
 
