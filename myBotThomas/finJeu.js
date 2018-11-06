@@ -1,7 +1,10 @@
 const sfm = require('./saveFileManagement.js');
 const fj = require('./finJeu.js');
 
-// Fonctions pour terminer la partie
+/**
+* Fonction terminant la partie
+* @param {string} message - Message discord
+**/
 exports.finJeu = function finJeu(message) {
 
 	if(message.member.roles.some(r=>['Joueur'].includes(r.name))) {
@@ -17,6 +20,10 @@ exports.finJeu = function finJeu(message) {
 	}
 };
 
+/**
+* Fonction enlevant les roles de l'utilisateur
+* @param {string} message - Message discord
+**/
 function deletRole(message) {
 	const suppRoleJoueur = message.guild.roles.find(role => {
 		if(role.name == 'Joueur') {
@@ -35,6 +42,10 @@ function deletRole(message) {
 	});
 }
 
+/**
+* Fonction supprimant les channels de la partie de l'utilisateur
+* @param {string} message - Message discord
+**/
 function deletChannel(message) {
 
 	const partie = sfm.loadSave(message.author.id);
@@ -59,7 +70,12 @@ function deletChannel(message) {
   );
 }
 
-// Fonction qui liste les channels de la partie + le group de channels
+/**
+* Fonction listant les channels de la partie de l'utilisateur
+* @param {string} message - Message discord
+* @param {Object} partie - Objet json de la partie
+* @param {string} partie.chanGrp - Identifiant du channel catégorie
+**/
 exports.listChan = function listChan(message, partie) {
 
 	// Creation d'une liste des channels que le joueur peut voir
@@ -74,6 +90,10 @@ exports.listChan = function listChan(message, partie) {
 	return listedChannels;
 };
 
+/**
+* Fonction initialisant les channels et les caractéristique de l'utilisateur
+* @param {string} user - Message discord
+**/
 exports.initStat = function initStat(user) {
     const partie = {};
 
