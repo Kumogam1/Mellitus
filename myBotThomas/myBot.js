@@ -58,7 +58,7 @@ client.on("message", (message) => {
         	case "start":
                 partie.nbJour = 1;
                 sfm.save(message.author.id, partie);
-        		initJeu.initJeu(message, client, config);
+        		initJeu.initJeu(message, client);
         		break;
         	case "end":
         		finJeu.finJeu(message);
@@ -247,7 +247,13 @@ client.on("guildMemberRemove", (member) => {
     sfm.deleteSave(member.id);
 });
 
-//Fonction qui cherche un channel
+/**
+* Fonction qui renvoie l'id du channel qui a pour nom chanName
+* @param {string} message - Message discord
+* @param {string} chanName - Nom du channel dans lequel le message sera envoyé
+* @param {Object} partie - Objet json de la partie
+* @returns {number} Identifiant du channel
+**/
 exports.messageChannel = function messageChannel(message, chanName, partie){
 
 	const listChan2 = finJeu.listChan(message, partie);
@@ -267,17 +273,32 @@ exports.messageChannel = function messageChannel(message, chanName, partie){
     return id;  //----------Modifié----------//
 };
 
+/**
+* Fonction qui ajoute une activité à la liste des activités de l'utilisateur
+* @param {Snowflake} userId - Identifiant de l'utilisateur
+* @param {string} text - Activité qui sera mis dans la liste
+* @param {Object} partie - Objet json de la partie
+* @param {string[]} partie.activite - Objet json de la partie
+**/
 function writeAct(userId, text, partie){
     partie.activite.push(text);
     sfm.save(userId, partie);
 }
 
-//Fonction random
+/**
+* Fonction qui choisit un nombre aléatoire entre 0 et max
+* @param {number} max - Borne supérieur
+* @returns {number} Identifiant du channel
+**/
 exports.getRandomInt = function getRandomInt(max){
     var x = Math.floor(Math.random() * Math.floor(max));
     return x;
 };
 
+/**
+* Fonction qui écrit le texte explicatif sur le serveur Discord
+* @param {string} message - Message discord
+**/
 function text(message) {
 
     message.delete();
@@ -294,6 +315,10 @@ function text(message) {
     message.channel.send({embed});
 }
 
+/**
+* Fonction qui présente les personnages prédéfinis
+* @param {string} message - Message discord
+**/
 function choixPerso(message){
 
     async function clear() {
@@ -354,6 +379,11 @@ function choixPerso(message){
     });
 }
 
+/**
+* Fonction qui écrit le texte d'un personnage
+* @param {string} message - Message discord
+* @param {string} numPerso - Numéro du personnage
+**/
 function writePerso(message, numPerso){
 
     let i = "";

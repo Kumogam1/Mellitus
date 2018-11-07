@@ -7,10 +7,19 @@ const insuline = require('./priseInsuline.js');
 const as = require('./affichageStats.js');
 
 const conseq = ['crampe', 'courbatures'];
-
-//tabn et tabe sont ceux de la partie de la journee precedante
 	
-
+/**
+* Fonction qui lance l'évenement correspondant en fonction de la situation
+* @param {string} message - Message discord
+* @param {Object} partie - Objet json de la partie
+* @param {number} partie.nbJour - Nombre de jour de la partie
+* @param {number} partie.numJour - Numéro du jour actuel
+* @param {number} partie.partJour - Partie de la journée actuelle
+* @param {number} partie.numEvent - Evenement actuel
+* @param {Snowflake} partie.player - Identifiant de l'utilisateur
+* @param {string[]} tabN - Tableau des noms d'actions
+* @param {string[]} tabE - Tableau des emojis d'actions
+**/
 exports.event = function event(message, partie, tabN, tabE){
 
     let fieldTitle = "";
@@ -97,6 +106,7 @@ exports.event = function event(message, partie, tabN, tabE){
     } 
 };
 
+//Modification
 function consequence(message, partie, tabN, tabE){
 	let x = 0;
 
@@ -126,6 +136,13 @@ function consequence(message, partie, tabN, tabE){
 	}
 }
 
+/**
+* Fonction qui pour chaque prise d'insuline sauvegarde le nouveau taux de glycemie
+* @param {string} message - Message discord
+* @param {Object} partie - Objet json de la partie
+* @param {number} partie.glycemie - Taux de glycemie actuel de l'utilisateur
+* @param {number[]} partie.tabGlycemie - Tableau de tous les taux de glycémie du joueur
+**/
 function eventInsu(message, partie){
 
 	partie.glycemie = Math.round(((partie.glycemie + 2.7)%4.5)*10)/10;
@@ -139,6 +156,12 @@ function eventInsu(message, partie){
 	});
 }
 
+/**
+* Fonction qui met en place un choix de plusieurs activités 
+* @param {string} message - Message discord
+* @param {string[]} tabN - Tableau des noms d'activités
+* @param {string[]} tabE - Tableau des emojis d'activités
+**/
 function eventSport(message, tabN, tabE){
 
 	var rand1 = myBot.getRandomInt(tabN.length);
@@ -176,6 +199,12 @@ function eventSport(message, tabN, tabE){
     });
 }
 
+/**
+* Fonction qui met en place un choix de plusieurs repas 
+* @param {string} message - Message discord
+* @param {string[]} tabN - Tableau des noms de repas
+* @param {string[]} tabE - Tableau des emojis de repas
+**/
 function eventRepas(message, tabN, tabE){
 
 	var rand1 = myBot.getRandomInt(tabN.length);
@@ -213,6 +242,10 @@ function eventRepas(message, tabN, tabE){
     });
 }
 
+/**
+* Fonction qui écrit le message de fin de partie
+* @param {string} message - Message discord
+**/
 function eventFin(message){
 	const embed = new Discord.RichEmbed()
     .setColor(15013890)
@@ -223,6 +256,12 @@ function eventFin(message){
     message.channel.send({embed});
 }
 
+/**
+* Fonction qui écrit un message expliquant la partie de la journée
+* @param {string} message - Message discord
+* @param {string} title - Titre du message
+* @param {string} text - Texte du message
+**/
 function title(message, title, text){
 	const embed = new Discord.RichEmbed()
     .setColor(15013890)

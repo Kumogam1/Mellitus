@@ -1,16 +1,16 @@
 {
-  "chanGrp": "507934483241107485",
-  "player": "448375998942019584",
+  "chanGrp": "508605050554417158",
+  "player": "234674134334963712",
   "partJour": 2,
   "numEvent": 0,
   "nbJour": 1,
   "numJour": 0,
   "insuline": 1,
   "activite": [
-    "Prendre un croissant",
-    "Faire une partie de jeux videos",
-    "Manger une glace",
-    "Faire du foot"
+    "Prendre une pomme",
+    "Faire un peu de musique",
+    "rienM",
+    "rienA"
   ],
   "consequence": [],
   "glycemie": 3.6,
