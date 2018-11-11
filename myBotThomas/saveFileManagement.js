@@ -1,8 +1,8 @@
 const fs = require('fs');
 
 /**
-* loadSave : function pour recuperer l'ojet de sauvegarde depuis le lireFichier
-* userId : id du joueur
+* Fonction pour recuperer l'objet de sauvegarde depuis le fichier
+* @param {Snowflake} userId - id du joueur
 **/
 exports.loadSave = function loadSave(userId) {
   let save = fs.readFileSync('./sauvegardesPartie/' + userId + '.json');
@@ -11,9 +11,9 @@ exports.loadSave = function loadSave(userId) {
 };
 
 /**
-* save : function pour enregister la sauvegarde modifiée
-* userId : id du joueur
-* partie : objet json de la partie
+* Fonction pour enregistrer la sauvegarde modifiée
+* @param {Snowflake} userId - id du joueur
+* @param {Object} partie - objet json de la partie
 **/
 exports.save = function save(userId, partie) {
   const fileName = './sauvegardesPartie/' + userId + '.json';
@@ -22,8 +22,8 @@ exports.save = function save(userId, partie) {
 
 
 /**
-* deleteSave : supprime un fichier de sauvegarde
-* userId : id du Joueur
+* Fonction pour supprimer un fichier de sauvegarde
+* @param {Snowflake} userId - id du joueur
 **/
 exports.deleteSave = function deleteSave(userId) {
   fs.unlinkSync('./sauvegardesPartie/' + userId + '.json');

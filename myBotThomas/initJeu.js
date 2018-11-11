@@ -2,8 +2,12 @@ const Discord = require('discord.js');
 const sfm = require('./saveFileManagement.js');
 const myBot = require('./myBot.js');
 
-// Fonctions pour débuter la partie
-exports.initJeu = function initJeu(message, client, config) {
+/**
+* Fonction installant la partie
+* @param {string} message - Message discord
+* @param {Client} client - Le Client utilisé pour le jeu
+**/
+exports.initJeu = function initJeu(message, client) {
 
 	if(!message.member.roles.some(r=>['Joueur'].includes(r.name))) {
 
@@ -13,7 +17,7 @@ exports.initJeu = function initJeu(message, client, config) {
 		const eventName = 'Joueur';
 		const rolePers = initRole(message, eventName, client);
 
-		initChannelGrp(message, partie, message.author.username, rolePers, config);
+		initChannelGrp(message, partie, message.author.username, rolePers);
 
 		message.delete();
 		message.channel.send(message.author.username + ' a lancé une partie !');
@@ -24,6 +28,13 @@ exports.initJeu = function initJeu(message, client, config) {
 	}
 };
 
+/**
+* Fonction créant un role joueur à l'utilisateur
+* @param {string} message - Message discord
+* @param {string} eventName - Prefix du role de l'utilisateur
+* @param {Client} client - Le Client utilisé pour le jeu
+* @returns {string} Nom du role joueur de l'utilisateur
+**/
 function initRole(message, eventName, client) {
 
 	const nomRole = eventName + '-' + message.author.username;
@@ -48,7 +59,16 @@ function initRole(message, eventName, client) {
 	return nomRole;
 }
 
-function initChannel(message, partie, rolePers, channelName, chanGrpId, config) {
+/**
+* Fonction créant un channel visible que pour l'utilisateur
+* @param {string} message - Message discord
+* @param {Object} partie - Objet json de la partie
+* @param {string} rolePers - Nom du role joueur de l'utilisateur
+* @param {string} channelName - Nom du channel à créer
+* @param {Snowflake} chanGrpId - Identifiant du channel catégorie
+* @returns {string} Texte vérifiant l'ajout
+**/
+function initChannel(message, partie, rolePers, channelName, chanGrpId) {
 
 	const server = message.guild;
 	// Creation d'un channel textuel
@@ -83,7 +103,7 @@ function initChannel(message, partie, rolePers, channelName, chanGrpId, config) 
 			partie[channelName] = chan2.id;
 
 			if(channelName == 'Hub')
-				bienvenue(message, config);
+				bienvenue(message);
 		}
 		).catch(console.error);
 	}).catch(console.error);
@@ -91,7 +111,25 @@ function initChannel(message, partie, rolePers, channelName, chanGrpId, config) 
 	return '```Added```';
 }
 
-function initChannelGrp(message, partie, channelGrpName, rolePers, config) {
+/**
+* Fonction initialisant les channels et les caractéristique de l'utilisateur
+* @param {string} message - Message discord
+* @param {Object} partie - Objet json de la partie
+* @param {Snowflake} partie.chanGrp - Identifiant du channel catégorie
+* @param {Snowflake} partie.player - Identifiant de l'utilisateur
+* @param {number} partie.partJour - Partie de la journée
+* @param {number} partie.numJour - Numéro du jour
+* @param {number} partie.numEvent - Numéro de l'évenement
+* @param {number} partie.insuline - Activateur de la prise d'insuline
+* @param {string[]} partie.activite - Liste des actions faites par l'utilisateur
+* @param {string[]} partie.consequence - Liste des consequences de l'utilisateur
+* @param {number} partie.glycemie - Taux de glycémie de l'utilisateur
+* @param {number[]} partie.tabGlycemie - Tableau de tous les taux de glycémie de l'utilisateur
+* @param {string} channelGrpName - Nom du channel catégorie
+* @param {string} rolePers - Nom du role joueur de l'utilisateur
+* @returns {Snowflake} Identifiant du channel catégorie
+**/
+function initChannelGrp(message, partie, channelGrpName, rolePers) {
 	const server = message.guild;
 	let res = '';
 	server.createChannel(channelGrpName, 'category')
@@ -107,16 +145,20 @@ function initChannelGrp(message, partie, channelGrpName, rolePers, config) {
 		partie.consequence = [];
 		partie.glycemie = 0;
 		partie.tabGlycemie = [];
-		initChannel(message, partie, rolePers, 'Hub', res, config);
-		initChannel(message, partie, rolePers, 'Informations', res, config);
-		initChannel(message, partie, rolePers, 'Personnage', res, config);
+		initChannel(message, partie, rolePers, 'Hub', res);
+		initChannel(message, partie, rolePers, 'Informations', res);
+		initChannel(message, partie, rolePers, 'Personnage', res);
 		sfm.save(message.author.id, partie);
 	})
 	.catch(console.error);
 	return res;
 }
 
-function bienvenue(message, config) {
+/**
+* Fonction qui écrit le message de lancement de partie
+* @param {string} message - Message discord
+**/
+function bienvenue(message) {
 
 	const partie = sfm.loadSave(message.author.id);
 
