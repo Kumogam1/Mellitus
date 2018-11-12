@@ -1,7 +1,7 @@
 let state = 1;
 let message;
 let client;
-let tab = [];
+const tab = [];
 
 exports.creerPerso = function(mess, Discord, clt) {
   /* const embed = new Discord.RichEmbed()
@@ -29,12 +29,12 @@ function genre() {
     if(user.bot) return;
     switch(reaction.emoji.name) {
       case '🚹':
-        tab.push('homme');
+        tab.push('Homme');
         reaction.message.delete();
         nomPrenom();
         break;
       case '🚺':
-        tab.push('femme');
+        tab.push('Femme');
         reaction.message.delete();
         nomPrenom();
         break;
@@ -54,7 +54,11 @@ function nomPrenom() {
   } });
   client.on ('message', mess => {
     if (mess.author.bot) {return;}
+    else if (!isNaN(mess) && state < 3) {
+      message.channel.send('veuillez entre des caracteres');
+    }
     else if (state == 1) {
+      console.log();
       tab.push(mess.content);
       state += 1;
       message.channel.send({ embed: {
@@ -67,7 +71,6 @@ function nomPrenom() {
       state += 1;
       tab.push(mess.content);
       taille();
-      console.log(tab);
     }
   });
 }
@@ -79,11 +82,12 @@ function taille() {
     description: 'Taille en cm',
   } });
   client.on ('message', mess => {
-    if (mess.author.bot) return;
+    if (mess.author.bot || state != 3) return;
     if (mess.content > 100 && mess.content < 250) {
-      var tEnM = mess.content / 100;
-      tEnM = tEnM.indexOf(',', 'm');
+      let tEnM = (mess.content / 100).toFixed(2).toString();
+      tEnM = tEnM.replace('.', 'm');
       tab.push(tEnM);
+      state += 1;
       poids();
     }
     else {
@@ -99,18 +103,14 @@ function poids() {
     description: 'poids en kg',
   } });
   client.on ('message', mess => {
-    if (mess.author.bot) return;
+    if (mess.author.bot || state != 4) return;
     if (mess.content > 35 && mess.content < 200) {
-      tab.push(mess + 'kg');
-      fin();
+      tab.push(Number(mess.content).toFixed(0) + 'kg');
+      console.log(tab);
+      mess.react('➡');
     }
     else {
       message.channel.send('veuillez saisir un poids correct');
     }
   });
-}
-
-function fin() {
-  console.log(tab);
-  message.react('➡');
 }
