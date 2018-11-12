@@ -1,0 +1,17 @@
+{
+	"nomActiviteM" : ["Faire du v\u00e9lo", "Faire une partie de jeux videos", "Faire un peu de musique", "Faire un jogging"],
+	"impacteAM" : [],
+
+	"nomActiviteA" : ["Faire du foot", "Faire du basket", "Faire du rugby", "Faire du baseball", "Faire du tennis", "Faire du volley", "Faire du golf", "Faire du pingpong", "Faire du badmington", "Faire de la muscu", "Faire du tir \u00e0 l'arc", "Faire du bowling", "Faire une partie de jeux videos", "Faire de la p\u00e8che"],
+	"impacteAA" : [],	
+
+	"nomActiviteS" : ["Faire la f\u00eate", "Aller dans un bar", "Regarder la tv", "Aller dormir"],
+	"impacteAS" : [],
+	
+	"nomRepasM" : ["Prendre une pomme", "Prendre du pain", "Prendre du chocolat", "Prendre un croissant", "Prendre une banane"],
+	"impacteRM" : [],
+	
+	"nomRepasS" : ["Manger un hamburger", "Manger un gateau", "Manger une glace", "Manger une pizza", "Manger de la viande", "Manger de la salade", "Manger du riz"],
+	"impacteRS" : []
+
+}

@@ -1,0 +1,30 @@
+{
+  "chanGrp": "511121518214905867",
+  "player": "234674134334963712",
+  "partJour": 0,
+  "numEvent": 0,
+  "nbJour": 3,
+  "numJour": 1,
+  "insuline": 1,
+  "activite": [
+    "Prendre un croissant",
+    "Faire un jogging",
+    "rienM",
+    "Faire une partie de jeux videos",
+    "Manger un gateau",
+    "rienA"
+  ],
+  "consequence": [
+    "courbatures",
+    "courbatures",
+    "courbatures",
+    "courbatures"
+  ],
+  "glycemie": 1.8,
+  "tabGlycemie": [
+    2.7,
+    0.9,
+    3.6,
+    1.8
+  ]
+}
