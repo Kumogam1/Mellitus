@@ -18,7 +18,7 @@ const tableaux = require("./tableaux.json");
 
 const emoteActiviteM = ['🚴', '🎮', '🎸', '🏃'];
 const emoteActiviteA = ['⚽', '🏀', '🏈', '⚾', '🎾', '🏐', '⛳', '🏓', '🏸', '🏋', '🏹', '🎳', '🎮', '🎣'];
-const emoteActiviteS = ['🕺', '🍷', '📺', '🛏'];
+const emoteActiviteS = ['🕺', '🍷', '📺', '🛏', '📖', '🎥'];
 const emoteRepasM = ['🍏', '🍞', '🍫', '🥐', '🍌'];
 const emoteRepasS = ['🍔', '🍰', '🍨', '🍕', '🍖', '🥗', '🍚'];
 
@@ -48,10 +48,17 @@ client.on("message", (message) => {
 
     	switch(command) {
         	case "start":
-                partie.nbJour = 1;
+                partie.nbJour = 3;
+                partie.tuto = false;
                 sfm.save(message.author.id, partie);
         		initJeu.initJeu(message, client);
         		break;
+            case "tuto":
+                partie.nbJour = 1;
+                partie.tuto = true;
+                sfm.save(message.author.id, partie);
+                initJeu.initJeu(message, client);
+                break;
         	case "end":
         		finJeu.finJeu(message);
         		break;
@@ -117,7 +124,7 @@ client.on("messageReactionAdd", (reaction, user) => {
         case '✅':
             //reaction.message.delete();
             //event.event(reaction.message, partie, tabNR, tabER);
-            choixPerso(reaction.message);
+            choixPerso(reaction.message, partie);
             break;
         case '❌':
             if(partie.numEvent == 1){
@@ -161,14 +168,18 @@ client.on("messageReactionAdd", (reaction, user) => {
                 break;
         }
 
-        const partie = sfm.loadSave(user.id);
         const chanId = myBot.messageChannel(reaction.message, "personnage", partie);
+
+        if(partie.tuto)
+            fieldTextPerso = "Voici le channel personnage.\nC'est dans ce channel que vous pouvez voir les informations concernant votre personnage.";
+        else
+            fieldTextPerso = "Voici votre personnage.";
 
         reaction.message.guild.channels.get(chanId).send({embed: {
             color: 15013890,
             fields: [{
                 name: "Channel Personnage",
-                value: "Voici le channel personnage.\nC'est dans ce channel que vous pouvez voir les informations concernant votre personnage."
+                value: fieldTextPerso
             }]
         }}).then(() => {
             reaction.message.guild.channels.get(chanId).send({embed: {
@@ -201,11 +212,16 @@ client.on("messageReactionAdd", (reaction, user) => {
 
         const chanId2 = myBot.messageChannel(reaction.message, "informations", partie);
 
+        if(partie.tuto)
+            fieldTextInfo = "Voici le channel informations.\nAvant chaque prise d'insuline, un graphique montrant l'évolution de votre taux de glycémie apparaitra dans ce channel.";
+        else
+            fieldTextInfo = "Un petit récapitulatif du taux de glycémie.";
+
         reaction.message.guild.channels.get(chanId2).send({embed: {
             color: 15013890,
             fields: [{
                 name: "Channel Informations",
-                value: "Voici le channel informations.\nAvant chaque prise d'insuline, un graphique montrant l'évolution de votre taux de glycémie apparaitra dans ce channel."
+                value: fieldTextInfo
             }]
         }});
     }
@@ -219,12 +235,13 @@ client.on("messageReactionAdd", (reaction, user) => {
         event.event(reaction.message, partie, tabNA, tabEA);
     }
 
-    //Quand on choisi la sport
+    //Quand on choisi le sport
 	if(tabEA.includes(reaction.emoji.name)){
         var i = 0;
         while(tabEA[i] != reaction.emoji.name)
             i++;
         writeAct(user.id, tabNA[i], partie);
+        partie.impact.push(tableaux[i]);
         partie.partJour = (partie.partJour + 1) % 3;
         sfm.save(partie.player, partie);
         event.event(reaction.message, partie, tabNR, tabER);
@@ -311,7 +328,7 @@ function text(message) {
 * Fonction qui présente les personnages prédéfinis
 * @param {string} message - Message discord
 **/
-function choixPerso(message){
+function choixPerso(message, partie){
 
     async function clear() {
         //message.delete();
@@ -324,11 +341,16 @@ function choixPerso(message){
         console.log(err)
     });
 
+    if(partie.tuto)
+        fieldText = "C'est ici que vous devez choisir un personnage.\nChaque personnage a des caractéristiques différentes, qui influeront sur votre partie.\nPour choisir un personnage, cliquez sur la réaction correspondant au numéro du personnage choisit.";
+    else
+        fieldText = "Choisissez un personnage.";
+
     const embed = new Discord.RichEmbed()
     .setColor(15013890)
 
     .setTitle("__**Phase personnage**__")
-    .addField("👶 👦 👧 👨 👩 👴 👵", "C'est ici que vous devez choisir un personnage.\nChaque personnage a des caractéristiques différentes, qui influeront sur votre partie.\nPour choisir un personnage, cliquez sur la réaction correspondant au numéro du personnage choisit.")
+    .addField("👶 👦 👧 👨 👩 👴 👵", fieldText)
 
     message.channel.send({embed})
     .then((msg) => {
