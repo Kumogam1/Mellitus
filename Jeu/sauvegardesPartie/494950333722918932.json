@@ -1,0 +1,30 @@
+{
+  "chanGrp": "513397524590231555",
+  "player": "357486231119986688",
+  "partJour": 2,
+  "numEvent": 0,
+  "nbJour": 1,
+  "numJour": 0,
+  "insuline": 1,
+  "activite": [
+    "Prendre du chocolat",
+    "Faire un peu de musique",
+    "Manger des tomates",
+    "Faire de la pèche"
+  ],
+  "consequence": [],
+  "impactActivite": [
+    1,
+    1
+  ],
+  "impactNutrition": [
+    1,
+    5
+  ],
+  "glycemie": 3.6,
+  "tabGlycemie": [
+    2.7,
+    0.9,
+    3.6
+  ]
+}

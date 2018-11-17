@@ -16,11 +16,11 @@ const tableaux = require("./tableaux.json");
 
 //listes pour les activités que le joueur peut pratiquer
 
-const emoteActiviteM = ['🚴', '🎮', '🎸', '🏃'];
+const emoteActiviteM = ['🚴', '🎮', '🎸', '🏃', '🏋', '🏊'];
 const emoteActiviteA = ['⚽', '🏀', '🏈', '⚾', '🎾', '🏐', '⛳', '🏓', '🏸', '🏋', '🏹', '🎳', '🎮', '🎣'];
-const emoteActiviteS = ['🕺', '🍷', '📺', '🛏'];
-const emoteRepasM = ['🍏', '🍞', '🍫', '🥐', '🍌'];
-const emoteRepasS = ['🍔', '🍰', '🍨', '🍕', '🍖', '🥗', '🍚'];
+const emoteActiviteS = ['🕺', '🍷', '🎱', '🎳', '🎥', '📺', '📖', '🛏'];
+const emoteRepasM = ['🍏', '🍞', '🍫', '🥐', '🍌', '🍐', '☕️', '🥞'];
+const emoteRepasS = ['🍔', '🍰', '🍨', '🍕', '🍖', '🥗', '🍚', '🍝', '🍜', '🍱', '🌮', '🥙','🍅'];
 
 const pseudoJ = 'Alain';
 
@@ -89,6 +89,8 @@ client.on("messageReactionAdd", (reaction, user) => {
     let tabNA = []; //tableau de nom d'activités
     let tabER = []; //tableau d'emote de repas
     let tabEA = []; //tableau d'emote d'activités
+    let tabIA = []; //tableau de l'impact des activités
+    let tabIR = []; //tableau de l'impact  des repas
 
     switch(partie.partJour){
         case 0:
@@ -96,18 +98,24 @@ client.on("messageReactionAdd", (reaction, user) => {
             tabER = emoteRepasM;
             tabNA = tableaux.nomActiviteM;
             tabEA = emoteActiviteM;
+            tabIA = tableaux.impactAM;
+            tabIR = tableaux.impactRM;
             break;
         case 1:
             tabNR = tableaux.nomRepasS;
             tabER = emoteRepasS;
             tabNA = tableaux.nomActiviteA;
             tabEA = emoteActiviteA;
+            tabIA = tableaux.impactAA;
+            tabIR = tableaux.impactRS;
             break;
         case 2:
             tabNR = tableaux.nomRepasS;
             tabER = emoteRepasS;
             tabNA = tableaux.nomActiviteS;
             tabEA = emoteActiviteS;
+            tabIA = tableaux.impactAS;
+            tabIR = tableaux.impactRS;
             break;
         default:
             console.log("Partie du jour inconnue.");
@@ -120,12 +128,15 @@ client.on("messageReactionAdd", (reaction, user) => {
             choixPerso(reaction.message);
             break;
         case '❌':
-            if(partie.numEvent == 1){
+            if(partie.numEvent == 1)
+            {
                 writeAct(user.id, 'rienM', partie);
+                partie.impactNutrition.push(0);
                 event.event(reaction.message, partie, tabNA, tabEA);
             }
             else{
                 writeAct(user.id, 'rienA', partie);
+                partie.impactActivite.push(0);
                 partie.partJour = (partie.partJour + 1) % 3;
                 sfm.save(partie.player, partie);
                 event.event(reaction.message, partie, tabNR, tabER);
@@ -216,15 +227,17 @@ client.on("messageReactionAdd", (reaction, user) => {
         while(tabER[i] != reaction.emoji.name)
             i++;
         writeAct(user.id, tabNR[i], partie);
+        partie.impactNutrition.push(tabIR[i]);
         event.event(reaction.message, partie, tabNA, tabEA);
     }
 
-    //Quand on choisi la sport
+    //Quand on choisi le sport
 	if(tabEA.includes(reaction.emoji.name)){
         var i = 0;
         while(tabEA[i] != reaction.emoji.name)
             i++;
         writeAct(user.id, tabNA[i], partie);
+        partie.impactActivite.push(tabIA[i]);
         partie.partJour = (partie.partJour + 1) % 3;
         sfm.save(partie.player, partie);
         event.event(reaction.message, partie, tabNR, tabER);
