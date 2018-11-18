@@ -81,82 +81,73 @@ client.on('message', (message) => {
 client.on('messageReactionAdd', (reaction, user) => {
 
 	if(user.bot) return;
-
-<<<<<<< HEAD
-    const partie = sfm.loadSave(user.id);
-
-    let tabNR = []; //tableau de nom de repas
-    let tabNA = []; //tableau de nom d'activités
-    let tabER = []; //tableau d'emote de repas
-    let tabEA = []; //tableau d'emote d'activités
-    let tabIA = []; //tableau de l'impact des activités
-    let tabIR = []; //tableau de l'impact  des repas
-
-    switch(partie.partJour){
-        case 0:
-            tabNR = tableaux.nomRepasM;
-            tabER = emoteRepasM;
-            tabNA = tableaux.nomActiviteM;
-            tabEA = emoteActiviteM;
-            tabIA = tableaux.impactAM;
-            tabIR = tableaux.impactRM;
-            break;
-        case 1:
-            tabNR = tableaux.nomRepasS;
-            tabER = emoteRepasS;
-            tabNA = tableaux.nomActiviteA;
-            tabEA = emoteActiviteA;
-            tabIA = tableaux.impactAA;
-            tabIR = tableaux.impactRS;
-            break;
-        case 2:
-            tabNR = tableaux.nomRepasS;
-            tabER = emoteRepasS;
-            tabNA = tableaux.nomActiviteS;
-            tabEA = emoteActiviteS;
-            tabIA = tableaux.impactAS;
-            tabIR = tableaux.impactRS;
-            break;
-        default:
-            console.log("Partie du jour inconnue.");
-    }
-
-    switch(reaction.emoji.name){
-        case '✅':
-            //reaction.message.delete();
-            //event.event(reaction.message, partie, tabNR, tabER);
-            choixPerso(reaction.message);
-            break;
-        case '❌':
-            if(partie.numEvent == 1)
-            {
-                writeAct(user.id, 'rienM', partie);
-                partie.impactNutrition.push(0);
-                event.event(reaction.message, partie, tabNA, tabEA);
-            }
-            else{
-                writeAct(user.id, 'rienA', partie);
-                partie.impactActivite.push(0);
-                partie.partJour = (partie.partJour + 1) % 3;
-                sfm.save(partie.player, partie);
-                event.event(reaction.message, partie, tabNR, tabER);
-            }
-            break;
-        case '➡':
-            event.event(reaction.message, partie, tabNR, tabER);
-            break;
-        case '🔚':
-            finJeu.finJeu(reaction.message);
-            break;
-        default:
-            break;
-=======
   const partie = sfm.loadSave(user.id);
 
   let tabNR = []; // tableau de nom de repas
   let tabNA = []; // tableau de nom d'activités
   let tabER = []; // tableau d'emote de repas
   let tabEA = []; // tableau d'emote d'activités
+  let tabIA = []; // tableau de l'impact des activités
+  let tabIR = []; // tableau de l'impact  des repas
+
+  switch(partie.partJour) {
+      case 0:
+          tabNR = tableaux.nomRepasM;
+          tabER = emoteRepasM;
+          tabNA = tableaux.nomActiviteM;
+          tabEA = emoteActiviteM;
+          tabIA = tableaux.impactAM;
+          tabIR = tableaux.impactRM;
+          break;
+      case 1:
+          tabNR = tableaux.nomRepasS;
+          tabER = emoteRepasS;
+          tabNA = tableaux.nomActiviteA;
+          tabEA = emoteActiviteA;
+          tabIA = tableaux.impactAA;
+          tabIR = tableaux.impactRS;
+          break;
+      case 2:
+          tabNR = tableaux.nomRepasS;
+          tabER = emoteRepasS;
+          tabNA = tableaux.nomActiviteS;
+          tabEA = emoteActiviteS;
+          tabIA = tableaux.impactAS;
+          tabIR = tableaux.impactRS;
+          break;
+      default:
+          console.log('Partie du jour inconnue.');
+    }
+
+  switch(reaction.emoji.name) {
+      case '✅':
+          // reaction.message.delete();
+          // event.event(reaction.message, partie, tabNR, tabER);
+          choixPerso(reaction.message);
+          break;
+      case '❌':
+          if(partie.numEvent == 1) {
+              writeAct(user.id, 'rienM', partie);
+              partie.impactNutrition.push(0);
+              event.event(reaction.message, partie, tabNA, tabEA);
+          }
+          else{
+              writeAct(user.id, 'rienA', partie);
+              partie.impactActivite.push(0);
+              partie.partJour = (partie.partJour + 1) % 3;
+              sfm.save(partie.player, partie);
+              event.event(reaction.message, partie, tabNR, tabER);
+          }
+          break;
+      case '➡':
+          event.event(reaction.message, partie, tabNR, tabER);
+          break;
+      case '🔚':
+          finJeu.finJeu(reaction.message);
+          break;
+      default:
+          break;
+}
 
   switch(partie.partJour) {
       case 0:
@@ -207,7 +198,6 @@ client.on('messageReactionAdd', (reaction, user) => {
           break;
       default:
           break;
->>>>>>> 3a1e071850ff2153287fef4eb0c219071b26fce6
     }
 
     if(reaction.emoji.name == '🇦'
@@ -270,32 +260,28 @@ client.on('messageReactionAdd', (reaction, user) => {
 
       const chanId2 = myBot.messageChannel(reaction.message, 'informations', partie);
 
-      reaction.message.guild.channels.get(chanId2).send({ embed: {
-          color: 15013890,
-          fields: [{
-              name: 'Channel Informations',
-              value: 'Voici le channel informations.\nAvant chaque prise d\'insuline, un graphique montrant l\'évolution de votre taux de glycémie apparaitra dans ce channel.',
-          }],
-      } });
-    }
+    reaction.message.guild.channels.get(chanId2).send({ embed: {
+        color: 15013890,
+        fields: [{
+            name: 'Channel Informations',
+            value: 'Voici le channel informations.\nAvant chaque prise d\'insuline, un graphique montrant l\'évolution de votre taux de glycémie apparaitra dans ce channel.',
+        }],
+    } });
+  }
 
-    // Quand on choisi le repas
-    if(tabER.includes(reaction.emoji.name)) {
-        var i = 0;
-        while(tabER[i] != reaction.emoji.name)
-            i++;
-        writeAct(user.id, tabNR[i], partie);
-        partie.impactNutrition.push(tabIR[i]);
-        event.event(reaction.message, partie, tabNA, tabEA);
-    }
+  // Quand on choisi le repas
+  if(tabER.includes(reaction.emoji.name)) {
+      var i = 0;
+      while(tabER[i] != reaction.emoji.name)
+          i++;
+      writeAct(user.id, tabNR[i], partie);
+      partie.impactNutrition.push(tabIR[i]);
+      event.event(reaction.message, partie, tabNA, tabEA);
+  }
 
-<<<<<<< HEAD
-    //Quand on choisi le sport
-	if(tabEA.includes(reaction.emoji.name)){
-=======
     // Quand on choisi la sport
 	if(tabEA.includes(reaction.emoji.name)) {
->>>>>>> 3a1e071850ff2153287fef4eb0c219071b26fce6
+
         var i = 0;
         while(tabEA[i] != reaction.emoji.name)
             i++;
