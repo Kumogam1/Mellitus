@@ -63,7 +63,9 @@ function nomPrenom() {
     }
     else if (state == 1) {
       console.log();
-      tab.push(mess.content);
+      let nom = mess.content.trim();
+      nom = nom.charAt(0).toUpperCase() + nom.slice(1);
+      tab.push(nom);
       state += 1;
       message.channel.send({ embed: {
         color:0x00AE86,
@@ -73,7 +75,9 @@ function nomPrenom() {
     }
     else if(state == 2) {
       state += 1;
-      tab.push(mess.content);
+      let prenom = mess.content.trim();
+      prenom = prenom.charAt(0).toUpperCase() + prenom.slice(1);
+      tab.push(prenom);
       age();
     }
   });
