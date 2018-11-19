@@ -1,12 +1,12 @@
 const Discord = require('discord.js');
-// const fs = require('fs');
+const fs = require('fs');
 const myBot = require('./myBot.js');
 const initJeu = require('./initJeu.js');
 const finJeu = require('./finJeu.js');
 const event = require('./event.js');
-// const insuline = require('./priseInsuline.js');
+const insuline = require('./priseInsuline.js');
 const sfm = require('./saveFileManagement.js');
-// const as = require('./affichageStats.js');
+const as = require('./affichageStats.js');
 
 const client = new Discord.Client();
 
@@ -22,11 +22,11 @@ const emoteActiviteS = ['🕺', '🍷', '🎱', '🎳', '🎥', '📺', '📖', 
 const emoteRepasM = ['🍏', '🍞', '🍫', '🥐', '🍌', '🍐', '☕️', '🥞'];
 const emoteRepasS = ['🍔', '🍰', '🍨', '🍕', '🍖', '🥗', '🍚', '🍝', '🍜', '🍱', '🌮', '🥙','🍅'];
 
-// const pseudoJ = 'Alain';
+//const pseudoJ = 'Alain';
 
 client.on('ready', () => {
-  console.log('Bot has started, with ${client.users.size} users, in ${client.channels.size} channels of ${client.guilds.size} guilds.');
-  client.user.setActivity('manger des ventilateurs');
+  console.log(`Bot has started, with ${client.users.size} users, in ${client.channels.size} channels of ${client.guilds.size} guilds.`);
+  client.user.setActivity('aider les diabétiques');
 });
 
 client.on('error', error => {
@@ -47,27 +47,20 @@ client.on('message', (message) => {
 
       switch(command) {
         case 'start':
-          partie.nbJour = 1;
+          partie.nbJour = 3;
+          partie.tuto = false;
           sfm.save(message.author.id, partie);
           initJeu.initJeu(message, client);
           break;
+        case 'tuto':
+            partie.nbJour = 1;
+            partie.tuto = true;
+            sfm.save(message.author.id, partie);
+            initJeu.initJeu(message, client);
+            break;
         case 'end':
           finJeu.finJeu(message);
           break;
-            /* case "perso" :
-                choixPerso(message);
-                break;
-        	case "stats":
-                const f = [10,30,45];
-        		as.graphString(0, 100, f, message, partie);
-        		break;
-            case "cons":
-                console.log(partie.activite);
-                console.log(partie.consequence);
-                break;
-            case 'insu':
-                insuline.priseInsuline(message);
-                break;*/
         case 'text':
           text(message);
           break;
@@ -140,6 +133,22 @@ client.on('messageReactionAdd', (reaction, user) => {
           }
           break;
       case '➡':
+          if(partie.numEvent == -1) {
+            const chanId2 = myBot.messageChannel(reaction.message, "informations", partie);
+
+            if(partie.tuto)
+                fieldTextInfo = "Voici le channel informations.\nAvant chaque prise d'insuline, un graphique montrant l'évolution de votre taux de glycémie apparaitra dans ce channel.";
+            else
+                fieldTextInfo = "Un petit récapitulatif du taux de glycémie.";
+
+            reaction.message.guild.channels.get(chanId2).send({embed: {
+                color: 15013890,
+                fields: [{
+                    name: "Channel Informations",
+                    value: fieldTextInfo
+                }]
+            }});
+          }
           event.event(reaction.message, partie, tabNR, tabER);
           break;
       case '🔚':
@@ -148,57 +157,6 @@ client.on('messageReactionAdd', (reaction, user) => {
       default:
           break;
 }
-
-  switch(partie.partJour) {
-      case 0:
-          tabNR = tableaux.nomRepasM;
-          tabER = emoteRepasM;
-          tabNA = tableaux.nomActiviteM;
-          tabEA = emoteActiviteM;
-          break;
-      case 1:
-          tabNR = tableaux.nomRepasS;
-          tabER = emoteRepasS;
-          tabNA = tableaux.nomActiviteA;
-          tabEA = emoteActiviteA;
-          break;
-      case 2:
-          tabNR = tableaux.nomRepasS;
-          tabER = emoteRepasS;
-          tabNA = tableaux.nomActiviteS;
-          tabEA = emoteActiviteS;
-          break;
-      default:
-          console.log('Partie du jour inconnue.');
-  }
-
-  switch(reaction.emoji.name) {
-      case '✅':
-          // reaction.message.delete();
-          // event.event(reaction.message, partie, tabNR, tabER);
-          choixPerso(reaction.message);
-          break;
-      case '❌':
-          if(partie.numEvent == 1) {
-              writeAct(user.id, 'rienM', partie);
-              event.event(reaction.message, partie, tabNA, tabEA);
-          }
-          else {
-              writeAct(user.id, 'rienA', partie);
-              partie.partJour = (partie.partJour + 1) % 3;
-              sfm.save(partie.player, partie);
-              event.event(reaction.message, partie, tabNR, tabER);
-          }
-          break;
-      case '➡':
-          event.event(reaction.message, partie, tabNR, tabER);
-          break;
-      case '🔚':
-          finJeu.finJeu(reaction.message);
-          break;
-      default:
-          break;
-    }
 
     if(reaction.emoji.name == '🇦'
     || reaction.emoji.name == '🇧'
@@ -222,51 +180,46 @@ client.on('messageReactionAdd', (reaction, user) => {
 
       const chanId = myBot.messageChannel(reaction.message, 'personnage', partie);
 
-      reaction.message.guild.channels.get(chanId).send({ embed: {
-          color: 15013890,
-          fields: [{
-              name: 'Channel Personnage',
-              value: 'Voici le channel personnage.\nC\'est dans ce channel que vous pouvez voir les informations concernant votre personnage.',
-          }],
-      } }).then(() => {
-        reaction.message.guild.channels.get(chanId).send({ embed: {
-          color: 0x00AE86,
-          title: '__**Personnage**__',
-          fields: [{
-              name: 'Nom',
-              value: perso.nom[numPerso],
-          },
-          {
-              name: 'Sexe',
-              value: perso.sexe[numPerso],
-          },
-          {
-              name: 'Age',
-              value: perso.age[numPerso],
-          },
-          {
-              name: 'Taille',
-              value: perso.taille[numPerso],
-          },
-          {
-              name: 'Poids',
-              value: perso.poids[numPerso],
-          }],
-        } })
-        .then(() => {
+
+      if(partie.tuto)
+          fieldTextPerso = "Voici le channel personnage.\nC'est dans ce channel que vous pouvez voir les informations concernant votre personnage.";
+      else
+          fieldTextPerso = "Voici votre personnage :";
+
+          reaction.message.guild.channels.get(chanId).send({embed: {
+              color: 15013890,
+              fields: [{
+                  name: "Channel Personnage",
+                  value: fieldTextPerso
+              }]
+            }}).then(() => {
+              reaction.message.guild.channels.get(chanId).send({ embed: {
+              color: 0x00AE86,
+              title: '__**Personnage**__',
+              fields: [{
+                  name: 'Nom',
+                  value: perso.nom[numPerso],
+              },
+              {
+                  name: 'Sexe',
+                  value: perso.sexe[numPerso],
+              },
+              {
+                  name: 'Age',
+                  value: perso.age[numPerso],
+              },
+              {
+                  name: 'Taille',
+                  value: perso.taille[numPerso],
+              },
+              {
+                  name: 'Poids',
+                  value: perso.poids[numPerso],
+              }]}})
+            .then(() => {
             event.event(reaction.message, partie, tabNR, tabER);
-        });
-      });
-
-      const chanId2 = myBot.messageChannel(reaction.message, 'informations', partie);
-
-    reaction.message.guild.channels.get(chanId2).send({ embed: {
-        color: 15013890,
-        fields: [{
-            name: 'Channel Informations',
-            value: 'Voici le channel informations.\nAvant chaque prise d\'insuline, un graphique montrant l\'évolution de votre taux de glycémie apparaitra dans ce channel.',
-        }],
-    } });
+            });
+          });
   }
 
   // Quand on choisi le repas
@@ -385,6 +338,11 @@ function choixPerso(message) {
     .catch((err) => {
         console.log(err);
     });
+
+    if(partie.tuto)
+        fieldText = "C'est ici que vous devez choisir un personnage.\nChaque personnage a des caractéristiques différentes, qui influeront sur votre partie.\nPour choisir un personnage, cliquez sur la réaction correspondant au numéro du personnage choisit.";
+    else
+        fieldText = "Choisissez un personnage.";
 
     const embed = new Discord.RichEmbed()
     .setColor(15013890)
