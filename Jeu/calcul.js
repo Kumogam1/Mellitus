@@ -7,10 +7,56 @@ Celle-ci dépend de la dose théorique si elle est supérieur à 15 unité l’a
 sinon elle se fera 1 unité par 1 unité.
 */
 
-exports.calcul = function calcul(poids) {
-  const doseIntermediaireInitiale = poids / 10;
-  const doseIntermediaireTheorique = 0.4 * poids;
+const calcul = require('./calcul.js');
 
-  const doseGlicemie = [doseIntermediaireInitiale, doseIntermediaireTheorique];
-  return doseGlicemie;
+exports.doses = function doses(partie) {
+	const doseInit = partie.poids / 10;
+	const doseObj = 0.4 * partie.poids;
+	let augmentation = 0;
+
+	if(doseObj < augmentation)
+		augmentation = 1
+	else
+		augmentation = 2
+
+	const doseGlycemie = [doseInit, doseObj];
+	return doseGlycemie;
 };
+
+exports.glyMatin = function glyMatin(partie){
+	let tauxAvantHier = 0;
+	if(partie.tabGlycemie.length > 4)
+		tauxAvantHier = partie.tabGlycemie[partie.tabGlycemie.length - 5];
+	else
+		tauxAvantHier = partie.tabGlycemie[0];
+
+	const tauxHier = partie.glycemie;
+	let res = 0;
+
+	if(tauxHier > 1.3 || tauxHier < 0.7){
+		res = 2.5 + (Math.round(Math.abs(tauxAvantHier - tauxHier) * 100) / 100) * 0.2;
+	}
+	else{
+		res = 2.5 + (tauxHier - 1.3);
+	}
+
+	partie.glycemie = res;
+	partie.tabGlycemie.push(res);
+};
+
+exports.glyInsu = function glyInsu(partie, dose){
+	const tauxInit = partie.tabGlycemie[0];
+	const tauxPresent = partie.glycemie;
+	let res = 0;
+
+	const delta = tauxPresent - 1.3;
+	const effect = delta / 32/*calcul.doses(partie)[1]*/;
+
+	res = Math.round((tauxPresent - (dose * effect))*100)/100;
+
+	if(res < 0)
+		res = 0;
+
+	partie.glycemie = res;
+	partie.tabGlycemie.push(res);
+}

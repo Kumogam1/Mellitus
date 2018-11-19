@@ -29,7 +29,7 @@ exports.event = function event(message, partie, tabN, tabE){
     let fielText = "";
 
 	async function clear() {
-        //message.delete();
+
         const fetched = await message.channel.fetchMessages();
         message.channel.bulkDelete(fetched);
     }

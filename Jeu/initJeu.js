@@ -139,19 +139,16 @@ function initChannelGrp(message, partie, channelGrpName, rolePers) {
 		partie.player = message.author.id;
 		partie.partJour = 0;
 		partie.numJour = 0;
-
-    partie.numEvent = -1;
+    partie.numEvent = -2;
     partie.insuline = 0;
-
 		partie.numEvent = -1;
 		partie.insuline = 0;
-
 		partie.activite = [];
 		partie.impactActivite = [];
 		partie.impactNutrition = [];
 		partie.consequence = [];
-		partie.glycemie = 0;
-		partie.tabGlycemie = [];
+		partie.glycemie = 2.5;
+		partie.tabGlycemie = [2.5];
 		initChannel(message, partie, rolePers, 'Hub', res);
 		initChannel(message, partie, rolePers, 'Informations', res);
 		initChannel(message, partie, rolePers, 'Personnage', res);
@@ -172,15 +169,24 @@ function bienvenue(message) {
 
 	const chanId = myBot.messageChannel(message, "hub", partie);
 
+	if(partie.tuto){
+		titre = "Tutoriel";
+		text = "Ceci est le tutoriel du jeu Mellitus.";
+	}
+	else{
+		titre = "Jeu";
+		text = "Vous allez jouer à Mellitus. Bon jeu.";
+	}
+
 	const embed = new Discord.RichEmbed()
-    .setColor(15013890)
-    .setTitle("Bienvenue dans Mellitus")
+	.setColor(15013890)
+	.setTitle("Bienvenue dans Mellitus")
 
-    .addField("Tutoriel", "Ceci est le tutoriel du jeu Mellitus.")
-    .addField("Commencer la partie", "✅")
+	.addField(titre, text)
+	.addField("Commencer la partie", "✅")
 
-    message.guild.channels.get(chanId).send({embed})
-    .then(async function (mess) {
-    	await mess.react('✅');
-    });	//----------Modifié----------//
+	message.guild.channels.get(chanId).send({embed})
+	.then(async function (mess) {
+		await mess.react('✅');
+	});
 }
