@@ -121,7 +121,7 @@ exports.event = function event(message, partie, tabN, tabE){
 		}
 	}
 	else {
-		eventFin(message);
+		eventFin(message, partie);
 	} 
 };
 
@@ -192,7 +192,14 @@ function eventNumJour(message, partie) {
 					}
 					else {
 						partie.choixPerso = 0;
-						partie.nbJour = nbChoix;
+						if(partie.tuto){
+							partie.nbJour = 1;
+							sfm.save(partie.player, partie);
+						}
+						else{
+							partie.nbJour = nbChoix;
+							sfm.save(message.author.id, partie);
+						}
 						sfm.save(message.author.id, partie);
 						message.react('➡');
 						//event.event(message, partie, tabN, tabE);
@@ -316,7 +323,7 @@ function eventRepas(message, tabN, tabE){
 * Fonction qui écrit le message de fin de partie
 * @param {string} message - Message discord
 **/
-function eventFin(message){
+function eventFin(message, partie){
 
 	if(partie.tuto)
 		fieldTextInfo = "J'espère que vous avez apprécié le tutoriel.";
