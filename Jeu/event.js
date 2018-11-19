@@ -10,6 +10,10 @@ const conseilSport = require('./conseilSport.json');
 const conseilNutrition  =require('./conseilNutri.json');
 const image = require('./images.js');
 const perso = require("./perso.json");
+const config = require("./token.json");
+const calcul = require("./calcul.js");
+const client = new Discord.Client();
+client.login(config.token);
 
 /**
 * Fonction qui lance l'évenement correspondant en fonction de la situation
@@ -39,69 +43,78 @@ exports.event = function event(message, partie, tabN, tabE){
     	console.log(err)
     });
 
-    if(partie.numJour > 0 && partie.partJour == 0 && partie.numEvent == 2){
-    	journal(message, partie);
-    }
 
-    partie.numEvent = (partie.numEvent + 1) % 3;
+
+
+  partie.numEvent = (partie.numEvent + 1) % 3;
 	sfm.save(partie.player, partie);
 
-	//console.log('nbjour : ' + partie.nbJour);
-    //console.log('numjour : ' + partie.numJour);
+  if(partie.numJour > 0 && partie.partJour == 0 && partie.numEvent == 0){
+    journal(message, partie);
+    calcul.glyMatin(partie);
+  }
 
     if(partie.nbJour != partie.numJour){
     	switch(partie.partJour){
 	        case 0:
 	            switch(partie.numEvent){
-	                case 0:
-	                	fieldTitle = "C'est le matin!";
-	                	fielText = "Chaque matin, vous devez faire votre prise d'insuline et vous pouvez choisir votre petit déjeuner et une activité matinale au choix.";
-	                    title(message, fieldTitle, fielText);
-	                    consequence(message, partie, tabN, tabE);
-	                    eventInsu(message, partie);
-	                    break;
-	                case 1:
-	                    eventRepas(message, tabN, tabE);
-	                    break;
-	                case 2:
-	                    eventSport(message, tabN, tabE);
-	                    break;
+                case -1:
+                  eventNumJour(message, partie);
+                  break;
+                case 0:
+                  fieldTitle = "C'est le matin!";
+                  if(partie.tuto)
+                    fieldText = "Chaque matin, vous devez faire votre prise d'insuline et vous pouvez choisir votre petit déjeuner et une activité matinale au choix.";
+                  else
+                    fieldText = "Le soleil se réveille, il fait beau, il faut jour.";
+                  title(message, fieldTitle, fieldText);
+                  consequence(message, partie, tabN, tabE);
+                  eventInsu(message, partie);
+                  break;
+                case 1:
+                  eventRepas(message, tabN, tabE);
+                  break;
+                case 2:
+                  eventSport(message, tabN, tabE);
+                  break;
 	            }
 	            break;
 	        case 1:
 	            switch(partie.numEvent){
-	                case 0:
-	                	fieldTitle = "C'est l'après-midi!";
-	                	fielText = "Tous les après-midi, vous devez faire votre prise d'insuline et vous pouvez choisir votre repas et une activité.";
-	                	title(message, fieldTitle, fielText);
-	                	//on va enlever
-	                	//consequence(message, partie, tabN, tabE);
-	        			eventInsu(message, partie);
-	                    break;
-	                case 1:
-	                    eventRepas(message, tabN, tabE);
-	                    break;
-	                case 2:
-	                    eventSport(message, tabN, tabE);
-	                    break;
+                case 0:
+                  fieldTitle = "C'est l'après-midi!";
+                  if(partie.tuto)
+                    fieldText = "Tous les après-midi, vous devez faire votre prise d'insuline et vous pouvez choisir votre repas et une activité.";
+                  else
+                    fieldText = "Repas, repos, récréation.";
+                  title(message, fieldTitle, fieldText);
+                  eventInsu(message, partie);
+                  break;
+                case 1:
+                    eventRepas(message, tabN, tabE);
+                    break;
+                case 2:
+                    eventSport(message, tabN, tabE);
+                    break;
 	            }
 	            break;
 	        case 2:
 	            switch(partie.numEvent){
 	                case 0:
-	                	fieldTitle = "C'est le soir!";
-	               		fielText = "Tous les soirs, vous devez faire votre prise d'insuline et vous pouvez choisir votre diner et si vous sortez avec des amis.";
-	               		title(message, fieldTitle, fielText);
-	               		//on va enlever
-	               		//consequence(message, partie, tabN, tabE);
-	                    eventInsu(message, partie);
-	                    break;
+                    fieldTitle = "C'est le soir!";
+                    if(partie.tuto)
+                      fieldText = "Tous les soirs, vous devez faire votre prise d'insuline et vous pouvez choisir votre diner et si vous sortez avec des amis.";
+                    else
+                      fieldText = "ZZZzzzzz";
+                    title(message, fieldTitle, fieldText);
+                    eventInsu(message, partie);
+                    break;
 	                case 1:
 	                    eventRepas(message, tabN, tabE);
 	                    break;
 	                case 2:
-	                	partie.numJour++;
-	                	sfm.save(partie.player, partie);
+	                	  partie.numJour++;
+	                	  sfm.save(partie.player, partie);
 	                    eventSport(message, tabN, tabE);
 	                    break;
 	            }
@@ -144,6 +157,64 @@ function consequence(message, partie, tabN, tabE){
 }
 
 /**
+* Fonction qui demande le nombre de jour à jouer
+* @param {string} message - Message discord
+* @param {Object} partie - Objet json de la partie
+* @param {number} partie.nbJour - Nombre de jour de la partie
+* @param {number} partie.choixPerso - Entier qui permet au joueur d'entrer le nombre de jour
+**/
+function eventNumJour(message, partie) {
+
+	const embed = new Discord.RichEmbed()
+    .setColor(0x00AE86)
+    .addField("Une limite à la partie ?", "Choisissez un nombre de jour ")
+  	message.channel.send({embed});
+
+	partie.choixPerso = 1;
+	sfm.save(message.author.id, partie);
+
+	let nbChoix = '-1';
+
+	client.on ('message', message => {
+
+		if(message.author.bot) return;
+
+		if(message.member.roles.some(r=>['Joueur'].includes(r.name))) {
+
+			if (partie.choixPerso == 1) {
+			nbChoix = parseInt(message.content);
+
+				if(Number.isInteger(nbChoix)){
+					if(nbChoix < 1 || isNaN(nbChoix)) {
+						message.channel.send("Alors là, c'est pas possible.");
+					}
+					else if(nbChoix > 10) {
+						message.channel.send('Tu veux jouer pendant 40 ans ou quoi ?');
+					}
+					else {
+						partie.choixPerso = 0;
+						if(partie.tuto){
+							partie.nbJour = 1;
+							sfm.save(partie.player, partie);
+						}
+						else{
+							partie.nbJour = nbChoix;
+							sfm.save(message.author.id, partie);
+						}
+						sfm.save(message.author.id, partie);
+						message.react('➡');
+						//event.event(message, partie, tabN, tabE);
+					}
+				}
+				else {
+					message.channel.send("Je comprend pas ce que tu racontes.");
+				}
+			}
+		}
+	});
+}
+
+/**
 * Fonction qui pour chaque prise d'insuline sauvegarde le nouveau taux de glycemie
 * @param {string} message - Message discord
 * @param {Object} partie - Objet json de la partie
@@ -151,12 +222,6 @@ function consequence(message, partie, tabN, tabE){
 * @param {number[]} partie.tabGlycemie - Tableau de tous les taux de glycémie du joueur
 **/
 function eventInsu(message, partie){
-
-	partie.glycemie = Math.round(((partie.glycemie + 2.7)%4.5)*10)/10;
-
-	partie.tabGlycemie.push(partie.glycemie);
-	sfm.save(message.author.id, partie);
-
 	as.graphString(0, 5, partie.tabGlycemie, message, partie)
 	.then(() => {
 		insuline.priseInsuline(message, partie);
@@ -254,13 +319,18 @@ function eventRepas(message, tabN, tabE){
 * @param {string} message - Message discord
 **/
 function eventFin(message){
-	const embed = new Discord.RichEmbed()
-    .setColor(15013890)
+  if(partie.tuto)
+    fieldTextInfo = "J'espère que vous avez apprécié le tutoriel.";
+  else
+    fieldTextInfo = "J'espère que vous avez apprécié la partie.";
 
-    .addField("C'est la fin du tutoriel", "J'espère que vous avez apprécié la partie.")
-    .addField("Pour quitter la partie, tapez : ", "/end")
+  const embed = new Discord.RichEmbed()
+  .setColor(15013890)
 
-    message.channel.send({embed});
+  .addField("C'est la fin du partie.", fieldTextInfo)
+  .addField("Pour quitter la partie, tapez : ", "/end")
+
+  message.channel.send({embed});
 }
 
 /**
@@ -279,8 +349,7 @@ function title(message, title, text){
 }
 
 function journal(message, partie){
-
-	const chanId = myBot.messageChannel(message, 'journal', partie);
+  const chanId = myBot.messageChannel(message, 'journal', partie);
 
 	const nbAct = partie.activite.length;
 	const activ = [partie.activite[nbAct-5], partie.activite[nbAct-3], partie.activite[nbAct-1]];
@@ -288,28 +357,32 @@ function journal(message, partie){
 
 	for(let i = 0; i < 3; i++){
 		if(activ[i] == "rienA"){
-			activ[i] = "Repos";
+			activ[i] = "repos";
 		}
 	}
 
 	for(let i = 0; i < 3; i++){
 		if(repas[i] == "rienM"){
-			repas[i] = "Saut de repas";
+			repas[i] = "saut de repas";
 		}
 	}
 
+	activ[1] = activ[1].toLowerCase();
+	activ[2] = activ[2].toLowerCase();
+	repas[1] = repas[1].toLowerCase();
+	repas[2] = repas[2].toLowerCase();
 
 	const embed = new Discord.RichEmbed()
-    .setColor(15013890)
-    .setTitle('Journal de bord - Jour ' + partie.numJour)
+	.setColor(15013890)
+	.setTitle('__Journal de bord - Jour ' + partie.numJour + '__')
 
-    .addField("Récapitulatifs des activités : ", activ[0] + ", " + activ[1] + " et " + activ[2] + ".")
-    .addField("Récapitulatifs des repas : ", repas[0] + ", " + repas[1] + " et " + repas[2] + ".")
+	.addField("Récapitulatifs des activités : ", activ[0] + ", " + activ[1] + " et " + activ[2] + ".")
+	.addField("Récapitulatifs des repas : ", repas[0] + ", " + repas[1] + " et " + repas[2] + ".")
 
-    message.guild.channels.get(chanId).send({embed})
-		.then(async function (mess){
-			eventMedecin(mess,partie);
-		})
+  message.guild.channels.get(chanId).send({embed})
+   .then(async function (mess){
+     eventMedecin(mess,partie);
+   })
 }
 
 /**
@@ -364,7 +437,7 @@ function eventMedecin(message,partie) {
   .setThumbnail('https://upload.wikimedia.org/wikipedia/commons/thumb/5/57/Caduceus.svg/299px-Caduceus.svg.png') // Symbole médecine
   .setTimestamp()
   .addField('Poids', 60 + 'kg')
-  .addField('Taux de glycémie', partie.glycemie.toString() + ' mmol·L-1')
+  .addField('Taux de glycémie', partie.glycemie.toFixed(2).toString() + ' mmol·L-1')
   .addField('Commentaires', 'Ceci est un commentaire')
   .addField('Conseil pour les activités', "```\n" + numConseilActivite + "```")
   .addField('Conseil pour la nutrition',"```\n" + numConseilNutrition + "```")

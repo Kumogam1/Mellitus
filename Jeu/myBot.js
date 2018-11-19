@@ -116,7 +116,7 @@ client.on('messageReactionAdd', (reaction, user) => {
       case '✅':
           // reaction.message.delete();
           // event.event(reaction.message, partie, tabNR, tabER);
-          choixPerso(reaction.message);
+          choixPerso(reaction.message, partie);
           break;
       case '❌':
           if(partie.numEvent == 1) {
@@ -326,7 +326,7 @@ function text(message) {
 * Fonction qui présente les personnages prédéfinis
 * @param {string} message - Message discord
 **/
-function choixPerso(message) {
+function choixPerso(message,partie) {
 
     async function clear() {
         // message.delete();

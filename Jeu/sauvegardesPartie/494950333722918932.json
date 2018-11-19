@@ -1,30 +1,44 @@
 {
-  "chanGrp": "514077755315453963",
+  "chanGrp": "514092906710171649",
   "player": "357486231119986688",
-  "partJour": 2,
+  "partJour": 0,
   "numEvent": 0,
-  "nbJour": 1,
-  "numJour": 0,
+  "nbJour": 5,
+  "numJour": 1,
   "insuline": 1,
   "activite": [
-    "Prendre une banane",
-    "Faire un peu de musique",
-    "Manger japonais",
-    "Faire du foot"
+    "Prendre un croissant",
+    "Faire un jogging",
+    "Manger du riz",
+    "Faire du rugby",
+    "Manger du riz",
+    "Faire la fête"
   ],
-  "consequence": [],
+  "consequence": [
+    "courbatures",
+    "courbatures",
+    "courbatures",
+    "courbatures",
+    "courbatures"
+  ],
+  "tuto": false,
   "impactActivite": [
-    1,
-    4
+    2,
+    5,
+    5
   ],
   "impactNutrition": [
+    1,
     5,
-    1
+    5
   ],
-  "glycemie": 3.6,
+  "glycemie": 2.5,
   "tabGlycemie": [
-    2.7,
-    0.9,
-    3.6
-  ]
+    2.5,
+    1.23,
+    1.3,
+    1.3,
+    2.5
+  ],
+  "choixPerso": 0
 }
