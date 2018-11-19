@@ -1,5 +1,5 @@
-const Discord = require("discord.js");
-const fs = require("fs");
+const Discord = require('discord.js');
+const fs = require('fs');
 const myBot = require('./myBot.js');
 const initJeu = require('./initJeu.js');
 const finJeu = require('./finJeu.js');
@@ -10,23 +10,24 @@ const as = require('./affichageStats.js');
 
 const client = new Discord.Client();
 
-const config = require("./token.json");
-const perso = require("./perso.json");
-const tableaux = require("./tableaux.json");
+const config = require('./token.json');
+const perso = require('./perso.json');
+const tableaux = require('./tableaux.json');
 
-//listes pour les activités que le joueur peut pratiquer
+// listes pour les activités que le joueur peut pratiquer
 
-const emoteActiviteM = ['🚴', '🎮', '🎸', '🏃'];
+const emoteActiviteM = ['🚴', '🎮', '🎸', '🏃', '🏋', '🏊'];
 const emoteActiviteA = ['⚽', '🏀', '🏈', '⚾', '🎾', '🏐', '⛳', '🏓', '🏸', '🏋', '🏹', '🎳', '🎮', '🎣'];
-const emoteActiviteS = ['🕺', '🍷', '📺', '🛏', '📖', '🎥'];
-const emoteRepasM = ['🍏', '🍞', '🍫', '🥐', '🍌'];
-const emoteRepasS = ['🍔', '🍰', '🍨', '🍕', '🍖', '🥗', '🍚'];
 
-const pseudoJ = 'Alain';
+const emoteActiviteS = ['🕺', '🍷', '🎱', '🎳', '🎥', '📺', '📖', '🛏'];
+const emoteRepasM = ['🍏', '🍞', '🍫', '🥐', '🍌', '🍐', '☕️', '🥞'];
+const emoteRepasS = ['🍔', '🍰', '🍨', '🍕', '🍖', '🥗', '🍚', '🍝', '🍜', '🍱', '🌮', '🥙','🍅'];
 
-client.on("ready", () => {
-  	console.log(`Bot has started, with ${client.users.size} users, in ${client.channels.size} channels of ${client.guilds.size} guilds.`);
-  	client.user.setActivity(`manger des ventilateurs`);
+//const pseudoJ = 'Alain';
+
+client.on('ready', () => {
+  console.log(`Bot has started, with ${client.users.size} users, in ${client.channels.size} channels of ${client.guilds.size} guilds.`);
+  client.user.setActivity('aider les diabétiques');
 });
 
 client.on('error', error => {
@@ -36,103 +37,96 @@ client.on('error', error => {
   throw error;
 });
 
-client.on("message", (message) => {
+client.on('message', (message) => {
 
 	if (!message.content.startsWith(config.prefix) || message.author.bot) return;
 
-  	if (message.content.startsWith(config.prefix)) {
+    if (message.content.startsWith(config.prefix)) {
+      const args = message.content.slice(config.prefix.length).trim().split(/ +/g);
+      const command = args.shift().toLowerCase();
+      const partie = sfm.loadSave(message.author.id);
 
-  		const args = message.content.slice(config.prefix.length).trim().split(/ +/g);
-		const command = args.shift().toLowerCase();
-        const partie = sfm.loadSave(message.author.id);
-
-    	switch(command) {
-        	case "start":
-                partie.nbJour = 3;
-                partie.tuto = false;
-                sfm.save(message.author.id, partie);
-        		initJeu.initJeu(message, client);
-        		break;
-            case "tuto":
-                partie.nbJour = 1;
-                partie.tuto = true;
-                sfm.save(message.author.id, partie);
-                initJeu.initJeu(message, client);
-                break;
-        	case "end":
-        		finJeu.finJeu(message);
-        		break;
-            /*case "perso" :
-                choixPerso(message);
-                break;
-        	case "stats":
-                const f = [10,30,45];
-        		as.graphString(0, 100, f, message, partie);
-        		break;
-            case "cons":
-                console.log(partie.activite);
-                console.log(partie.consequence);
-                break;
-            case 'insu':
-                insuline.priseInsuline(message);
-                break;*/
-            case 'text':
-                text(message);
-                break;
-    		default:
-    			message.channel.send("Commande inconnue");
-                break;
+      switch(command) {
+        case 'start':
+          partie.nbJour = 3;
+          partie.tuto = false;
+          sfm.save(message.author.id, partie);
+          initJeu.initJeu(message, client);
+          break;
+        case 'tuto':
+            partie.nbJour = 1;
+            partie.tuto = true;
+            sfm.save(message.author.id, partie);
+            initJeu.initJeu(message, client);
+            break;
+        case 'end':
+          finJeu.finJeu(message);
+          break;
+        case 'text':
+          text(message);
+          break;
+        default:
+          message.channel.send('Commande inconnue');
+          break;
 		}
-  	}
+  }
 });
 
-client.on("messageReactionAdd", (reaction, user) => {
+client.on('messageReactionAdd', (reaction, user) => {
 
 	if(user.bot) return;
 
     const partie = sfm.loadSave(user.id);
 
-    let tabNR = []; //tableau de nom de repas
-    let tabNA = []; //tableau de nom d'activités
-    let tabER = []; //tableau d'emote de repas
-    let tabEA = []; //tableau d'emote d'activités
+    let tabNR = []; // tableau de nom de repas
+    let tabNA = []; // tableau de nom d'activités
+    let tabER = []; // tableau d'emote de repas
+    let tabEA = []; // tableau d'emote d'activités
+    let tabIA = []; // tableau de l'impact des activités
+    let tabIR = []; // tableau de l'impact  des repas
 
-    switch(partie.partJour){
-        case 0:
-            tabNR = tableaux.nomRepasM;
-            tabER = emoteRepasM;
-            tabNA = tableaux.nomActiviteM;
-            tabEA = emoteActiviteM;
-            break;
-        case 1:
-            tabNR = tableaux.nomRepasS;
-            tabER = emoteRepasS;
-            tabNA = tableaux.nomActiviteA;
-            tabEA = emoteActiviteA;
-            break;
-        case 2:
-            tabNR = tableaux.nomRepasS;
-            tabER = emoteRepasS;
-            tabNA = tableaux.nomActiviteS;
-            tabEA = emoteActiviteS;
-            break;
-        default:
-            console.log("Partie du jour inconnue.");
+    switch(partie.partJour) {
+      case 0:
+          tabNR = tableaux.nomRepasM;
+          tabER = emoteRepasM;
+          tabNA = tableaux.nomActiviteM;
+          tabEA = emoteActiviteM;
+          tabIA = tableaux.impactAM;
+          tabIR = tableaux.impactRM;
+          break;
+      case 1:
+          tabNR = tableaux.nomRepasS;
+          tabER = emoteRepasS;
+          tabNA = tableaux.nomActiviteA;
+          tabEA = emoteActiviteA;
+          tabIA = tableaux.impactAA;
+          tabIR = tableaux.impactRS;
+          break;
+      case 2:
+          tabNR = tableaux.nomRepasS;
+          tabER = emoteRepasS;
+          tabNA = tableaux.nomActiviteS;
+          tabEA = emoteActiviteS;
+          tabIA = tableaux.impactAS;
+          tabIR = tableaux.impactRS;
+          break;
+      default:
+          console.log('Partie du jour inconnue.');
     }
 
-    switch(reaction.emoji.name){
+    switch(reaction.emoji.name) {
         case '✅':
-            //reaction.message.delete();
-            //event.event(reaction.message, partie, tabNR, tabER);
             choixPerso(reaction.message, partie);
             break;
         case '❌':
-            if(partie.numEvent == 1){
+            if(partie.numEvent == 1) {
                 writeAct(user.id, 'rienM', partie);
+                partie.impactNutrition.push(0);
                 event.event(reaction.message, partie, tabNA, tabEA);
             }
             else{
                 writeAct(user.id, 'rienA', partie);
+                partie.impactActivite.push(0);
                 partie.partJour = (partie.partJour + 1) % 3;
                 sfm.save(partie.player, partie);
                 event.event(reaction.message, partie, tabNR, tabER);
@@ -167,9 +161,9 @@ client.on("messageReactionAdd", (reaction, user) => {
     if(reaction.emoji.name == '🇦'
     || reaction.emoji.name == '🇧'
     || reaction.emoji.name == '🇨'
-    || reaction.emoji.name == '🇩'){
+    || reaction.emoji.name == '🇩') {
         let numPerso = -1;
-        switch(reaction.emoji.name){
+        switch(reaction.emoji.name) {
             case '🇦':
                 numPerso = 0;
                 break;
@@ -184,12 +178,12 @@ client.on("messageReactionAdd", (reaction, user) => {
                 break;
         }
 
-        const chanId = myBot.messageChannel(reaction.message, "personnage", partie);
+        const chanId = myBot.messageChannel(reaction.message, 'personnage', partie);
 
         if(partie.tuto)
             fieldTextPerso = "Voici le channel personnage.\nC'est dans ce channel que vous pouvez voir les informations concernant votre personnage.";
         else
-            fieldTextPerso = "Voici votre personnage.";
+            fieldTextPerso = "Voici votre personnage :";
 
         reaction.message.guild.channels.get(chanId).send({embed: {
             color: 15013890,
@@ -198,77 +192,64 @@ client.on("messageReactionAdd", (reaction, user) => {
                 value: fieldTextPerso
             }]
         }}).then(() => {
-            reaction.message.guild.channels.get(chanId).send({embed: {
-            color: 0x00AE86,
-            title: "__**Personnage**__",
-            fields: [{
-                name: "Nom",
-                value: perso.nom[numPerso]
-            },
-            {
-                name: "Sexe",
-                value: perso.sexe[numPerso]
-            },
-            {
-                name: "Age",
-                value: perso.age[numPerso]
-            },
-            {
-                name: "Taille",
-                value: perso.taille[numPerso]
-            },
-            {
-                name: "Poids",
-                value: perso.poids[numPerso]
-            }]}})
+            reaction.message.guild.channels.get(chanId).send({ embed: {
+                color: 0x00AE86,
+                title: '__**Personnage**__',
+                fields: [{
+                    name: 'Nom',
+                    value: perso.nom[numPerso],
+                },
+                {
+                    name: 'Sexe',
+                    value: perso.sexe[numPerso],
+                },
+                {
+                    name: 'Age',
+                    value: perso.age[numPerso],
+                },
+                {
+                    name: 'Taille',
+                    value: perso.taille[numPerso],
+                },
+                {
+                    name: 'Poids',
+                    value: perso.poids[numPerso],
+                }]
+            }})
             .then(() => {
                 event.event(reaction.message, partie, tabNR, tabER);
             });
         });
-
-        /*const chanId2 = myBot.messageChannel(reaction.message, "informations", partie);
-
-        if(partie.tuto)
-            fieldTextInfo = "Voici le channel informations.\nAvant chaque prise d'insuline, un graphique montrant l'évolution de votre taux de glycémie apparaitra dans ce channel.";
-        else
-            fieldTextInfo = "Un petit récapitulatif du taux de glycémie.";
-
-        reaction.message.guild.channels.get(chanId2).send({embed: {
-            color: 15013890,
-            fields: [{
-                name: "Channel Informations",
-                value: fieldTextInfo
-            }]
-        }});*/
     }
 
-    //Quand on choisi le repas
-    if(tabER.includes(reaction.emoji.name)){
+  // Quand on choisi le repas
+    if(tabER.includes(reaction.emoji.name)) {
         var i = 0;
         while(tabER[i] != reaction.emoji.name)
             i++;
         writeAct(user.id, tabNR[i], partie);
+        partie.impactNutrition.push(tabIR[i]);
         event.event(reaction.message, partie, tabNA, tabEA);
     }
 
-    //Quand on choisi le sport
-	if(tabEA.includes(reaction.emoji.name)){
+    // Quand on choisi la sport
+	if(tabEA.includes(reaction.emoji.name)) {
         var i = 0;
         while(tabEA[i] != reaction.emoji.name)
             i++;
         writeAct(user.id, tabNA[i], partie);
-        partie.impact.push(tableaux[i]);
+        partie.impactActivite.push(tabIA[i]);
         partie.partJour = (partie.partJour + 1) % 3;
         sfm.save(partie.player, partie);
         event.event(reaction.message, partie, tabNR, tabER);
     }
 });
 
-client.on("guildMemberAdd", (member) => {
+client.on('guildMemberAdd', (member) => {
     finJeu.initStat(member.user);
 });
 
-client.on("guildMemberRemove", (member) => {
+client.on('guildMemberRemove', (member) => {
     sfm.deleteSave(member.id);
 });
 
@@ -279,16 +260,16 @@ client.on("guildMemberRemove", (member) => {
 * @param {Object} partie - Objet json de la partie
 * @returns {number} Identifiant du channel
 **/
-exports.messageChannel = function messageChannel(message, chanName, partie){
+exports.messageChannel = function messageChannel(message, chanName, partie) {
 
 	const listChan2 = finJeu.listChan(message, partie);
 
     let id = 1;
 
     listChan2.forEach(channel => {
-        if(channel.name === chanName){
-            let chan = message.guild.channels.find(chann => {
-                if(chann.name == chanName){
+        if(channel.name === chanName) {
+            const chan = message.guild.channels.find(chann => {
+                if(chann.name == chanName) {
                     return chann;
                 }
             });
@@ -305,7 +286,7 @@ exports.messageChannel = function messageChannel(message, chanName, partie){
 * @param {Object} partie - Objet json de la partie
 * @param {string[]} partie.activite - Objet json de la partie
 **/
-function writeAct(userId, text, partie){
+function writeAct(userId, text, partie) {
     partie.activite.push(text);
     sfm.save(userId, partie);
 }
@@ -315,8 +296,8 @@ function writeAct(userId, text, partie){
 * @param {number} max - Borne supérieur
 * @returns {number} Identifiant du channel
 **/
-exports.getRandomInt = function getRandomInt(max){
-    var x = Math.floor(Math.random() * Math.floor(max));
+exports.getRandomInt = function getRandomInt(max) {
+    const x = Math.floor(Math.random() * Math.floor(max));
     return x;
 };
 
@@ -330,14 +311,14 @@ function text(message) {
 
     const embed = new Discord.RichEmbed()
     .setColor(0x00AE86)
-    .setTitle("Bienvenue dans Mellitus")
+    .setTitle('Bienvenue dans Mellitus')
 
-    .addField("Qu'est ce que Mellitus ?", "Mellitus est un jeu sérieux qui vous met dans la peau d'une personne diabétique.\nVotre but est de stabiliser votre niveau d'insuline jusqu'à la fin de la partie.")
-    .addField("Comment jouer ?", "La partie est divisée en jour et chaque jour est une suite de choix. A chaque choix, ses conséquences.\n Durant la partie, vous ferez vos choix de 2 façons différentes : sous forme de texte ou sous forme de boutons.\nLe jeu n'étant pas terminé, il ne peut accueillir qu'un seul joueur à la fois.")
-    .addField("Lancer le tutoriel : ", "/start")
-    .addField("Commande d'arrêt d'urgence : ", "/end")
+    .addField('Qu\'est ce que Mellitus ?', 'Mellitus est un jeu sérieux qui vous met dans la peau d\'une personne diabétique.\nVotre but est de stabiliser votre niveau d\'insuline jusqu\'à la fin de la partie.')
+    .addField('Comment jouer ?', 'La partie est divisée en jour et chaque jour est une suite de choix. A chaque choix, ses conséquences.\n Durant la partie, vous ferez vos choix de 2 façons différentes : sous forme de texte ou sous forme de boutons.\nLe jeu n\'étant pas terminé, il ne peut accueillir qu\'un seul joueur à la fois.')
+    .addField('Lancer le tutoriel : ', '/start')
+    .addField('Commande d\'arrêt d\'urgence : ', '/end');
 
-    message.channel.send({embed});
+    message.channel.send({ embed });
 }
 
 /**
@@ -345,16 +326,15 @@ function text(message) {
 * @param {string} message - Message discord
 **/
 function choixPerso(message, partie){
-
     async function clear() {
-        //message.delete();
+        // message.delete();
         const fetched = await message.channel.fetchMessages();
         message.channel.bulkDelete(fetched);
     }
 
     clear()
     .catch((err) => {
-        console.log(err)
+        console.log(err);
     });
 
     if(partie.tuto)
@@ -364,49 +344,48 @@ function choixPerso(message, partie){
 
     const embed = new Discord.RichEmbed()
     .setColor(15013890)
-
     .setTitle("__**Phase personnage**__")
     .addField("👶 👦 👧 👨 👩 👴 👵", fieldText)
 
-    message.channel.send({embed})
+    message.channel.send({ embed })
     .then((msg) => {
-        for(let i = 0; i < 3; i++){
-            writePerso(msg, i);
-        }
+      for(let i = 0; i < 3; i++) {
+          writePerso(msg, i);
+      }
 
-        msg.channel.send({embed: {
-            color: 0x00AE86,
-            title: "__**Personnage D**__",
-            fields: [{
-                name: "Nom",
-                value: perso.nom[3]
-              },
-              {
-                name: "Sexe",
-                value: perso.sexe[3]
-              },
-              {
-                name: "Age",
-                value: perso.age[3]
-              },
-              {
-                name: "Taille",
-                value: perso.taille[3]
-              },
-              {
-                name: "Poids",
-                value: perso.poids[3]
-              }
-            ]
-          }
-        })
-        .then(async function(mess) {
-            await mess.react('🇦');
-            await mess.react('🇧');
-            await mess.react('🇨');
-            await mess.react('🇩');
-        })
+    msg.channel.send({ embed: {
+        color: 0x00AE86,
+        title: '__**Personnage D**__',
+        fields: [{
+            name: 'Nom',
+            value: perso.nom[3],
+          },
+          {
+            name: 'Sexe',
+            value: perso.sexe[3],
+          },
+          {
+            name: 'Age',
+            value: perso.age[3],
+          },
+          {
+            name: 'Taille',
+            value: perso.taille[3],
+          },
+          {
+            name: 'Poids',
+            value: perso.poids[3],
+          },
+        ],
+      },
+    })
+    .then(async function(mess) {
+        await mess.react('🇦');
+        await mess.react('🇧');
+        await mess.react('🇨');
+        await mess.react('🇩');
     });
+  });
 }
 
 /**
@@ -414,50 +393,50 @@ function choixPerso(message, partie){
 * @param {string} message - Message discord
 * @param {string} numPerso - Numéro du personnage
 **/
-function writePerso(message, numPerso){
+function writePerso(message, numPerso) {
 
-    let i = "";
+    let i = '';
 
-    switch(numPerso){
+    switch(numPerso) {
         case 0:
-            i = "A";
+            i = 'A';
             break;
         case 1:
-            i = "B";
+            i = 'B';
             break;
         case 2:
-            i = "C";
+            i = 'C';
             break;
         case 3:
-            i = "D";
+            i = 'D';
             break;
     }
 
-    message.channel.send({embed: {
+    message.channel.send({ embed: {
         color: 0x00AE86,
-        title: "__**Personnage " + i + "**__",
+        title: '__**Personnage ' + i + '**__',
         fields: [{
-            name: "Nom",
-            value: perso.nom[numPerso]
+            name: 'Nom',
+            value: perso.nom[numPerso],
           },
           {
-            name: "Sexe",
-            value: perso.sexe[numPerso]
+            name: 'Sexe',
+            value: perso.sexe[numPerso],
           },
           {
-            name: "Age",
-            value: perso.age[numPerso]
+            name: 'Age',
+            value: perso.age[numPerso],
           },
           {
-            name: "Taille",
-            value: perso.taille[numPerso]
+            name: 'Taille',
+            value: perso.taille[numPerso],
           },
           {
-            name: "Poids",
-            value: perso.poids[numPerso]
-          }
-        ]
-      }
+            name: 'Poids',
+            value: perso.poids[numPerso],
+          },
+        ],
+      },
     });
 }
 

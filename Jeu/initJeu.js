@@ -155,9 +155,10 @@ function initChannelGrp(message, partie, channelGrpName, rolePers) {
 		partie.numJour = 0;
     	partie.numEvent = -2;
     	partie.choixPerso = 0;
-    	partie.insuline = 0;
+		partie.insuline = 0;
 		partie.activite = [];
-		partie.impact = [];
+		partie.impactActivite = [];
+		partie.impactNutrition = [];
 		partie.consequence = [];
 		partie.glycemie = 2.5;
 		partie.tabGlycemie = [2.5];
@@ -187,7 +188,7 @@ function bienvenue(message) {
 	}
 	else{
 		titre = "Jeu";
-		text = "Vous êtes sur le point de débuter le jeu Mellitus.";
+		text = "Vous allez jouer à Mellitus. Bon jeu.";
 	}
 
 	const embed = new Discord.RichEmbed()

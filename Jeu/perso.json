@@ -1,7 +1,7 @@
 {
-	"nom" : ["Alphonse Brown", "Brenda Montgomery", "Martin Martin", "Anne-Sophie Sofyan"],
-	"sexe" : ["Homme", "Femme", "Homme", "Femme"],
-	"age" : ["28 ans", "42 ans", "35 ans", "37 ans"],
-	"taille" : ["1m80", "1m72", "1m67", "1m74"],
-	"poids" : ["85kg", "82kg", "110kg", "105kg"]
+	"nom" : ["Alphonse Brown", "Vanessa Carré", "Diego Tan"],
+	"sexe" : ["Homme", "Femme","Homme"],
+	"age" : ["70 ans", "30 ans", "15 ans"],
+	"taille" : ["1m80", "1m65", "1m58"],
+	"poids" : ["90kg", "55kg", "75kg"]
 }
