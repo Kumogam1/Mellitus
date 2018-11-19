@@ -6,6 +6,10 @@ const finJeu = require('./finJeu.js')
 const insuline = require('./priseInsuline.js');
 const calcul = require('./calcul.js');
 const as = require('./affichageStats.js');
+const config = require("./token.json");
+
+const client = new Discord.Client();
+client.login(config.token);
 
 const conseq = ['crampe', 'courbatures'];
 	
@@ -48,6 +52,9 @@ exports.event = function event(message, partie, tabN, tabE){
 		switch(partie.partJour){
 			case 0:
 				switch(partie.numEvent){
+					case -1:
+						eventNumJour(message, partie);
+						break;
 					case 0:
 						fieldTitle = "C'est le matin!";
 						if(partie.tuto)
@@ -146,6 +153,57 @@ function consequence(message, partie, tabN, tabE){
         //event.event(message, partie, tabN, tabE);
         //tabn et tabe sont ceux de la partie de la journee precedante
 	}
+}
+
+/**
+* Fonction qui demande le nombre de jour à jouer
+* @param {string} message - Message discord
+* @param {Object} partie - Objet json de la partie
+* @param {number} partie.nbJour - Nombre de jour de la partie
+* @param {number} partie.choixPerso - Entier qui permet au joueur d'entrer le nombre de jour
+**/
+function eventNumJour(message, partie) {
+
+	const embed = new Discord.RichEmbed()
+    .setColor(0x00AE86)
+    .addField("Une limite à la partie ?", "Choisissez un nombre de jour ")
+  	message.channel.send({embed});
+
+	partie.choixPerso = 1;
+	sfm.save(message.author.id, partie);
+
+	let nbChoix = '-1';
+
+	client.on ('message', message => {
+
+		if(message.author.bot) return;
+
+		if(message.member.roles.some(r=>['Joueur'].includes(r.name))) {
+
+			if (partie.choixPerso == 1) {
+			nbChoix = parseInt(message.content);
+
+				if(Number.isInteger(nbChoix)){
+					if(nbChoix < 1 || isNaN(nbChoix)) {
+						message.channel.send("Alors là, c'est pas possible.");
+					}
+					else if(nbChoix > 10) {
+						message.channel.send('Tu veux jouer pendant 40 ans ou quoi ?');
+					}
+					else {
+						partie.choixPerso = 0;
+						partie.nbJour = nbChoix;
+						sfm.save(message.author.id, partie);
+						message.react('➡');
+						//event.event(message, partie, tabN, tabE);
+					}
+				}
+				else {
+					message.channel.send("Je comprend pas ce que tu racontes.");
+				}
+			}
+		}
+	});
 }
 
 /**
@@ -259,10 +317,16 @@ function eventRepas(message, tabN, tabE){
 * @param {string} message - Message discord
 **/
 function eventFin(message){
+
+	if(partie.tuto)
+		fieldTextInfo = "J'espère que vous avez apprécié le tutoriel.";
+	else
+		fieldTextInfo = "J'espère que vous avez apprécié la partie.";
+
 	const embed = new Discord.RichEmbed()
 	.setColor(15013890)
 
-	.addField("C'est la fin du partie.tutoriel", "J'espère que vous avez apprécié la partie.")
+	.addField("C'est la fin du partie.", fieldTextInfo)
 	.addField("Pour quitter la partie, tapez : ", "/end")
 
 	message.channel.send({embed});

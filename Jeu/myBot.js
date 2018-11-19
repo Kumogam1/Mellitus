@@ -139,6 +139,22 @@ client.on("messageReactionAdd", (reaction, user) => {
             }
             break;
         case '➡':
+            if(partie.numEvent == -1) {
+                const chanId2 = myBot.messageChannel(reaction.message, "informations", partie);
+
+                if(partie.tuto)
+                    fieldTextInfo = "Voici le channel informations.\nAvant chaque prise d'insuline, un graphique montrant l'évolution de votre taux de glycémie apparaitra dans ce channel.";
+                else
+                    fieldTextInfo = "Un petit récapitulatif du taux de glycémie.";
+
+                reaction.message.guild.channels.get(chanId2).send({embed: {
+                    color: 15013890,
+                    fields: [{
+                        name: "Channel Informations",
+                        value: fieldTextInfo
+                    }]
+                }});
+            }
             event.event(reaction.message, partie, tabNR, tabER);
             break;
         case '🔚':
@@ -210,7 +226,7 @@ client.on("messageReactionAdd", (reaction, user) => {
             });
         });
 
-        const chanId2 = myBot.messageChannel(reaction.message, "informations", partie);
+        /*const chanId2 = myBot.messageChannel(reaction.message, "informations", partie);
 
         if(partie.tuto)
             fieldTextInfo = "Voici le channel informations.\nAvant chaque prise d'insuline, un graphique montrant l'évolution de votre taux de glycémie apparaitra dans ce channel.";
@@ -223,7 +239,7 @@ client.on("messageReactionAdd", (reaction, user) => {
                 name: "Channel Informations",
                 value: fieldTextInfo
             }]
-        }});
+        }});*/
     }
 
     //Quand on choisi le repas
