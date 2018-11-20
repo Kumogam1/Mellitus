@@ -19,7 +19,7 @@ const tableaux = require('./tableaux.json');
 const emoteActiviteM = ['🎮','🏃','🛏'];
 const emoteActiviteA = ['⚽️','🏋', '🎸', '🎮', '🎣', '🏊‍♂️'];
 const emoteActiviteS = ['🕺', '🚶', '🍷', '🎱', '🎳', '🎥', '📺', '📖', '🛏', '🎪', '💃','🧶', '🎫'];
-const emoteRepasM = ['🍏', '🍞', '🥐', '☕️', '🥞'];
+const emoteRepasM = ['🍏', '🍞', '🥐', '☕', '🥞'];
 const emoteRepasS = ['🍔', '🧁', '🍖', '🥗', '🍚', '🍝'];
 
 //const pseudoJ = 'Alain';
