@@ -11,6 +11,7 @@ const perso = require("./perso.json");
 const calcul = require("./calcul.js");
 const as = require('./affichageStats.js');
 const config = require("./token.json");
+const eventGly = require("./evenement.json");
 
 const client = new Discord.Client();
 client.login(config.token);
@@ -35,96 +36,195 @@ exports.event = function event(message, partie, tabN, tabE){
 	let fielText = "";
 
 	async function clear() {
-        const fetched = await message.channel.fetchMessages();
-        message.channel.bulkDelete(fetched);
-    }
+		fetched = await message.channel.fetchMessages();
+		message.channel.bulkDelete(fetched);
+	}
 
-    clear()
-    .catch((err) => {
-    	console.log(err)
-    });
+	clear()
+	.catch((err) => {
+		console.log(err)
+	});
 
-
-
-
-  partie.numEvent = (partie.numEvent + 1) % 3;
+	partie.numEvent = (partie.numEvent + 1) % 3;
 	sfm.save(partie.player, partie);
 
-  if(partie.numJour > 0 && partie.partJour == 0 && partie.numEvent == 0){
-    journal(message, partie);
-    calcul.glyMatin(partie);
-  }
+	//Journal et message du docteur en fin de journée
+	if(partie.numJour > 0 && partie.partJour == 0 && partie.numEvent == 0 && partie.evenement){
+		journal(message, partie);
+		calcul.glyMatin(partie);
+	}
 
-    if(partie.nbJour != partie.numJour){
-    	switch(partie.partJour){
-	        case 0:
-	            switch(partie.numEvent){
-                case -1:
-                  eventNumJour(message, partie);
-                  break;
-                case 0:
-                  fieldTitle = "C'est le matin!";
-                  if(partie.tuto)
-                    fieldText = "Chaque matin, vous devez faire votre prise d'insuline et vous pouvez choisir votre petit déjeuner et une activité matinale au choix.";
-                  else
-                    fieldText = "Le soleil se réveille, il fait beau, il faut jour.";
-                  title(message, fieldTitle, fieldText);
-                  consequence(message, partie, tabN, tabE);
-                  eventInsu(message, partie);
-                  break;
-                case 1:
-                  eventRepas(message, tabN, tabE);
-                  break;
-                case 2:
-                  eventSport(message, tabN, tabE);
-                  break;
-	            }
-	            break;
-	        case 1:
-	            switch(partie.numEvent){
-                case 0:
-                  fieldTitle = "C'est l'après-midi!";
-                  if(partie.tuto)
-                    fieldText = "Tous les après-midi, vous devez faire votre prise d'insuline et vous pouvez choisir votre repas et une activité.";
-                  else
-                    fieldText = "Repas, repos, récréation.";
-                  title(message, fieldTitle, fieldText);
-                  eventInsu(message, partie);
-                  break;
-                case 1:
-                    eventRepas(message, tabN, tabE);
-                    break;
-                case 2:
-                    eventSport(message, tabN, tabE);
-                    break;
-	            }
-	            break;
-	        case 2:
-	            switch(partie.numEvent){
-	                case 0:
-                    fieldTitle = "C'est le soir!";
-                    if(partie.tuto)
-                      fieldText = "Tous les soirs, vous devez faire votre prise d'insuline et vous pouvez choisir votre diner et si vous sortez avec des amis.";
-                    else
-                      fieldText = "ZZZzzzzz";
-                    title(message, fieldTitle, fieldText);
-                    eventInsu(message, partie);
-                    break;
-	                case 1:
-	                    eventRepas(message, tabN, tabE);
-	                    break;
-	                case 2:
-	                	  partie.numJour++;
-	                	  sfm.save(partie.player, partie);
-	                    eventSport(message, tabN, tabE);
-	                    break;
-	            }
-	            break;
-    	}
-    }
-    else {
-    	eventFin(message);
-    }
+	//Fin du tuto
+	if(partie.nbJour == partie.numJour){
+		eventFin(message, partie);
+		return;
+	}
+
+	//title + evenement glycemie
+	if(partie.numEvent == 0  && partie.evenement){
+		if(partie.partJour == 0){
+			fieldTitle = "C'est le matin!";
+			if(partie.tuto)
+				fieldText = "Chaque matin, vous devez faire votre prise d'insuline et vous pouvez choisir votre petit déjeuner et une activité matinale au choix.";
+			else
+				fieldText = "Le soleil se réveille, il fait beau, il faut jour.";
+		}
+		else if(partie.partJour == 1){
+			fieldTitle = "C'est l'après-midi!";
+			if(partie.tuto)
+				fieldText = "Tous les après-midi, vous devez faire votre prise d'insuline et vous pouvez choisir votre repas et une activité.";
+			else
+				fieldText = "Repas, repos, récréation.";
+		}
+		else{
+			fieldTitle = "C'est le soir!";
+			if(partie.tuto)
+				fieldText = "Tous les soirs, vous devez faire votre prise d'insuline et vous pouvez choisir votre diner et si vous sortez avec des amis.";
+			else
+				fieldText = "ZZZzzzzz";
+		}
+
+		title(message, fieldTitle, fieldText);
+
+		if(partie.glycemie > 2){		//hyperglycemie
+			let rand = myBot.getRandomInt(5);
+			let title = "";
+			let text = "";
+
+			switch(rand){
+				case 0:
+					title = eventGly.hyper1[0];
+					text = eventGly.hyper1[1];
+					break;
+				case 1:
+					title = eventGly.hyper2[0];
+					text = eventGly.hyper2[1];
+					break;
+				case 2:
+					title = eventGly.hyper3[0];
+					text = eventGly.hyper3[1];
+					break;
+				case 3:
+					title = eventGly.hyper4[0];
+					text = eventGly.hyper4[1];
+					break;
+				case 4:
+					title = eventGly.hyper5[0];
+					text = eventGly.hyper5[1];
+					break;
+			}
+
+			const embed = new Discord.RichEmbed()
+			.setColor(15013890)
+			.addField(title, text)
+
+			message.channel.send({embed})
+			.then(async function (mess) {
+				mess.react('➡');
+			});
+
+			partie.numEvent--;
+			partie.evenement = false;
+			sfm.save(partie.player, partie);
+			return;
+			//mal de tete
+			//fatigue
+			//pipi
+			//soif
+			//tres pipi
+		}
+		else if(partie.glycemie < 0.6){	//hypoglycemie
+			let rand = myBot.getRandomInt(3);
+			let title = "";
+			let text = "";
+
+			switch(rand){
+				case 0:
+					title = eventGly.hypo1[0];
+					text = eventGly.hypo1[1];
+					break;
+				case 1:
+					title = eventGly.hypo2[0];
+					text = eventGly.hypo2[1];
+					break;
+				case 2:
+					title = eventGly.hypo3[0];
+					text = eventGly.hypo3[1];
+					break;
+			}
+
+			const embed = new Discord.RichEmbed()
+			.setColor(15013890)
+			.addField(title, text)
+
+			message.channel.send({embed})
+			.then(async function (mess) {
+				mess.react('➡');
+			});
+
+			partie.numEvent--;
+			partie.evenement = false;
+			sfm.save(partie.player, partie);
+			return;
+			//vertiges
+			//troubles de la visions
+			//malaises
+		}
+		else{
+			//anniv
+			//maladie
+		}
+	}
+
+	//Rotation des evenements
+	if(partie.nbJour != partie.numJour){
+		partie.evenement = true;
+		sfm.save(partie.player, partie);
+		switch(partie.partJour){
+			case 0:
+				switch(partie.numEvent){
+					case 0:
+						//consequence(message, partie, tabN, tabE);
+						eventInsu(message, partie);
+						break;
+					case 1:
+						eventRepas(message, tabN, tabE);
+						break;
+					case 2:
+						eventSport(message, tabN, tabE);
+						break;
+					}
+					break;
+			case 1:
+				switch(partie.numEvent){
+					case 0:
+						eventInsu(message, partie);
+						break;
+					case 1:
+						eventRepas(message, tabN, tabE);
+						break;
+					case 2:
+						eventSport(message, tabN, tabE);
+						break;
+					}
+					break;
+			case 2:
+				switch(partie.numEvent){
+					case 0:
+						eventInsu(message, partie);
+						break;
+					case 1:
+						eventRepas(message, tabN, tabE);
+						break;
+					case 2:
+						partie.numJour++;
+						sfm.save(partie.player, partie);
+						eventSport(message, tabN, tabE);
+						break;
+				}
+				break;
+		}
+	}
 };
 
 //Modification
@@ -152,8 +252,6 @@ function consequence(message, partie, tabN, tabE){
 	}
 	else{
 		message.delete();
-        //event.event(message, partie, tabN, tabE);
-        //tabn et tabe sont ceux de la partie de la journee precedante
 	}
 }
 
@@ -320,7 +418,7 @@ function eventRepas(message, tabN, tabE){
 * Fonction qui écrit le message de fin de partie
 * @param {string} message - Message discord
 **/
-function eventFin(message){
+function eventFin(message, partie){
   if(partie.tuto)
     fieldTextInfo = "J'espère que vous avez apprécié le tutoriel.";
   else
@@ -358,7 +456,7 @@ function title(message, title, text){
 * @param {number} partie.numJour - Numéro du jour
 **/
 function journal(message, partie){
-  const chanId = myBot.messageChannel(message, 'journal', partie);
+	const chanId = myBot.messageChannel(message, 'journal', partie);
 
 	const nbAct = partie.activite.length;
 	const activ = [partie.activite[nbAct-5], partie.activite[nbAct-3], partie.activite[nbAct-1]];

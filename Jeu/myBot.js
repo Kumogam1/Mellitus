@@ -48,7 +48,7 @@ client.on('message', (message) => {
 
       switch(command) {
         case 'start':
-          partie.nbJour = 3;
+          partie.nbJour = -1;
           partie.tuto = false;
           sfm.save(message.author.id, partie);
           initJeu.initJeu(message, client);
@@ -62,6 +62,9 @@ client.on('message', (message) => {
         case 'end':
           finJeu.finJeu(message);
           break;
+        case 'create':
+            finJeu.initStat(message.author);
+            break;
         case 'text':
           text(message);
           break;

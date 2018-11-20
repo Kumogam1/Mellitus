@@ -153,13 +153,14 @@ function initChannelGrp(message, partie, channelGrpName, rolePers) {
 		partie.player = message.author.id;
 		partie.partJour = 0;
 		partie.numJour = 0;
-    	partie.numEvent = -2;
+    	partie.numEvent = -1;
     	partie.choixPerso = 0;
 		partie.insuline = 0;
 		partie.activite = [];
 		partie.impactActivite = [];
 		partie.impactNutrition = [];
 		partie.consequence = [];
+		partie.evenement = true;
 		partie.glycemie = 2.5;
 		partie.tabGlycemie = [2.5];
 		initChannel(message, partie, rolePers, 'Hub', res);

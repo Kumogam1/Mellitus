@@ -1,7 +1,7 @@
-{
-	"nom" : ["Alphonse Brown", "Vanessa Carré", "Diego Tan"],
-	"sexe" : ["Homme", "Femme","Homme"],
-	"age" : ["70 ans", "30 ans", "15 ans"],
-	"taille" : ["1m80", "1m65", "1m58"],
-	"poids" : ["90kg", "55kg", "75kg"]
+﻿{
+	"nom" : ["Alphonse Brown", "Vanessa Carré", "Diego Tan", "Titouan Sechepine"],
+	"sexe" : ["Homme", "Femme","Homme", "Homme"],
+	"age" : ["70 ans", "30 ans", "15 ans", "42 ans"],
+	"taille" : ["1m80", "1m65", "1m58", "1m82"],
+	"poids" : ["90kg", "55kg", "75kg", "83kg"]
 }
