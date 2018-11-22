@@ -15,7 +15,6 @@ exports.priseInsuline = function priseInsuline(message, partie) {
   const embed = new Discord.RichEmbed()
     .setColor(0x00AE86)
     .addField("C'est l'heure de la prise d'insuline.", "Je dois prendre de l'insuline (entre 0 et 80 unités): ")
-
   message.channel.send({embed});
 
   partie.insuline = 1;
@@ -23,7 +22,7 @@ exports.priseInsuline = function priseInsuline(message, partie) {
 
   client.on ('message', message => {
 
-    if (message.author.bot) return;
+    if(message.author.bot) return;
 
     if(message.member.roles.some(r=>['Joueur'].includes(r.name)))
     {

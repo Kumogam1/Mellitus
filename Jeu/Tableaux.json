@@ -1,18 +1,17 @@
 {
 
-	"nomActiviteM" : ["Faire une partie de jeux videos","Faire un jogging", "Faire la grasse matinée"],
-	"impactAM" : [1,3,0],
+	"nomActiviteM" : ["Faire une partie de jeux videos","Faire un jogging", "Faire la grasse matinée", "Lire un livre"],
+	"impactAM" : [1,3,0,0],
 
-	"nomActiviteA" : ["Faire un sport collectif", "Faire un sport individuel", "Faire une partie de jeux videos", "Faire de la p\u00e8che", "Allez à la piscine"],
-	"impactAA" : [4,3,1,1],
+	"nomActiviteA" : ["Faire un sport collectif", "Faire un sport individuel", "Faire une partie de jeux videos", "Faire de la p\u00e8che", "Allez à la piscine", "Se promener", "Aller dans un bar", "Aller au cin\u00e9ma"],
+	"impactAA" : [4,3,1,1,3,2,2,1],
 
-	"nomActiviteS" : ["Faire la f\u00eate", "Se promener", "Aller dans un bar", "Faire du billard", "Faire du bowling", "Aller au cin\u00e9ma", "Regarder la tv", "Lire un livre", "Aller dormir", "Aller au cirque", "Aller à un spectable de danse", "Faire du tricot", "Aller à un concert"],
-	"impactAS" : [4,3,2,2,2,2,1,1,0,1,1,1,3],
+	"nomActiviteS" : ["Faire la f\u00eate", "Se promener", "Aller dans un bar", "Aller au cin\u00e9ma", "Regarder la tv", "Lire un livre", "Aller dormir"],
+	"impactAS" : [4,1,2,1,0,0,0],
 
 	"nomRepasM" : ["Prendre un fruit", "Prendre du pain", "Prendre un croissant",  "Prendre un caf\u00e9", "Manger des pancakes"],
 	"impactRM" : [5,2,1,4,1],
 
 	"nomRepasS" : ["Manger un fast-food", "Manger une patisserie", "Manger de la viande", "Manger des légumes", "Manger du riz", "Manger des nouilles"],
 	"impactRS" : [0,1,2,5,4,3]
-
 }

@@ -1,0 +1,33 @@
+{
+  "chanGrp": "514530405655904296",
+  "player": "448375998942019584",
+  "partJour": 2,
+  "numEvent": 0,
+  "nbJour": 1,
+  "numJour": 0,
+  "insuline": 1,
+  "activite": [
+    "Prendre du chocolat",
+    "Faire de la musculation",
+    "Manger un taco",
+    "Faire du golf"
+  ],
+  "consequence": [],
+  "tuto": true,
+  "choixPerso": 0,
+  "impactActivite": [
+    3,
+    2
+  ],
+  "impactNutrition": [
+    1,
+    2
+  ],
+  "evenement": true,
+  "glycemie": 1.7,
+  "tabGlycemie": [
+    2.5,
+    2.05,
+    1.7
+  ]
+}

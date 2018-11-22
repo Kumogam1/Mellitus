@@ -16,9 +16,9 @@ const tableaux = require('./tableaux.json');
 
 // listes pour les activités que le joueur peut pratiquer
 
-const emoteActiviteM = ['🎮','🏃','🛏'];
-const emoteActiviteA = ['⚽️','🏋', '🎸', '🎮', '🎣', '🏊‍♂️'];
-const emoteActiviteS = ['🕺', '🚶', '🍷', '🎱', '🎳', '🎥', '📺', '📖', '🛏', '🎪', '💃','🧶', '🎫'];
+const emoteActiviteM = ['🎮','🏃','🛏', '📖'];
+const emoteActiviteA = ['⚽️','🏋', '🎮', '🎣', '🏊‍♂️', '🚶', '🍷', '🎥'];
+const emoteActiviteS = ['🕺', '🚶', '🍷', '🎥', '📺', '📖', '🛏'];
 const emoteRepasM = ['🍏', '🍞', '🥐', '☕', '🥞'];
 const emoteRepasS = ['🍔', '🧁', '🍖', '🥗', '🍚', '🍝'];
 
@@ -47,7 +47,7 @@ client.on('message', (message) => {
 
       switch(command) {
         case 'start':
-          partie.nbJour = 3;
+          partie.nbJour = -1;
           partie.tuto = false;
           sfm.save(message.author.id, partie);
           initJeu.initJeu(message, client);
@@ -61,6 +61,9 @@ client.on('message', (message) => {
         case 'end':
           finJeu.finJeu(message);
           break;
+        case 'create':
+            finJeu.initStat(message.author);
+            break;
         case 'text':
           text(message);
           break;
@@ -74,16 +77,17 @@ client.on('message', (message) => {
 client.on('messageReactionAdd', (reaction, user) => {
 
 	if(user.bot) return;
-  const partie = sfm.loadSave(user.id);
 
-  let tabNR = []; // tableau de nom de repas
-  let tabNA = []; // tableau de nom d'activités
-  let tabER = []; // tableau d'emote de repas
-  let tabEA = []; // tableau d'emote d'activités
-  let tabIA = []; // tableau de l'impact des activités
-  let tabIR = []; // tableau de l'impact  des repas
+    const partie = sfm.loadSave(user.id);
 
-  switch(partie.partJour) {
+    let tabNR = []; // tableau de nom de repas
+    let tabNA = []; // tableau de nom d'activités
+    let tabER = []; // tableau d'emote de repas
+    let tabEA = []; // tableau d'emote d'activités
+    let tabIA = []; // tableau de l'impact des activités
+    let tabIR = []; // tableau de l'impact  des repas
+
+    switch(partie.partJour) {
       case 0:
           tabNR = tableaux.nomRepasM;
           tabER = emoteRepasM;
@@ -112,129 +116,126 @@ client.on('messageReactionAdd', (reaction, user) => {
           console.log('Partie du jour inconnue.');
     }
 
-  switch(reaction.emoji.name) {
-      case '✅':
-          // reaction.message.delete();
-          // event.event(reaction.message, partie, tabNR, tabER);
-          choixPerso(reaction.message, partie);
-          break;
-      case '❌':
-          if(partie.numEvent == 1) {
-              writeAct(user.id, 'rienM', partie);
-              partie.impactNutrition.push(0);
-              event.event(reaction.message, partie, tabNA, tabEA);
-          }
-          else{
-              writeAct(user.id, 'rienA', partie);
-              partie.impactActivite.push(0);
-              partie.partJour = (partie.partJour + 1) % 3;
-              sfm.save(partie.player, partie);
-              event.event(reaction.message, partie, tabNR, tabER);
-          }
-          break;
-      case '➡':
-          if(partie.numEvent == -1) {
-            const chanId2 = myBot.messageChannel(reaction.message, "informations", partie);
+    switch(reaction.emoji.name) {
+        case '✅':
+            choixPerso(reaction.message, partie);
+            break;
+        case '❌':
+            if(partie.numEvent == 1) {
+                writeAct(user.id, 'rienM', partie);
+                partie.impactNutrition.push(0);
+                event.event(reaction.message, partie, tabNA, tabEA);
+            }
+            else{
+                writeAct(user.id, 'rienA', partie);
+                partie.impactActivite.push(0);
+                partie.partJour = (partie.partJour + 1) % 3;
+                sfm.save(partie.player, partie);
+                event.event(reaction.message, partie, tabNR, tabER);
+            }
+            break;
+        case '➡':
+            if(partie.numEvent == -1) {
+                const chanId2 = myBot.messageChannel(reaction.message, "informations", partie);
 
-            if(partie.tuto)
-                fieldTextInfo = "Voici le channel informations.\nAvant chaque prise d'insuline, un graphique montrant l'évolution de votre taux de glycémie apparaitra dans ce channel.";
-            else
-                fieldTextInfo = "Un petit récapitulatif du taux de glycémie.";
+                if(partie.tuto)
+                    fieldTextInfo = "Voici le channel informations.\nAvant chaque prise d'insuline, un graphique montrant l'évolution de votre taux de glycémie apparaitra dans ce channel.";
+                else
+                    fieldTextInfo = "Un petit récapitulatif du taux de glycémie.";
 
-            reaction.message.guild.channels.get(chanId2).send({embed: {
-                color: 15013890,
-                fields: [{
-                    name: "Channel Informations",
-                    value: fieldTextInfo
-                }]
-            }});
-          }
-          event.event(reaction.message, partie, tabNR, tabER);
-          break;
-      case '🔚':
-          finJeu.finJeu(reaction.message);
-          break;
-      default:
-          break;
-}
+                reaction.message.guild.channels.get(chanId2).send({embed: {
+                    color: 15013890,
+                    fields: [{
+                        name: "Channel Informations",
+                        value: fieldTextInfo
+                    }]
+                }});
+            }
+            event.event(reaction.message, partie, tabNR, tabER);
+            break;
+        case '🔚':
+            finJeu.finJeu(reaction.message);
+            break;
+        default:
+            break;
+    }
 
     if(reaction.emoji.name == '🇦'
     || reaction.emoji.name == '🇧'
     || reaction.emoji.name == '🇨'
     || reaction.emoji.name == '🇩') {
-      let numPerso = -1;
-      switch(reaction.emoji.name) {
-        case '🇦':
-          numPerso = 0;
-          break;
-        case '🇧':
-          numPerso = 1;
-          break;
-        case '🇨':
-          numPerso = 2;
-          break;
-        case '🇩':
-          numPerso = 3;
-          break;
-      }
+        let numPerso = -1;
+        switch(reaction.emoji.name) {
+            case '🇦':
+                numPerso = 0;
+                break;
+            case '🇧':
+                numPerso = 1;
+                break;
+            case '🇨':
+                numPerso = 2;
+                break;
+            case '🇩':
+                numPerso = 3;
+                break;
+        }
 
-      const chanId = myBot.messageChannel(reaction.message, 'personnage', partie);
+        const chanId = myBot.messageChannel(reaction.message, 'personnage', partie);
 
+        if(partie.tuto)
+            fieldTextPerso = "Voici le channel personnage.\nC'est dans ce channel que vous pouvez voir les informations concernant votre personnage.";
+        else
+            fieldTextPerso = "Voici votre personnage :";
 
-      if(partie.tuto)
-          fieldTextPerso = "Voici le channel personnage.\nC'est dans ce channel que vous pouvez voir les informations concernant votre personnage.";
-      else
-          fieldTextPerso = "Voici votre personnage :";
-
-          reaction.message.guild.channels.get(chanId).send({embed: {
-              color: 15013890,
-              fields: [{
-                  name: "Channel Personnage",
-                  value: fieldTextPerso
-              }]
-            }}).then(() => {
-              reaction.message.guild.channels.get(chanId).send({ embed: {
-              color: 0x00AE86,
-              title: '__**Personnage**__',
-              fields: [{
-                  name: 'Nom',
-                  value: perso.nom[numPerso],
-              },
-              {
-                  name: 'Sexe',
-                  value: perso.sexe[numPerso],
-              },
-              {
-                  name: 'Age',
-                  value: perso.age[numPerso],
-              },
-              {
-                  name: 'Taille',
-                  value: perso.taille[numPerso],
-              },
-              {
-                  name: 'Poids',
-                  value: perso.poids[numPerso],
-              }]}})
+        reaction.message.guild.channels.get(chanId).send({embed: {
+            color: 15013890,
+            fields: [{
+                name: "Channel Personnage",
+                value: fieldTextPerso
+            }]
+        }}).then(() => {
+            reaction.message.guild.channels.get(chanId).send({ embed: {
+                color: 0x00AE86,
+                title: '__**Personnage**__',
+                fields: [{
+                    name: 'Nom',
+                    value: perso.nom[numPerso],
+                },
+                {
+                    name: 'Sexe',
+                    value: perso.sexe[numPerso],
+                },
+                {
+                    name: 'Age',
+                    value: perso.age[numPerso],
+                },
+                {
+                    name: 'Taille',
+                    value: perso.taille[numPerso],
+                },
+                {
+                    name: 'Poids',
+                    value: perso.poids[numPerso],
+                }]
+            }})
             .then(() => {
-            event.event(reaction.message, partie, tabNR, tabER);
+                event.event(reaction.message, partie, tabNR, tabER);
             });
-          });
-  }
+        });
+    }
 
   // Quand on choisi le repas
-  if(tabER.includes(reaction.emoji.name)) {
-      var i = 0;
-      while(tabER[i] != reaction.emoji.name)
-          i++;
-      writeAct(user.id, tabNR[i], partie);
-      partie.impactNutrition.push(tabIR[i]);
-      event.event(reaction.message, partie, tabNA, tabEA);
-  }
+    if(tabER.includes(reaction.emoji.name)) {
+        var i = 0;
+        while(tabER[i] != reaction.emoji.name)
+            i++;
+        writeAct(user.id, tabNR[i], partie);
+        partie.impactNutrition.push(tabIR[i]);
+        event.event(reaction.message, partie, tabNA, tabEA);
+    }
 
     // Quand on choisi la sport
 	if(tabEA.includes(reaction.emoji.name)) {
-
         var i = 0;
         while(tabEA[i] != reaction.emoji.name)
             i++;
@@ -326,8 +327,7 @@ function text(message) {
 * Fonction qui présente les personnages prédéfinis
 * @param {string} message - Message discord
 **/
-function choixPerso(message,partie) {
-
+function choixPerso(message, partie){
     async function clear() {
         // message.delete();
         const fetched = await message.channel.fetchMessages();
@@ -346,9 +346,8 @@ function choixPerso(message,partie) {
 
     const embed = new Discord.RichEmbed()
     .setColor(15013890)
-
-    .setTitle('__**Phase personnage**__')
-    .addField('👶 👦 👧 👨 👩 👴 👵', 'C\'est ici que vous devez choisir un personnage.\nChaque personnage a des caractéristiques différentes, qui influeront sur votre partie.\nPour choisir un personnage, cliquez sur la réaction correspondant au numéro du personnage choisit.');
+    .setTitle("__**Phase personnage**__")
+    .addField("👶 👦 👧 👨 👩 👴 👵", fieldText)
 
     message.channel.send({ embed })
     .then((msg) => {
