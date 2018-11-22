@@ -1,16 +1,17 @@
 {
-	"nomActiviteM" : ["Faire du v\u00e9lo", "Faire une partie de jeux videos", "Faire un peu de musique", "Faire un jogging", "Faire de la musculation", "Faire de la natation"],
-	"impactAM" : [2,1,1,2,3,4],
 
-	"nomActiviteA" : ["Faire du foot", "Faire du basket", "Faire du rugby", "Faire du baseball", "Faire du tennis", "Faire du volley", "Faire du golf", "Faire du pingpong", "Faire du badmington", "Faire de la musculation", "Faire du tir \u00e0 l'arc", "Faire du bowling", "Faire une partie de jeux videos", "Faire de la p\u00e8che"],
-	"impactAA" : [4,4,5,4,4,4,2,3,3,3,2,1,1,1],
+	"nomActiviteM" : ["Faire une partie de jeux videos","Faire un jogging", "Faire la grasse matinée", "Lire un livre"],
+	"impactAM" : [1,3,0,0],
 
-	"nomActiviteS" : ["Faire la f\u00eate", "Aller dans un bar", "Faire du billard", "Faire du bowling", "Aller au cin\u00e9ma", "Regarder la tv", "Lire un livre", "Aller dormir"],
-	"impactAS" : [5,2,2,2,2,1,1,0],
+	"nomActiviteA" : ["Faire un sport collectif", "Faire un sport individuel", "Faire une partie de jeux videos", "Faire de la p\u00e8che", "Allez à la piscine", "Se promener", "Aller dans un bar", "Aller au cin\u00e9ma"],
+	"impactAA" : [4,3,1,1,3,2,2,1],
 
-	"nomRepasM" : ["Prendre une pomme", "Prendre du pain", "Prendre du chocolat", "Prendre un croissant", "Prendre une banane"],
-	"impactRM" : [5,3,1,1,5],
+	"nomActiviteS" : ["Faire la f\u00eate", "Se promener", "Aller dans un bar", "Aller au cin\u00e9ma", "Regarder la tv", "Lire un livre", "Aller dormir"],
+	"impactAS" : [4,1,2,1,0,0,0],
 
-	"nomRepasS" : ["Manger un hamburger", "Manger un gateau", "Manger une glace", "Manger une pizza", "Manger de la viande", "Manger de la salade", "Manger du riz", "Manger des spaghetti", "Manger des nouilles", "Manger japonais", "Manger un taco", "Manger un kebab", "Manger des tomates"],
-	"impactRS" : [0,1,2,0,2,4,5,2,3,1,2,2,5]
+	"nomRepasM" : ["Prendre un fruit", "Prendre du pain", "Prendre un croissant",  "Prendre un caf\u00e9", "Manger des pancakes"],
+	"impactRM" : [5,2,1,4,1],
+
+	"nomRepasS" : ["Manger un fast-food", "Manger une patisserie", "Manger de la viande", "Manger des légumes", "Manger du riz", "Manger des nouilles"],
+	"impactRS" : [0,1,2,5,4,3]
 }

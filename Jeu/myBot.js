@@ -16,12 +16,11 @@ const tableaux = require('./tableaux.json');
 
 // listes pour les activités que le joueur peut pratiquer
 
-const emoteActiviteM = ['🚴', '🎮', '🎸', '🏃', '🏋', '🏊'];
-const emoteActiviteA = ['⚽', '🏀', '🏈', '⚾', '🎾', '🏐', '⛳', '🏓', '🏸', '🏋', '🏹', '🎳', '🎮', '🎣'];
-
-const emoteActiviteS = ['🕺', '🍷', '🎱', '🎳', '🎥', '📺', '📖', '🛏'];
-const emoteRepasM = ['🍏', '🍞', '🍫', '🥐', '🍌', '🍐', '☕️', '🥞'];
-const emoteRepasS = ['🍔', '🍰', '🍨', '🍕', '🍖', '🥗', '🍚', '🍝', '🍜', '🍱', '🌮', '🥙','🍅'];
+const emoteActiviteM = ['🎮','🏃','🛏', '📖'];
+const emoteActiviteA = ['⚽️','🏋', '🎮', '🎣', '🏊‍♂️', '🚶', '🍷', '🎥'];
+const emoteActiviteS = ['🕺', '🚶', '🍷', '🎥', '📺', '📖', '🛏'];
+const emoteRepasM = ['🍏', '🍞', '🥐', '☕', '🥞'];
+const emoteRepasS = ['🍔', '🧁', '🍖', '🥗', '🍚', '🍝'];
 
 //const pseudoJ = 'Alain';
 
