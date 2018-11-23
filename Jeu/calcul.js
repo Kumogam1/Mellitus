@@ -52,7 +52,7 @@ exports.glyInsu = function glyInsu(partie, dose){
 	const delta = tauxPresent - 1.3;
 	const effect = delta / 32/*calcul.doses(partie)[1]*/;
 
-	res = Math.round((tauxPresent - (dose * effect))*100)/100;
+	res = Math.round((tauxPresent - Math.abs(dose * effect))*100)/100;
 
 	if(res < 0)
 		res = 0;
