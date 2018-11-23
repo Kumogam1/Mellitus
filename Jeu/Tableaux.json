@@ -12,6 +12,6 @@
 	"nomRepasM" : ["Prendre un fruit", "Prendre du pain", "Prendre un croissant",  "Prendre un caf\u00e9", "Manger des pancakes"],
 	"impactRM" : [5,2,1,4,1],
 
-	"nomRepasS" : ["Manger un fast-food", "Manger une patisserie", "Manger de la viande", "Manger des légumes", "Manger du riz", "Manger des nouilles"],
-	"impactRS" : [0,1,2,5,4,3]
+	"nomRepasS" : ["Manger un fast-food", "Manger de la viande", "Manger des légumes", "Manger du riz", "Manger des nouilles"],
+	"impactRS" : [0,2,5,4,3]
 }
