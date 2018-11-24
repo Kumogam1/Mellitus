@@ -45,7 +45,19 @@ exports.event = function event(message, partie, tabN, tabE){
 		console.log(err)
 	});
 
+	//Mort
+	if(partie.glycemie > 3 || partie.glycemie == 0){
+		partie.mort = true;
+		sfm.save(partie.player, partie);
+		finJeu.msgFin(message, partie);
+		return;
+	}
+
+	//Passer à l'etape suivante
 	partie.numEvent = (partie.numEvent + 1) % 3;
+	if(partie.partJour == 0 && partie.numEvent == 0  && partie.evenement){
+		partie.numJour++;
+	}
 	sfm.save(partie.player, partie);
 
 	//Journal et message du docteur en fin de journée
@@ -115,7 +127,7 @@ exports.event = function event(message, partie, tabN, tabE){
 			}
 
 			const embed = new Discord.RichEmbed()
-			.setColor(15013890)
+			.setColor(0x00AE86)
 			.addField(title, text)
 
 			message.channel.send({embed})
@@ -217,8 +229,8 @@ exports.event = function event(message, partie, tabN, tabE){
 						eventRepas(message, tabN, tabE);
 						break;
 					case 2:
-						partie.numJour++;
-						sfm.save(partie.player, partie);
+						//partie.numJour++;
+						//sfm.save(partie.player, partie);
 						eventSport(message, tabN, tabE);
 						break;
 				}
