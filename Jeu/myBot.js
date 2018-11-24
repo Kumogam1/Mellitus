@@ -59,11 +59,16 @@ client.on('message', (message) => {
             initJeu.initJeu(message, client);
             break;
         case 'end':
-          finJeu.finJeu(message);
-          break;
+            finJeu.msgFin(message, partie);
+            break;
+        case 'quit':
+            finJeu.finJeu(message);
+            break;
+          /*
         case 'create':
             finJeu.initStat(message.author);
             break;
+            */
         case 'text':
           text(message);
           break;
