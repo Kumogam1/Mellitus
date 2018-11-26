@@ -333,8 +333,8 @@ function eventNumJour(message, partie) {
 * @param {number} partie.glycemie - Taux de glycemie actuel de l'utilisateur
 * @param {number[]} partie.tabGlycemie - Tableau de tous les taux de glycémie du joueur
 **/
-function eventInsu(message, partie){
-	as.graphString(0, 5, partie.tabGlycemie, message, partie)
+function eventInsu(message, partie) {
+	as.graphString(message, partie)
 	.then(() => {
 		insuline.priseInsuline(message, partie);
 	});
