@@ -1,20 +1,102 @@
+const Discord = require('discord.js');
 const sfm = require('./saveFileManagement.js');
+const config = require('./token.json');
 
-let state = 1;
+let state = 0;
 let message;
-let client;
+const client = new Discord.Client();
 const tab = [];
 let partie;
 
-exports.creerPerso = function(mess, Discord, clt, part) {
-  /* const embed = new Discord.RichEmbed()
-    .set
-    .setTitle('Création du personnage')
-    .description('Homme/Femme?');
-    */
+client.on('messageReactionAdd', (reaction, user) => {
+  if(user.bot) return;
+  switch(reaction.emoji.name) {
+    case '🚹':
+      state += 1;
+      tab.push('Homme');
+      reaction.message.delete();
+      nom();
+      break;
+    case '🚺':
+      state += 1;
+      tab.push('Femme');
+      reaction.message.delete();
+      nom();
+      break;
+    default:
+      console.log('err');
+      break;
+    }
+});
+
+client.on ('message', mess => {
+  if (mess.author.bot) {return;}
+  else if (!isNaN(mess) && state < 3) {
+    message.channel.send('veuillez entrer des caracteres');
+  }
+  let param = mess.content.trim();
+  switch (state) {
+    case 1:
+      param = param.charAt(0).toUpperCase() + param.slice(1);
+      tab.push(param);
+      state += 1;
+      prenom();
+      break;
+    case 2:
+      state += 1;
+      param = param.charAt(0).toUpperCase() + param.slice(1);
+      tab.push(param);
+      age();
+      break;
+    case 3:
+      if (mess.content < 100) {
+        tab.push(mess.content);
+        state += 1;
+        taille();
+      }
+      else {
+        message.channel.send('veuillez saisir un age correcte');
+      }
+      break;
+    case 4:
+      if (mess.content > 100 && mess.content < 250) {
+        let tEnM = (mess.content / 100).toFixed(2).toString();
+        tEnM = tEnM.replace('.', 'm');
+        tab.push(tEnM);
+        state += 1;
+        poids();
+      }
+      else {
+        message.channel.send('veuillez saisir une taille correcte');
+      }
+      break;
+    case 5:
+      if (mess.content > 35 && mess.content < 200) {
+        tab.push(Number(mess.content).toFixed(0) + 'kg');
+        console.log(tab);
+        console.log(partie);
+        mess.react('➡');
+        partie.nom = tab[1] + ' ' + tab[2];
+        partie.sexe = tab[0];
+        partie.age = tab[3];
+        partie.taille = tab[4];
+        partie.poids = tab[5];
+        console.log(partie);
+        sfm.save(message.author.id, partie);
+        }
+      else {
+        message.channel.send('veuillez saisir un poids correct');
+      }
+      break;
+    default:
+      console.log('err');
+      break;
+  }
+});
+
+exports.creerPerso = function(pMess, part) {
   partie = part;
-  message = mess;
-  client = clt;
+  message = pMess;
   genre();
 };
 
@@ -24,82 +106,32 @@ function genre() {
     title:'Création du personnage',
     description: 'Homme/Femme?',
   } }
-  ).then(async function(mess) {
-    await mess.react('🚹');
-    await mess.react('🚺');
+).then(async function(mGenre) {
+    await mGenre.react('🚹');
+    await mGenre.react('🚺');
   });
-
-  client.on('messageReactionAdd', (reaction, user) => {
-    if(user.bot) return;
-    switch(reaction.emoji.name) {
-      case '🚹':
-        tab.push('Homme');
-        reaction.message.delete();
-        nomPrenom();
-        break;
-      case '🚺':
-        tab.push('Femme');
-        reaction.message.delete();
-        nomPrenom();
-        break;
-      default:
-        console.log('err');
-        break;
-    }
-  });
-
 }
 
-function nomPrenom() {
+function nom() {
+  message.channel.send({ embed: {
+    title:'Création du personnage',
+    color:0x00AE86,
+    description: 'Nom?',
+  } });
+}
+function prenom() {
   message.channel.send({ embed: {
     color:0x00AE86,
     title:'Création du personnage',
-    description: 'Nom?',
+    description: 'Prénom?',
   } });
-  client.on ('message', mess => {
-    if (mess.author.bot) {return;}
-    else if (!isNaN(mess) && state < 3) {
-      message.channel.send('veuillez entre des caracteres');
-    }
-    else if (state == 1) {
-      console.log();
-      let nom = mess.content.trim();
-      nom = nom.charAt(0).toUpperCase() + nom.slice(1);
-      tab.push(nom);
-      state += 1;
-      message.channel.send({ embed: {
-        color:0x00AE86,
-        title:'Création du personnage',
-        description: 'Prénom?',
-      } });
-    }
-    else if(state == 2) {
-      state += 1;
-      let prenom = mess.content.trim();
-      prenom = prenom.charAt(0).toUpperCase() + prenom.slice(1);
-      tab.push(prenom);
-      age();
-    }
-  });
 }
-
 function age() {
   message.channel.send({ embed: {
     color:0x00AE86,
     title:'Création du personnage',
     description: 'Votre age',
   } });
-  client.on ('message', mess => {
-    if (mess.author.bot || state != 3) return;
-    if (mess.content < 100) {
-      tab.push(mess.content);
-      state += 1;
-      taille();
-    }
-    else {
-      message.channel.send('veuillez saisir un age correcte');
-    }
-  });
 }
 
 function taille() {
@@ -108,20 +140,8 @@ function taille() {
     title:'Création du personnage',
     description: 'Taille en cm',
   } });
-  client.on ('message', mess => {
-    if (mess.author.bot || state != 4) return;
-    if (mess.content > 100 && mess.content < 250) {
-      let tEnM = (mess.content / 100).toFixed(2).toString();
-      tEnM = tEnM.replace('.', 'm');
-      tab.push(tEnM);
-      state += 1;
-      poids();
-    }
-    else {
-      message.channel.send('veuillez saisir une taille correcte');
-    }
-  });
 }
+
 
 function poids() {
   message.channel.send({ embed: {
@@ -129,23 +149,6 @@ function poids() {
     title:'Création du personnage',
     description: 'poids en kg',
   } });
-  client.on ('message', mess => {
-    if (mess.author.bot || state != 5) return;
-    if (mess.content > 35 && mess.content < 200) {
-      tab.push(Number(mess.content).toFixed(0) + 'kg');
-      console.log(tab);
-      console.log(partie);
-      mess.react('➡');
-      partie.nom = tab[1] + ' ' + tab[2];
-      partie.sexe = tab[0];
-      partie.age = tab[3];
-      partie.taille = tab[4];
-      partie.poids = tab[5];
-      console.log(partie);
-      sfm.save(message.author.id, partie);
-    }
-    else {
-      message.channel.send('veuillez saisir un poids correct');
-    }
-  });
 }
+
+client.login(config.token);
