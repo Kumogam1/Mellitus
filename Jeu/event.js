@@ -34,6 +34,7 @@ exports.event = function event(message, partie, tabN, tabE){
 
 	let fieldTitle = "";
 	let fielText = "";
+	let image = "";
 
 	async function clear() {
 		fetched = await message.channel.fetchMessages();
@@ -77,26 +78,47 @@ exports.event = function event(message, partie, tabN, tabE){
 		if(partie.partJour == 0){
 			fieldTitle = "C'est le matin!";
 			if(partie.tuto)
-				fieldText = "Chaque matin, vous devez faire votre prise d'insuline et vous pouvez choisir votre petit déjeuner et une activité matinale au choix.";
+			{
+				fieldText = "Chaque matin, vous devez faire votre prise d'insuline, choisir votre petit déjeuner ainsi qu'une activité matinale au choix.";
+				image = "https://cache.magicmaman.com/data/photo/w800_c18/4c/coq.jpg";
+			}
 			else
-				fieldText = "Le soleil se réveille, il fait beau, il faut jour.";
+			{
+				fieldText = "Le soleil se réveille, il fait beau, il fait jour.";
+				image = "https://cache.magicmaman.com/data/photo/w800_c18/4c/coq.jpg";
+			}
+
 		}
-		else if(partie.partJour == 1){
+		else if(partie.partJour == 1)
+		{
 			fieldTitle = "C'est l'après-midi!";
 			if(partie.tuto)
+			{
 				fieldText = "Tous les après-midi, vous devez faire votre prise d'insuline et vous pouvez choisir votre repas et une activité.";
+				image = "https://www.ouest-france.fr/sites/default/files/styles/image-640x360-p/public/2013/09/27/petits-nuages-le-matin-grand-soleil-lapres-midi-en-mayenne.jpg?itok=bz9oRZwF";
+			}
 			else
-				fieldText = "Repas, repos, récréation.";
+			{
+				fieldText = "Repas, sieste, travail";
+				image = "https://www.ouest-france.fr/sites/default/files/styles/image-640x360-p/public/2013/09/27/petits-nuages-le-matin-grand-soleil-lapres-midi-en-mayenne.jpg?itok=bz9oRZwF";
+			}
 		}
-		else{
+		else
+		{
 			fieldTitle = "C'est le soir!";
 			if(partie.tuto)
+			{
 				fieldText = "Tous les soirs, vous devez faire votre prise d'insuline et vous pouvez choisir votre diner et si vous sortez avec des amis.";
+				image = "https://steemitimages.com/DQmQASwATrfV59SZLYEmeNcb8HC7uoRxQEq1VsCScqkTbPo/IMG_20170911_090319.jpg";
+			}
 			else
-				fieldText = "ZZZzzzzz";
+			{
+				fieldText = "😴😴😴";
+				image = "https://steemitimages.com/DQmQASwATrfV59SZLYEmeNcb8HC7uoRxQEq1VsCScqkTbPo/IMG_20170911_090319.jpg";
+			}
 		}
 
-		title(message, fieldTitle, fieldText);
+		title(message, fieldTitle, fieldText, image);
 
 		if(partie.glycemie > 2){		//hyperglycemie
 			let rand = myBot.getRandomInt(5);
@@ -451,10 +473,10 @@ function eventFin(message, partie){
 * @param {string} title - Titre du message
 * @param {string} text - Texte du message
 **/
-function title(message, title, text){
+function title(message, title, text, image){
 	const embed = new Discord.RichEmbed()
 	.setColor(15013890)
-
+	.setImage(image)
 	.addField(title, text)
 
 	message.channel.send({embed});
@@ -493,7 +515,7 @@ function journal(message, partie){
 
 	const embed = new Discord.RichEmbed()
 	.setColor(15013890)
-	.setTitle('__Journal de bord - Jour ' + partie.numJour + '__')
+	.setTitle('Journal de bord - Jour ' + partie.numJour)
 	.addField("Récapitulatifs des activités : ", activ[0] + ", " + activ[1] + " et " + activ[2] + ".")
 	.addField("Récapitulatifs des repas : ", repas[0] + ", " + repas[1] + " et " + repas[2] + ".")
 

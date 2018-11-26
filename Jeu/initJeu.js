@@ -2,7 +2,7 @@ const Discord = require('discord.js');
 const sfm = require('./saveFileManagement.js');
 const myBot = require('./myBot.js');
 const calcul = require('./calcul.js');
-
+const event = require('./event.js');
 /**
 * Fonction installant la partie
 * @param {string} message - Message discord
@@ -154,9 +154,9 @@ function initChannelGrp(message, partie, channelGrpName, rolePers) {
 		partie.player = message.author.id;
 		partie.nom = "";
 		partie.sex = "";
-		partie.age = "";
-		partie.taille = "";
-		partie.poids = "";
+		partie.age = 0;
+		partie.taille = 0;
+		partie.poids = 0;
 		partie.partJour = 0;
 		partie.numJour = -1;
     partie.numEvent = -1;
@@ -229,14 +229,15 @@ exports.accueilMedecin = function accueilMedecin(message, partie, tabNR, tabER)
 	.setFooter('Dr Greece','https://emojipedia-us.s3.dualstack.us-west-1.amazonaws.com/thumbs/120/apple/155/female-health-worker-type-1-2_1f469-1f3fb-200d-2695-fe0f.png')
 	.setThumbnail('https://upload.wikimedia.org/wikipedia/commons/thumb/5/57/Caduceus.svg/299px-Caduceus.svg.png') // Symbole médecine
 	.setTimestamp() // Crée de l'espace
-	.addField('Bonjour ' + partie.nom + ' je m\'appelle Alda Greece, je serai votre diabètologue tout le long du jeu.\n' +
-						'Vous êtes actuellement atteinte de diabète (**Petit rappel:** Le diabète se caractérise par une hyperglycémie chronique,' +
-						'c’est-à-dire un excès de sucre dans le sang et donc un taux de glucose (glycémie) trop élevé).\n' +
-						'Je vais en conséquence vous aider à utiliser gérer votre taux d\'insuline à l\'aide d\'un bilan à chaque fin de journée dans lequel je vais vous donner des conseils ainsi qu\'un commentaire sur votre journée.')
-	.addField('Conseil', 'Au début de la partie il sera recommandé de prendre une dose d\'insuline de ' + doseInit + '. Votre objectif sera d\'atteindre une dose d\'insuline de ' + doseObj + '.')
+	.addField('Bonjour ' + partie.nom, 'Je m\'appelle Alda Greece, je serai votre diabètologue tout le long du jeu.\n' +
+						'Vous êtes actuellement atteinte de diabète **(1)**. Je vais en conséquence vous aider à gérer votre taux d\'insuline,' +
+						 ' à l\'aide d\'un bilan à chaque fin de journée dans lequel je vais vous donner des conseils ainsi qu\'un commentaire sur votre journée.')
+	.addField('(1)', '*Le diabète se caractérise par une hyperglycémie chronique,' +
+						'c’est-à-dire un excès de sucre dans le sang et donc un taux de glucose (glycémie) trop élevé*')
+	.addField('Conseil de début de partie', 'Pour ce début de partie, il sera recommandé de prendre une dose d\'insuline de ' + doseInit + '. Votre objectif sera d\'atteindre une dose d\'insuline de ' + doseObj + '.')
 
 	message.channel.send({ embed })
 	.then(async function (message){
-		event.event(message, partie, tabNR, tabER);
+		await message.react('➡');
 	});
 }

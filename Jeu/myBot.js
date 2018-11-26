@@ -201,7 +201,7 @@ client.on('messageReactionAdd', (reaction, user) => {
         }}).then(() => {
             reaction.message.guild.channels.get(chanId).send({ embed: {
                 color: 0x00AE86,
-                title: '__**Personnage**__',
+                title: '**Personnage**',
                 fields: [{
                     name: 'Nom',
                     value: perso.nom[numPerso],
@@ -224,7 +224,16 @@ client.on('messageReactionAdd', (reaction, user) => {
                 }]
             }})
             .then(() => {
-                event.event(reaction.message, partie, tabNR, tabER);
+              async function clear() {
+                fetched = await reaction.message.channel.fetchMessages();
+                reaction.message.channel.bulkDelete(fetched);
+              }
+
+              clear()
+              .catch((err) => {
+                console.log(err)
+              });
+              initJeu.accueilMedecin(reaction.message,partie, tabNR, tabER);
             });
         });
     }
@@ -345,13 +354,14 @@ function choixPerso(message, partie){
     });
 
     if(partie.tuto)
-        fieldText = "C'est ici que vous devez choisir un personnage.\nChaque personnage a des caractéristiques différentes, qui influeront sur votre partie.\nPour choisir un personnage, cliquez sur la réaction correspondant au numéro du personnage choisit.";
+        fieldText = "C'est ici que vous devez choisir un personnage.\nChaque personnage a des caractéristiques différentes, qui influeront sur votre partie.\n" +
+                    "Pour choisir un personnage, cliquez sur la réaction correspondant au numéro du personnage choisit.";
     else
         fieldText = "Choisissez un personnage.";
 
     const embed = new Discord.RichEmbed()
     .setColor(15013890)
-    .setTitle("__**Phase personnage**__")
+    .setTitle("**Phase personnage**")
     .addField("👶 👦 👧 👨 👩 👴 👵", fieldText)
 
     message.channel.send({ embed })
@@ -362,7 +372,7 @@ function choixPerso(message, partie){
 
     msg.channel.send({ embed: {
         color: 0x00AE86,
-        title: '__**Personnage D**__',
+        title: '**Personnage D**',
         fields: [{
             name: 'Nom',
             value: perso.nom[3],
@@ -421,7 +431,7 @@ function writePerso(message, numPerso) {
 
     message.channel.send({ embed: {
         color: 0x00AE86,
-        title: '__**Personnage ' + i + '**__',
+        title: '**Personnage ' + i + '**',
         fields: [{
             name: 'Nom',
             value: perso.nom[numPerso],
