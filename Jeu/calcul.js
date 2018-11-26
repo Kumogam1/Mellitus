@@ -34,10 +34,10 @@ exports.glyMatin = function glyMatin(partie){
 	let res = 0;
 
 	if(tauxHier > 1.3 || tauxHier < 0.7){
-		res = 2.5 + (Math.round(Math.abs(tauxAvantHier - tauxHier) * 100) / 100) * 0.2;
+		res = partie.tabGlycemie[0] + (Math.round(Math.abs(tauxAvantHier - tauxHier) * 100) / 100) * 0.2;
 	}
 	else{
-		res = 2.5 + (tauxHier - 1.3);
+		res = partie.tabGlycemie[0] + (tauxHier - 1.3);
 	}
 
 	partie.glycemie = res;
@@ -49,7 +49,7 @@ exports.glyInsu = function glyInsu(partie, dose){
 	const tauxPresent = partie.glycemie;
 	let res = 0;
 
-	const delta = tauxPresent - 1.3;
+	const delta = Math.abs(tauxPresent - 1.3);
 	const effect = delta / 32/*calcul.doses(partie)[1]*/;
 
 	res = Math.round((tauxPresent - (dose * effect))*100)/100;
