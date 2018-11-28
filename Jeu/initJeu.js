@@ -170,6 +170,7 @@ function initChannelGrp(message, partie, channelGrpName, rolePers) {
 		partie.mort = false;
 		partie.glycemie = 2.5;
 		partie.tabGlycemie = [2.5];
+		partie.stress = 0;
 		initChannel(message, partie, rolePers, 'Hub', res);
 		initChannel(message, partie, rolePers, 'Informations', res);
 		initChannel(message, partie, rolePers, 'Personnage', res);
@@ -219,8 +220,8 @@ function bienvenue(message) {
 
 exports.accueilMedecin = function accueilMedecin(message, partie, tabNR, tabER)
 {
-	doseInit = calcul.doses(partie)[0]
-	doseObj = calcul.doses(partie)[1]
+	let doseInit = calcul.doses(partie)[0];
+	let doseObj = calcul.doses(partie)[1];
 
 	const embed = new Discord.RichEmbed()
 	.setTitle('Bienvenue')

@@ -46,6 +46,11 @@ exports.event = function event(message, partie, tabN, tabE){
 		console.log(err)
 	});
 
+	if(partie.stress < 0){
+		partie.stress = 0;
+		sfm.save(partie.player, partie);
+	}
+
 	//Mort
 	if(partie.glycemie > 3 || partie.glycemie == 0){
 		partie.mort = true;
@@ -121,7 +126,7 @@ exports.event = function event(message, partie, tabN, tabE){
 		title(message, fieldTitle, fieldText, image);
 
 		if(partie.glycemie > 2){		//hyperglycemie
-			let rand = myBot.getRandomInt(5);
+			let rand = myBot.getRandomInt(4);
 			let title = "";
 			let text = "";
 
@@ -141,10 +146,6 @@ exports.event = function event(message, partie, tabN, tabE){
 				case 3:
 					title = eventGly.hyper4[0];
 					text = eventGly.hyper4[1];
-					break;
-				case 4:
-					title = eventGly.hyper5[0];
-					text = eventGly.hyper5[1];
 					break;
 			}
 

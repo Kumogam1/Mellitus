@@ -19,7 +19,7 @@ exports.doses = function doses(partie) {
 	else
 		augmentation = 2
 
-	const doseGlycemie = [doseInit, doseObj];
+	const doseGlycemie = [doseInit, doseObj, augmentation];
 	return doseGlycemie;
 };
 

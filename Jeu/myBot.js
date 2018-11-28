@@ -129,18 +129,21 @@ client.on('messageReactionAdd', (reaction, user) => {
             if(partie.numEvent == 1) {
                 writeAct(user.id, 'rienM', partie);
                 partie.impactNutrition.push(0);
+                partie.stress += 20;
+                sfm.save(partie.player, partie);
                 event.event(reaction.message, partie, tabNA, tabEA);
             }
             else{
                 writeAct(user.id, 'rienA', partie);
                 partie.impactActivite.push(0);
                 partie.partJour = (partie.partJour + 1) % 3;
+                partie.stress += 20;
                 sfm.save(partie.player, partie);
                 event.event(reaction.message, partie, tabNR, tabER);
             }
             break;
         case '➡':
-            if(partie.numEvent == -1) {
+            if(partie.numEvent == -1 && !partie.evenement) {
                 const chanId2 = myBot.messageChannel(reaction.message, "informations", partie);
 
                 if(partie.tuto)
@@ -244,7 +247,10 @@ client.on('messageReactionAdd', (reaction, user) => {
         while(tabER[i] != reaction.emoji.name)
             i++;
         writeAct(user.id, tabNR[i], partie);
-        partie.impactNutrition.push(tabIR[i]);
+        partie.impactNutrition.push(tabIR[i][0]);
+        partie.stress += tabIR[i][1];
+        partie.glycemie = Math.round((partie.glycemie + tabIR[i][2])*100)/100;
+        sfm.save(partie.player, partie);
         event.event(reaction.message, partie, tabNA, tabEA);
     }
 
@@ -254,8 +260,10 @@ client.on('messageReactionAdd', (reaction, user) => {
         while(tabEA[i] != reaction.emoji.name)
             i++;
         writeAct(user.id, tabNA[i], partie);
-        partie.impactActivite.push(tabIA[i]);
+        partie.impactActivite.push(tabIA[i][0]);
         partie.partJour = (partie.partJour + 1) % 3;
+        partie.stress += tabIA[i][1];
+        partie.glycemie = Math.round((partie.glycemie + tabIA[i][2])*100)/100;
         sfm.save(partie.player, partie);
         event.event(reaction.message, partie, tabNR, tabER);
     }
