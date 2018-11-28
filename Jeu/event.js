@@ -439,7 +439,7 @@ function eventFin(message, partie){
   const embed = new Discord.RichEmbed()
   .setColor(15013890)
 
-  .addField("C'est la fin du partie.", fieldTextInfo)
+  .addField("C'est la fin de la partie.", fieldTextInfo)
   .addField("Pour quitter la partie, tapez : ", "/end")
 
   message.channel.send({embed});

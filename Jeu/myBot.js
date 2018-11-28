@@ -47,7 +47,7 @@ client.on('message', (message) => {
 
       switch(command) {
         case 'start':
-          partie.nbJour = -1;
+          partie.nbJour = -2;
           partie.tuto = false;
           sfm.save(message.author.id, partie);
           initJeu.initJeu(message, client);
