@@ -1,8 +1,8 @@
-
+﻿
 {
 	"nom" : ["Alphonse Brown", "Vanessa Carré", "Diego Tan", "Martine Diebolt"],
 	"sexe" : ["Homme", "Femme","Homme", "Femme"],
 	"age" : ["70 ans", "30 ans", "45 ans", "12ans"],
-	"taille" : ["1m65", "1m73", "1m85", "1m40"],
+	"taille" : ["165cm", "173cm", "185cm", "140cm"],
 	"poids" : ["75kg", "65kg", "80kg", "40kg"]
 }
