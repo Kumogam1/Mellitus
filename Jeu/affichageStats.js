@@ -18,47 +18,22 @@ const imgOpts = {
     height: 500,
 };
 
-exports.graphString = async function(bornMin, bornMax, tabDonnes, message, partie) {
-  const tabValLigne = [bornMin, bornMax];
-  /*
-  let res = '';
-  const equartBornes = bornMax - bornMin;
-  const incr = Math.round(equartBornes / nbLignes);
-  for (let i = 0; i < nbLignes; i++) {
-    tabValLigne.push(bornMin + incr * i);
+exports.graphString = async function(message, partie) {
+  const tab = partie.tabGlycemie;
+  let max = 0;
+  try {
+    max = tab.length - 1;
   }
-  console.log(tabValLigne);
-  for (let i = nbLignes - 1; i >= 0; i--) {
-    res = res + '>' + tabValLigne[i] + '\t';
-    tabDonnes.forEach(function(value) {
-      if (Math.round(value / incr) == Math.round(tabValLigne[i] / incr)) {
-        res = res + '1 ';
-      }
-      else {
-        res = res + '0 ';
-      }
-    });
-    res = res + '\n';
+  catch (e) {
+    console.log('tab vide');
   }
-  */
-  let jour;
-  const tabJour = ['matin'];
-  if(partie.partJour > 0) {
-    tabJour.push('midi');
-    jour = 'midi';
-    if(partie.partJour == 2) {
-      jour = 'soir';
-      tabJour.push('soir');
-    }
-  }
-  const trace1 = {
-    x: tabJour,
-    y: tabDonnes,
+  const tGlyce = {
+    y: partie.tabGlycemie,
     type: 'scatter',
   };
 
-  const trace2 = {
-    x: ['matin', jour],
+  const intMax = {
+    x: [0, max],
     y: [1.3, 1.3],
     mode: 'lines',
     type: 'scatter',
@@ -67,14 +42,32 @@ exports.graphString = async function(bornMin, bornMax, tabDonnes, message, parti
     },
   };
 
-  const trace3 = {
-    x: ['matin', jour],
+  const intMin = {
+    x: [0, max],
     y: [0.7, 0.7],
     fill: 'tonexty',
     mode: 'lines',
     type: 'scatter',
     line: {
       color: '#05ff00',
+    },
+  };
+  const hyperglycemie = {
+    x: [0, max],
+    y: [2, 2],
+    mode: 'lines',
+    type: 'scatter',
+    line: {
+      color: '#fc0000',
+    },
+  };
+  const hypoglycemie = {
+    x: [0, max],
+    y: [0.5, 0.5],
+    mode: 'lines',
+    type: 'scatter',
+    line: {
+      color: '#fc0000',
     },
   };
   const layout = {
@@ -86,15 +79,14 @@ exports.graphString = async function(bornMin, bornMax, tabDonnes, message, parti
     },
     yaxis: {
       title: 'Taux de glycemie',
-      range: tabValLigne,
+      range: [0, 3],
     },
   };
-  const figure = { 'data': [trace1, trace2, trace3], 'layout':layout };
+  const figure = { 'data': [tGlyce, intMax, intMin, hyperglycemie, hypoglycemie], 'layout':layout };
 
   const chanId = myBot.messageChannel(message, 'informations', partie);
 
   async function clear() {
-    // message.delete();
     const fetched = await message.guild.channels.get(chanId).fetchMessages({ limit: 2 });
     message.guild.channels.get(chanId).bulkDelete(fetched);
   }
@@ -120,4 +112,5 @@ exports.graphString = async function(bornMin, bornMax, tabDonnes, message, parti
         await message.guild.channels.get(chanId).send({ embed });
       });
   });
+
 };
