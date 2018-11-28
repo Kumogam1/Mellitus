@@ -81,7 +81,7 @@ client.on('message', (message) => {
 
 client.on('messageReactionAdd', (reaction, user) => {
 
-	if(user.bot) return;
+	 if(user.bot) return;
 
     const partie = sfm.loadSave(user.id);
 
@@ -236,6 +236,16 @@ client.on('messageReactionAdd', (reaction, user) => {
               .catch((err) => {
                 console.log(err)
               });
+
+              partie.nom = perso.nom[numPerso];
+              partie.sex = perso.sexe[numPerso];
+              partie.age = parseInt(perso.age[numPerso]);
+              partie.taille = parseInt(perso.taille[numPerso]);
+              partie.poids = parseInt(perso.poids[numPerso]);
+              sfm.save(partie.player, partie);
+
+
+
               initJeu.accueilMedecin(reaction.message,partie, tabNR, tabER);
             });
         });
@@ -255,7 +265,7 @@ client.on('messageReactionAdd', (reaction, user) => {
     }
 
     // Quand on choisi la sport
-	if(tabEA.includes(reaction.emoji.name)) {
+    if(tabEA.includes(reaction.emoji.name)) {
         var i = 0;
         while(tabEA[i] != reaction.emoji.name)
             i++;
@@ -374,42 +384,9 @@ function choixPerso(message, partie){
 
     message.channel.send({ embed })
     .then((msg) => {
-      for(let i = 0; i < 3; i++) {
+      for(let i = 0; i < 4; i++) {
           writePerso(msg, i);
       }
-
-    msg.channel.send({ embed: {
-        color: 0x00AE86,
-        title: '**Personnage D**',
-        fields: [{
-            name: 'Nom',
-            value: perso.nom[3],
-          },
-          {
-            name: 'Sexe',
-            value: perso.sexe[3],
-          },
-          {
-            name: 'Age',
-            value: perso.age[3],
-          },
-          {
-            name: 'Taille',
-            value: perso.taille[3],
-          },
-          {
-            name: 'Poids',
-            value: perso.poids[3],
-          },
-        ],
-      },
-    })
-    .then(async function(mess) {
-        await mess.react('🇦');
-        await mess.react('🇧');
-        await mess.react('🇨');
-        await mess.react('🇩');
-    });
   });
 }
 
@@ -437,32 +414,64 @@ function writePerso(message, numPerso) {
             break;
     }
 
-    message.channel.send({ embed: {
-        color: 0x00AE86,
-        title: '**Personnage ' + i + '**',
-        fields: [{
-            name: 'Nom',
-            value: perso.nom[numPerso],
+    if(numPerso < 3){
+        message.channel.send({ embed: {
+            color: 0x00AE86,
+            title: '**Personnage ' + i + '**',
+            fields: [{
+                name: 'Nom',
+                value: perso.nom[numPerso],
+            },
+            {
+                name: 'Sexe',
+                value: perso.sexe[numPerso],
+            },
+            {
+                name: 'Age',
+                value: perso.age[numPerso],
+            },
+            {
+                name: 'Taille',
+                value: perso.taille[numPerso],
+            },
+            {
+                name: 'Poids',
+                value: perso.poids[numPerso],
+            }],
+        }});
+    }
+    else{
+        message.channel.send({ embed: {
+          color: 0x00AE86,
+          title: '**Personnage D**',
+          fields: [{
+              name: 'Nom',
+              value: perso.nom[3],
           },
           {
-            name: 'Sexe',
-            value: perso.sexe[numPerso],
+              name: 'Sexe',
+              value: perso.sexe[3],
           },
           {
-            name: 'Age',
-            value: perso.age[numPerso],
+              name: 'Age',
+              value: perso.age[3],
           },
           {
-            name: 'Taille',
-            value: perso.taille[numPerso],
+              name: 'Taille',
+              value: perso.taille[3],
           },
           {
-            name: 'Poids',
-            value: perso.poids[numPerso],
-          },
-        ],
-      },
-    });
+              name: 'Poids',
+              value: perso.poids[3],
+          }],
+        }})
+        .then(async function(mess) {
+          await mess.react('🇦');
+          await mess.react('🇧');
+          await mess.react('🇨');
+          await mess.react('🇩');
+        });
+    }
 }
 
 client.login(config.token);
