@@ -17,7 +17,7 @@ const tableaux = require('./tableaux.json');
 // listes pour les activités que le joueur peut pratiquer
 
 const emoteActiviteM = ['🎮','🏃','🛏', '📖'];
-const emoteActiviteA = ['⚽️','🏋', '🎮', '🎣', '🏊', '🚶', '🍷', '🎥'];
+const emoteActiviteA = ['🏀','🏋', '🎮', '🎣', '🏊', '🚶', '🍷', '🎥'];
 const emoteActiviteS = ['🕺', '🚶', '🍷', '🎥', '📺', '📖', '🛏'];
 const emoteRepasM = ['🍏', '🍞', '🥐', '☕', '🥞'];
 const emoteRepasS = ['🍔', '🍖', '🥗', '🍚', '🍝'];
@@ -251,7 +251,7 @@ client.on('messageReactionAdd', (reaction, user) => {
         });
     }
 
-  // Quand on choisi le repas
+    // Quand on choisi le repas
     if(tabER.includes(reaction.emoji.name)) {
         var i = 0;
         while(tabER[i] != reaction.emoji.name)
@@ -387,7 +387,7 @@ function choixPerso(message, partie){
       for(let i = 0; i < 4; i++) {
           writePerso(msg, i);
       }
-  });
+    });
 }
 
 /**
