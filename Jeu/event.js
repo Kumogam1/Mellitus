@@ -80,12 +80,12 @@ exports.event = function event(message, partie, tabN, tabE){
 			if(partie.tuto)
 			{
 				fieldText = "Chaque matin, vous devez faire votre prise d'insuline, choisir votre petit déjeuner ainsi qu'une activité matinale au choix.";
-				image = "https://cache.magicmaman.com/data/photo/w800_c18/4c/coq.jpg";
+				image = "https://i.pinimg.com/originals/33/d4/89/33d48901c6036628a03d0f7b0eab039c.jpg";
 			}
 			else
 			{
 				fieldText = "Le soleil se réveille, il fait beau, il fait jour.";
-				image = "https://cache.magicmaman.com/data/photo/w800_c18/4c/coq.jpg";
+				image = "https://i.pinimg.com/originals/33/d4/89/33d48901c6036628a03d0f7b0eab039c.jpg";
 			}
 
 		}
@@ -95,12 +95,12 @@ exports.event = function event(message, partie, tabN, tabE){
 			if(partie.tuto)
 			{
 				fieldText = "Tous les après-midi, vous devez faire votre prise d'insuline et vous pouvez choisir votre repas et une activité.";
-				image = "https://www.ouest-france.fr/sites/default/files/styles/image-640x360-p/public/2013/09/27/petits-nuages-le-matin-grand-soleil-lapres-midi-en-mayenne.jpg?itok=bz9oRZwF";
+				image = "http://www.pxleyes.com/images/contests/landscapes-td/fullsize/autumn-afternoon-4d4786da5ffbe_hires.jpg";
 			}
 			else
 			{
 				fieldText = "Repas, sieste, travail";
-				image = "https://www.ouest-france.fr/sites/default/files/styles/image-640x360-p/public/2013/09/27/petits-nuages-le-matin-grand-soleil-lapres-midi-en-mayenne.jpg?itok=bz9oRZwF";
+				image = "http://www.pxleyes.com/images/contests/landscapes-td/fullsize/autumn-afternoon-4d4786da5ffbe_hires.jpg";
 			}
 		}
 		else
