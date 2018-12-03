@@ -107,12 +107,12 @@ exports.event = function event(message, partie, tabN, tabE){
 			if(partie.tuto)
 			{
 				fieldText = "Chaque matin, vous devez faire votre prise d'insuline, choisir votre petit déjeuner ainsi qu'une activité matinale au choix.";
-				image = "https://cache.magicmaman.com/data/photo/w800_c18/4c/coq.jpg";
+				image = "https://i.pinimg.com/originals/33/d4/89/33d48901c6036628a03d0f7b0eab039c.jpg";
 			}
 			else
 			{
 				fieldText = "Le soleil se réveille, il fait beau, il fait jour.";
-				image = "https://cache.magicmaman.com/data/photo/w800_c18/4c/coq.jpg";
+				image = "https://i.pinimg.com/originals/33/d4/89/33d48901c6036628a03d0f7b0eab039c.jpg";
 			}
 		}
 		else if(partie.partJour == 1)
@@ -121,12 +121,12 @@ exports.event = function event(message, partie, tabN, tabE){
 			if(partie.tuto)
 			{
 				fieldText = "Tous les après-midi, vous devez faire votre prise d'insuline et vous pouvez choisir votre repas et une activité.";
-				image = "https://www.ouest-france.fr/sites/default/files/styles/image-640x360-p/public/2013/09/27/petits-nuages-le-matin-grand-soleil-lapres-midi-en-mayenne.jpg?itok=bz9oRZwF";
+				image = "http://www.pxleyes.com/images/contests/landscapes-td/fullsize/autumn-afternoon-4d4786da5ffbe_hires.jpg";
 			}
 			else
 			{
 				fieldText = "Repas, sieste, travail";
-				image = "https://www.ouest-france.fr/sites/default/files/styles/image-640x360-p/public/2013/09/27/petits-nuages-le-matin-grand-soleil-lapres-midi-en-mayenne.jpg?itok=bz9oRZwF";
+				image = "http://www.pxleyes.com/images/contests/landscapes-td/fullsize/autumn-afternoon-4d4786da5ffbe_hires.jpg";
 			}
 		}
 		else
@@ -439,7 +439,7 @@ function eventRepas(message, tabN, tabE){
 
 	const embed = new Discord.RichEmbed()
 	.setColor(0x00AE86)
-	.setTitle("**J'ai faim !**")
+	.setTitle("**Qu'est ce que je vais manger ?**")
 
 	.addField(tabN[rand1] + " : ", tabE[rand1])
 	.addField(tabN[rand2] + " : ", tabE[rand2])
@@ -548,8 +548,8 @@ function journal(message, partie){
 	const embed = new Discord.RichEmbed()
 	.setColor(15013890)
 	.setTitle('Journal de bord - Jour ' + partie.numJour)
-	.addField("Récapitulatifs des activités : ", activ[0] + ", " + activ[1] + " et " + activ[2] + ".")
-	.addField("Récapitulatifs des repas : ", repas[0] + ", " + repas[1] + " et " + repas[2] + ".")
+	.addField("Récapitulatif des activités : ", activ[0] + ", " + activ[1] + " et " + activ[2] + ".")
+	.addField("Récapitulatif des repas : ", repas[0] + ", " + repas[1] + " et " + repas[2] + ".")
 
 	message.guild.channels.get(chanId).send({embed})
 	.then(async function (mess){
@@ -610,7 +610,7 @@ function eventMedecin(message,partie) {
 	.setTimestamp()
 	.addField('Poids', 60 + 'kg')
 	.addField('Taux de glycémie', partie.glycemie.toFixed(2).toString() + ' mmol·L-1')
-	.addField('Commentaires', 'Ceci est un commentaire')
+	.addField('Commentaire', 'Ceci est un commentaire')
 	.addField('Conseil pour les activités', "```\n" + numConseilActivite + "```")
 	.addField('Conseil pour la nutrition',"```\n" + numConseilNutrition + "```")
 	message.channel.send({ embed });
