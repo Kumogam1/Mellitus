@@ -439,7 +439,7 @@ function eventRepas(message, tabN, tabE){
 
 	const embed = new Discord.RichEmbed()
 	.setColor(0x00AE86)
-	.setTitle("**J'ai faim !**")
+	.setTitle("**Qu'est ce que je vais manger ?**")
 
 	.addField(tabN[rand1] + " : ", tabE[rand1])
 	.addField(tabN[rand2] + " : ", tabE[rand2])
@@ -548,8 +548,8 @@ function journal(message, partie){
 	const embed = new Discord.RichEmbed()
 	.setColor(15013890)
 	.setTitle('Journal de bord - Jour ' + partie.numJour)
-	.addField("Récapitulatifs des activités : ", activ[0] + ", " + activ[1] + " et " + activ[2] + ".")
-	.addField("Récapitulatifs des repas : ", repas[0] + ", " + repas[1] + " et " + repas[2] + ".")
+	.addField("Récapitulatif des activités : ", activ[0] + ", " + activ[1] + " et " + activ[2] + ".")
+	.addField("Récapitulatif des repas : ", repas[0] + ", " + repas[1] + " et " + repas[2] + ".")
 
 	message.guild.channels.get(chanId).send({embed})
 	.then(async function (mess){
@@ -610,7 +610,7 @@ function eventMedecin(message,partie) {
 	.setTimestamp()
 	.addField('Poids', 60 + 'kg')
 	.addField('Taux de glycémie', partie.glycemie.toFixed(2).toString() + ' mmol·L-1')
-	.addField('Commentaires', 'Ceci est un commentaire')
+	.addField('Commentaire', 'Ceci est un commentaire')
 	.addField('Conseil pour les activités', "```\n" + numConseilActivite + "```")
 	.addField('Conseil pour la nutrition',"```\n" + numConseilNutrition + "```")
 	message.channel.send({ embed });

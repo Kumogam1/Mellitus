@@ -379,7 +379,7 @@ function choixPerso(message, partie){
 
     const embed = new Discord.RichEmbed()
     .setColor(15013890)
-    .setTitle("**Phase personnage**")
+    .setTitle("**Phase personnages**")
     .addField("👶 👦 👧 👨 👩 👴 👵", fieldText)
 
     message.channel.send({ embed })
@@ -417,7 +417,11 @@ function writePerso(message, numPerso) {
     if(numPerso < 3){
         message.channel.send({ embed: {
             color: 0x00AE86,
-            title: '**Personnage ' + i + '**',
+            author:
+            {
+              name: 'Personnage ' + i,
+              icon_url: perso.icone[numPerso]
+            },
             fields: [{
                 name: 'Nom',
                 value: perso.nom[numPerso],
@@ -443,7 +447,11 @@ function writePerso(message, numPerso) {
     else{
         message.channel.send({ embed: {
           color: 0x00AE86,
-          title: '**Personnage D**',
+          author:
+          {
+            name: 'Personnage D',
+            icon_url: perso.icone[3]
+          },
           fields: [{
               name: 'Nom',
               value: perso.nom[3],
