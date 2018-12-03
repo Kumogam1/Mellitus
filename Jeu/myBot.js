@@ -17,7 +17,7 @@ const tableaux = require('./tableaux.json');
 // listes pour les activités que le joueur peut pratiquer
 
 const emoteActiviteM = ['🎮','🏃','🛏', '📖'];
-const emoteActiviteA = ['⚽️','🏋', '🎮', '🎣', '🏊', '🚶', '🍷', '🎥'];
+const emoteActiviteA = ['🏀','🏋', '🎮', '🎣', '🏊', '🚶', '🍷', '🎥'];
 const emoteActiviteS = ['🕺', '🚶', '🍷', '🎥', '📺', '📖', '🛏'];
 const emoteRepasM = ['🍏', '🍞', '🥐', '☕', '🥞'];
 const emoteRepasS = ['🍔', '🍖', '🥗', '🍚', '🍝'];
@@ -47,7 +47,7 @@ client.on('message', (message) => {
 
       switch(command) {
         case 'start':
-          partie.nbJour = -1;
+          partie.nbJour = -2;
           partie.tuto = false;
           sfm.save(message.author.id, partie);
           initJeu.initJeu(message, client);
@@ -81,7 +81,7 @@ client.on('message', (message) => {
 
 client.on('messageReactionAdd', (reaction, user) => {
 
-	if(user.bot) return;
+	 if(user.bot) return;
 
     const partie = sfm.loadSave(user.id);
 
@@ -129,18 +129,21 @@ client.on('messageReactionAdd', (reaction, user) => {
             if(partie.numEvent == 1) {
                 writeAct(user.id, 'rienM', partie);
                 partie.impactNutrition.push(0);
+                partie.stress += 20;
+                sfm.save(partie.player, partie);
                 event.event(reaction.message, partie, tabNA, tabEA);
             }
             else{
                 writeAct(user.id, 'rienA', partie);
                 partie.impactActivite.push(0);
                 partie.partJour = (partie.partJour + 1) % 3;
+                partie.stress += 20;
                 sfm.save(partie.player, partie);
                 event.event(reaction.message, partie, tabNR, tabER);
             }
             break;
         case '➡':
-            if(partie.numEvent == -1) {
+            if(partie.numEvent == -1 && !partie.evenement) {
                 const chanId2 = myBot.messageChannel(reaction.message, "informations", partie);
 
                 if(partie.tuto)
@@ -233,29 +236,44 @@ client.on('messageReactionAdd', (reaction, user) => {
               .catch((err) => {
                 console.log(err)
               });
+
+              partie.nom = perso.nom[numPerso];
+              partie.sex = perso.sexe[numPerso];
+              partie.age = parseInt(perso.age[numPerso]);
+              partie.taille = parseInt(perso.taille[numPerso]);
+              partie.poids = parseInt(perso.poids[numPerso]);
+              sfm.save(partie.player, partie);
+
+
+
               initJeu.accueilMedecin(reaction.message,partie, tabNR, tabER);
             });
         });
     }
 
-  // Quand on choisi le repas
+    // Quand on choisi le repas
     if(tabER.includes(reaction.emoji.name)) {
         var i = 0;
         while(tabER[i] != reaction.emoji.name)
             i++;
         writeAct(user.id, tabNR[i], partie);
-        partie.impactNutrition.push(tabIR[i]);
+        partie.impactNutrition.push(tabIR[i][0]);
+        partie.stress += tabIR[i][1];
+        partie.glycemie = Math.round((partie.glycemie + tabIR[i][2])*100)/100;
+        sfm.save(partie.player, partie);
         event.event(reaction.message, partie, tabNA, tabEA);
     }
 
     // Quand on choisi la sport
-	if(tabEA.includes(reaction.emoji.name)) {
+    if(tabEA.includes(reaction.emoji.name)) {
         var i = 0;
         while(tabEA[i] != reaction.emoji.name)
             i++;
         writeAct(user.id, tabNA[i], partie);
-        partie.impactActivite.push(tabIA[i]);
+        partie.impactActivite.push(tabIA[i][0]);
         partie.partJour = (partie.partJour + 1) % 3;
+        partie.stress += tabIA[i][1];
+        partie.glycemie = Math.round((partie.glycemie + tabIA[i][2])*100)/100;
         sfm.save(partie.player, partie);
         event.event(reaction.message, partie, tabNR, tabER);
     }
@@ -366,43 +384,10 @@ function choixPerso(message, partie){
 
     message.channel.send({ embed })
     .then((msg) => {
-      for(let i = 0; i < 3; i++) {
+      for(let i = 0; i < 4; i++) {
           writePerso(msg, i);
       }
-
-    msg.channel.send({ embed: {
-        color: 0x00AE86,
-        title: '**Personnage D**',
-        fields: [{
-            name: 'Nom',
-            value: perso.nom[3],
-          },
-          {
-            name: 'Sexe',
-            value: perso.sexe[3],
-          },
-          {
-            name: 'Age',
-            value: perso.age[3],
-          },
-          {
-            name: 'Taille',
-            value: perso.taille[3],
-          },
-          {
-            name: 'Poids',
-            value: perso.poids[3],
-          },
-        ],
-      },
-    })
-    .then(async function(mess) {
-        await mess.react('🇦');
-        await mess.react('🇧');
-        await mess.react('🇨');
-        await mess.react('🇩');
     });
-  });
 }
 
 /**
@@ -429,32 +414,64 @@ function writePerso(message, numPerso) {
             break;
     }
 
-    message.channel.send({ embed: {
-        color: 0x00AE86,
-        title: '**Personnage ' + i + '**',
-        fields: [{
-            name: 'Nom',
-            value: perso.nom[numPerso],
+    if(numPerso < 3){
+        message.channel.send({ embed: {
+            color: 0x00AE86,
+            title: '**Personnage ' + i + '**',
+            fields: [{
+                name: 'Nom',
+                value: perso.nom[numPerso],
+            },
+            {
+                name: 'Sexe',
+                value: perso.sexe[numPerso],
+            },
+            {
+                name: 'Age',
+                value: perso.age[numPerso],
+            },
+            {
+                name: 'Taille',
+                value: perso.taille[numPerso],
+            },
+            {
+                name: 'Poids',
+                value: perso.poids[numPerso],
+            }],
+        }});
+    }
+    else{
+        message.channel.send({ embed: {
+          color: 0x00AE86,
+          title: '**Personnage D**',
+          fields: [{
+              name: 'Nom',
+              value: perso.nom[3],
           },
           {
-            name: 'Sexe',
-            value: perso.sexe[numPerso],
+              name: 'Sexe',
+              value: perso.sexe[3],
           },
           {
-            name: 'Age',
-            value: perso.age[numPerso],
+              name: 'Age',
+              value: perso.age[3],
           },
           {
-            name: 'Taille',
-            value: perso.taille[numPerso],
+              name: 'Taille',
+              value: perso.taille[3],
           },
           {
-            name: 'Poids',
-            value: perso.poids[numPerso],
-          },
-        ],
-      },
-    });
+              name: 'Poids',
+              value: perso.poids[3],
+          }],
+        }})
+        .then(async function(mess) {
+          await mess.react('🇦');
+          await mess.react('🇧');
+          await mess.react('🇨');
+          await mess.react('🇩');
+        });
+    }
 }
 
 client.login(config.token);

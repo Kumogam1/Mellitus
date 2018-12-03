@@ -14,12 +14,12 @@ exports.doses = function doses(partie) {
 	const doseObj = 0.4 * partie.poids;
 	let augmentation = 0;
 
-	if(doseObj < augmentation)
+	if(doseObj < 15)
 		augmentation = 1
 	else
 		augmentation = 2
 
-	const doseGlycemie = [doseInit, doseObj];
+	const doseGlycemie = [doseInit, doseObj, augmentation];
 	return doseGlycemie;
 };
 

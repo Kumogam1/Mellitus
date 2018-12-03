@@ -3,7 +3,6 @@
 	"hyper2" : ["Soif", "Ca fait déjà le 3e verre d'eau que je prend et j'ai encore soif."],
 	"hyper3" : ["Pipi", "Ca fait quelques minutes maintenant que j'ai vraiment envie de faire pipi. C'est vraiment bizarre, je suis allé aux toilettes il y a 20 minutes."],
 	"hyper4" : ["Fatigue", "J'ai hâte que la journée se finisse, j'ai un coup de barre, là."],
-	"hyper5" : ["Pipi2", "tres pipi"],
 	"hypo1" : ["Vertige", "Ouïe ouïe ouïe, j'ai des vertiges, faut que je m'asseoie un petit peu. Ah, c'est bon, c'est passé."],
 	"hypo2" : ["Vision flou", "Houla, j'ai les yeux qui flanche ou quoi ? Ah, c'est bon, j'avais la vision tout flou pendant un moment."],
 	"hypo3" : ["Tremblements", "J'arrête pas de trembler, c'est peut être dû au froid, mais il fait pas si froid que ça."]

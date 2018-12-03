@@ -46,11 +46,38 @@ exports.event = function event(message, partie, tabN, tabE){
 		console.log(err)
 	});
 
-	//Mort
-	if(partie.glycemie > 3 || partie.glycemie == 0){
+	if(partie.stress < 0){
+		partie.stress = 0;
+		sfm.save(partie.player, partie);
+	}
+
+	//Perte de vie
+	if(partie.glycemie > 3 || partie.glycemie == 0 || partie.stress > 100){
+		if(partie.numEvent == 0 && partie.amput != 1){
+			console.log("vie-20");
+			partie.vie -= 20;
+			sfm.save(partie.player, partie);
+		}
+		else if(partie.amput == 1){
+			partie.amput++;
+			sfm.save(partie.player, partie);
+		}
+	}
+
+	//Mort (vie à 0)
+	if(partie.vie == 0 && partie.numEvent == 0){
+		console.log("mort");
 		partie.mort = true;
 		sfm.save(partie.player, partie);
 		finJeu.msgFin(message, partie);
+		return;
+	}
+	//Perte de membre (vie très basse)
+	else if(partie.vie == 20 && partie.amput == 0){
+		console.log("amputation");
+		amput(message, partie);
+		partie.amput = 1;
+		sfm.save(partie.player, partie);
 		return;
 	}
 
@@ -87,7 +114,6 @@ exports.event = function event(message, partie, tabN, tabE){
 				fieldText = "Le soleil se réveille, il fait beau, il fait jour.";
 				image = "https://i.pinimg.com/originals/33/d4/89/33d48901c6036628a03d0f7b0eab039c.jpg";
 			}
-
 		}
 		else if(partie.partJour == 1)
 		{
@@ -121,7 +147,7 @@ exports.event = function event(message, partie, tabN, tabE){
 		title(message, fieldTitle, fieldText, image);
 
 		if(partie.glycemie > 2){		//hyperglycemie
-			let rand = myBot.getRandomInt(5);
+			let rand = myBot.getRandomInt(4);
 			let title = "";
 			let text = "";
 
@@ -142,10 +168,6 @@ exports.event = function event(message, partie, tabN, tabE){
 					title = eventGly.hyper4[0];
 					text = eventGly.hyper4[1];
 					break;
-				case 4:
-					title = eventGly.hyper5[0];
-					text = eventGly.hyper5[1];
-					break;
 			}
 
 			const embed = new Discord.RichEmbed()
@@ -161,13 +183,8 @@ exports.event = function event(message, partie, tabN, tabE){
 			partie.evenement = false;
 			sfm.save(partie.player, partie);
 			return;
-			//mal de tete
-			//fatigue
-			//pipi
-			//soif
-			//tres pipi
 		}
-		else if(partie.glycemie < 0.6){	//hypoglycemie
+		else if(partie.glycemie < 0.6){		//hypoglycemie
 			let rand = myBot.getRandomInt(3);
 			let title = "";
 			let text = "";
@@ -188,7 +205,7 @@ exports.event = function event(message, partie, tabN, tabE){
 			}
 
 			const embed = new Discord.RichEmbed()
-			.setColor(15013890)
+			.setColor(0x00AE86)
 			.addField(title, text)
 
 			message.channel.send({embed})
@@ -200,13 +217,6 @@ exports.event = function event(message, partie, tabN, tabE){
 			partie.evenement = false;
 			sfm.save(partie.player, partie);
 			return;
-			//vertiges
-			//troubles de la visions
-			//malaises
-		}
-		else{
-			//anniv
-			//maladie
 		}
 	}
 
@@ -451,6 +461,7 @@ function eventRepas(message, tabN, tabE){
 /**
 * Fonction qui écrit le message de fin de partie
 * @param {string} message - Message discord
+* @param {Object} partie - Objet json de la partie
 **/
 function eventFin(message, partie){
   if(partie.tuto)
@@ -461,10 +472,31 @@ function eventFin(message, partie){
   const embed = new Discord.RichEmbed()
   .setColor(15013890)
 
-  .addField("C'est la fin du partie.", fieldTextInfo)
+  .addField("C'est la fin de la partie.", fieldTextInfo)
   .addField("Pour quitter la partie, tapez : ", "/end")
 
   message.channel.send({embed});
+}
+
+/**
+* Fonction qui écrit le message de perte de membre du joueur
+* @param {string} message - Message discord
+* @param {Object} partie - Objet json de la partie
+**/
+function amput(message, partie){
+	let membre = ["bras gauche", "bras droit", "jambe gauche", "jambe droit"];
+	let rand = myBot.getRandomInt(4);
+	let title = "C'est pas votre jour !";
+	let text = "Vous venez de perdre votre " + membre[rand] + " ! Vous savez, ce n'est que la conséquence de vos choix. Mais ne vous inquiétez pas, vous n'êtes pas mort, c'est déjà ça.";
+
+	const embed = new Discord.RichEmbed()
+	.setColor(0x00AE86)
+	.addField(title, text)
+
+	message.channel.send({embed})
+	.then(async function (mess) {
+		mess.react('➡');
+	});
 }
 
 /**
@@ -594,6 +626,7 @@ function calculImpactActivite(partie) {
 	const impactJour = partie.impactActivite[nbImpact-3] + partie.impactActivite[nbImpact-2] + partie.impactActivite[nbImpact-1];
 	return impactJour;
 }
+
 /**
 *Fonction qui permet de calculer l'impact nutritionnel du joueur
 * @param {Object} partie - Objet json de la partie
