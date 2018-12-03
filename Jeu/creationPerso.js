@@ -86,22 +86,18 @@ client.on ('message', mess => {
         partie.poids = tab[5];
         console.log(partie);
         sfm.save(message.author.id, partie);
-        const chaniD = myBot.messageChannel(message, 'personnage', partie);
-        const chanId = myBot.messageChannel(reaction.message, 'personnage', partie);
+        const chanId = myBot.messageChannel(message, 'personnage', partie);
 
-        if(partie.tuto)
-            fieldTextPerso = "Voici le channel personnage.\nC'est dans ce channel que vous pouvez voir les informations concernant votre personnage.";
-        else
-            fieldTextPerso = "Voici votre personnage :";
+        const fieldTextPerso = 'Voici votre personnage :';
 
-        reaction.message.guild.channels.get(chanId).send({embed: {
+        message.guild.channels.get(chanId).send({ embed: {
             color: 15013890,
             fields: [{
                 name: 'Channel Personnage',
                 value: fieldTextPerso
             }]
         } }).then(() => {
-            reaction.message.guild.channels.get(chanId).send({ embed: {
+            message.guild.channels.get(chanId).send({ embed: {
                 color: 0x00AE86,
                 title: '**Personnage**',
                 fields: [{
@@ -132,7 +128,7 @@ client.on ('message', mess => {
                 console.log(err);
               });
 
-              initJeu.accueilMedecin(reaction.message,partie, tabNR, tabER);
+              initJeu.accueilMedecin(message, partie);
             });
         });
       }
