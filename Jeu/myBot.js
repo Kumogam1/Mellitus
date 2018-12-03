@@ -7,6 +7,7 @@ const event = require('./event.js');
 const insuline = require('./priseInsuline.js');
 const sfm = require('./saveFileManagement.js');
 const as = require('./affichageStats.js');
+const cp = require('./creationPerso.js');
 
 const client = new Discord.Client();
 
@@ -125,6 +126,9 @@ client.on('messageReactionAdd', (reaction, user) => {
         case '✅':
             choixPerso(reaction.message, partie);
             break;
+        case '☑':
+            cp.creerPerso(reaction.message, partie);
+            break;
         case '❌':
             if(partie.numEvent == 1) {
                 writeAct(user.id, 'rienM', partie);
@@ -144,7 +148,7 @@ client.on('messageReactionAdd', (reaction, user) => {
             break;
         case '➡':
             if(partie.numEvent == -1 && !partie.evenement) {
-                const chanId2 = myBot.messageChannel(reaction.message, "informations", partie);
+                const chanId2 = myBot.messageChannel(reaction.message, 'informations', partie);
 
                 if(partie.tuto)
                     fieldTextInfo = "Voici le channel informations.\nAvant chaque prise d'insuline, un graphique montrant l'évolution de votre taux de glycémie apparaitra dans ce channel.";
@@ -198,10 +202,10 @@ client.on('messageReactionAdd', (reaction, user) => {
         reaction.message.guild.channels.get(chanId).send({embed: {
             color: 15013890,
             fields: [{
-                name: "Channel Personnage",
+                name: 'Channel Personnage',
                 value: fieldTextPerso
             }]
-        }}).then(() => {
+        } }).then(() => {
             reaction.message.guild.channels.get(chanId).send({ embed: {
                 color: 0x00AE86,
                 title: '**Personnage**',
@@ -225,16 +229,12 @@ client.on('messageReactionAdd', (reaction, user) => {
                     name: 'Poids',
                     value: perso.poids[numPerso],
                 }]
-            }})
+            } })
             .then(() => {
-              async function clear() {
-                fetched = await reaction.message.channel.fetchMessages();
-                reaction.message.channel.bulkDelete(fetched);
-              }
 
-              clear()
+              myBot.clear(reaction.message)
               .catch((err) => {
-                console.log(err)
+                console.log(err);
               });
 
               partie.nom = perso.nom[numPerso];
@@ -359,14 +359,8 @@ function text(message) {
 * Fonction qui présente les personnages prédéfinis
 * @param {string} message - Message discord
 **/
-function choixPerso(message, partie){
-    async function clear() {
-        // message.delete();
-        const fetched = await message.channel.fetchMessages();
-        message.channel.bulkDelete(fetched);
-    }
-
-    clear()
+function choixPerso(message, partie) {
+    myBot.clear(message)
     .catch((err) => {
         console.log(err);
     });
@@ -472,7 +466,7 @@ function writePerso(message, numPerso) {
               name: 'Poids',
               value: perso.poids[3],
           }],
-        }})
+        } })
         .then(async function(mess) {
           await mess.react('🇦');
           await mess.react('🇧');
@@ -481,5 +475,11 @@ function writePerso(message, numPerso) {
         });
     }
 }
+
+exports.clear = async function(message) {
+    // message.delete();
+    const fetched = await message.channel.fetchMessages();
+    message.channel.bulkDelete(fetched);
+};
 
 client.login(config.token);
