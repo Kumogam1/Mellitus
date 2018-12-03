@@ -173,6 +173,7 @@ function initChannelGrp(message, partie, channelGrpName, rolePers) {
 		partie.stress = 0;
 		partie.vie = 100;
 		partie.amput = 0;
+		partie.soda = true;
 		initChannel(message, partie, rolePers, 'Hub', res);
 		initChannel(message, partie, rolePers, 'Informations', res);
 		initChannel(message, partie, rolePers, 'Personnage', res);
