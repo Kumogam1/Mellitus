@@ -64,11 +64,14 @@ client.on('message', (message) => {
         case 'quit':
             finJeu.finJeu(message);
             break;
-          /*
-        case 'create':
-            finJeu.initStat(message.author);
+        case 'soda':
+            if(partie.soda == true)
+            {
+              partie.glycemie = partie.glycemie + 0.5;
+              partie.soda = false;
+            }
+            sfm.save(message.author.id, partie);
             break;
-            */
         case 'text':
           text(message);
           break;
@@ -204,7 +207,11 @@ client.on('messageReactionAdd', (reaction, user) => {
         }}).then(() => {
             reaction.message.guild.channels.get(chanId).send({ embed: {
                 color: 0x00AE86,
-                title: '**Personnage**',
+                author:
+                {
+                  name: 'Personnage ',
+                  icon_url: perso.icone[numPerso]
+                },
                 fields: [{
                     name: 'Nom',
                     value: perso.nom[numPerso],
