@@ -253,7 +253,7 @@ client.on('messageReactionAdd', (reaction, user) => {
 
 
 
-              initJeu.accueilMedecin(reaction.message,partie, tabNR, tabER);
+              initJeu.accueilMedecin(reaction.message, partie);
             });
         });
     }
