@@ -11,7 +11,6 @@ const fs = require('fs');
 const Discord = require('discord.js');
 const myBot = require('./myBot.js');
 
-
 const imgOpts = {
     format: 'png',
     width: 1000,
@@ -86,13 +85,8 @@ exports.graphString = async function(message, partie) {
 
   const chanId = myBot.messageChannel(message, 'informations', partie);
 
-  async function clear() {
-    const fetched = await message.guild.channels.get(chanId).fetchMessages({ limit: 2 });
-    message.guild.channels.get(chanId).bulkDelete(fetched);
-  }
-
   if(partie.numJour != 0 || partie.partJour != 0) {
-    clear()
+    myBot.clear(message)
     .catch((err) => {
       console.log(err);
     });

@@ -5,13 +5,13 @@ const event = require('./event.js');
 const finJeu = require('./finJeu.js')
 const insuline = require('./priseInsuline.js');
 const conseilSport = require('./conseilSport.json');
-const conseilNutrition  =require('./conseilNutri.json');
+const conseilNutrition = require('./conseilNutri.json');
 const image = require('./images.js');
-const perso = require("./perso.json");
-const calcul = require("./calcul.js");
+const perso = require('./perso.json');
+const calcul = require('./calcul.js');
 const as = require('./affichageStats.js');
-const config = require("./token.json");
-const eventGly = require("./evenement.json");
+const config = require('./token.json');
+const eventGly = require('./evenement.json');
 
 const client = new Discord.Client();
 client.login(config.token);
@@ -30,18 +30,13 @@ const conseq = ['crampe', 'courbatures'];
 * @param {string[]} tabN - Tableau des noms d'actions
 * @param {string[]} tabE - Tableau des emojis d'actions
 **/
-exports.event = function event(message, partie, tabN, tabE){
+exports.event = function event(message, partie, tabN, tabE) {
 
-	let fieldTitle = "";
-	let fielText = "";
-	let image = "";
+	let fieldTitle = '';
+	let fielText = '';
+	let image = '';
 
-	async function clear() {
-		fetched = await message.channel.fetchMessages();
-		message.channel.bulkDelete(fetched);
-	}
-
-	clear()
+	myBot.clear(message)
 	.catch((err) => {
 		console.log(err)
 	});

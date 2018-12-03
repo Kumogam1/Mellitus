@@ -5,6 +5,7 @@ client.login(config.token);
 
 const sfm = require('./saveFileManagement.js');
 const fj = require('./finJeu.js');
+const myBot = require('./myBot.js');
 
 /**
 * Fonction terminant la partie
@@ -85,14 +86,9 @@ exports.msgFin = function msgFin(message, partie) {
 	message.delete();
 
 	if(message.member.roles.some(r=>['Joueur'].includes(r.name))) {
-		if(message.channel.name == "hub"){
+		if(message.channel.name == "hub") {
 
-			async function clear() {
-				fetched = await message.channel.fetchMessages();
-				message.channel.bulkDelete(fetched);
-			}
-
-			clear()
+			myBot.clear(message)
 			.catch((err) => {
 				console.log(err)
 			});
