@@ -1,8 +1,10 @@
 const Discord = require('discord.js');
 const sfm = require('./saveFileManagement.js');
 const config = require('./token.json');
+const myBot = require('./myBot.js');
+const initJeu = require('./initJeu.js');
 
-let state = 0;
+let state = -1;
 let message;
 const client = new Discord.Client();
 const tab = [];
@@ -31,8 +33,8 @@ client.on('messageReactionAdd', (reaction, user) => {
 
 client.on ('message', mess => {
   if (mess.author.bot) {return;}
-  else if (!isNaN(mess) && state < 3) {
-    message.channel.send('veuillez entrer des caracteres');
+  else if (!isNaN(mess) && state < 3 && state >= 0) {
+    mess.channel.send('veuillez entrer des caracteres');
   }
   let param = mess.content.trim();
   switch (state) {
@@ -75,7 +77,8 @@ client.on ('message', mess => {
         tab.push(Number(mess.content).toFixed(0) + 'kg');
         console.log(tab);
         console.log(partie);
-        mess.react('➡');
+        state += 1;
+        mess.react('▶');
         partie.nom = tab[1] + ' ' + tab[2];
         partie.sexe = tab[0];
         partie.age = tab[3];
@@ -83,7 +86,56 @@ client.on ('message', mess => {
         partie.poids = tab[5];
         console.log(partie);
         sfm.save(message.author.id, partie);
-        }
+        const chaniD = myBot.messageChannel(message, 'personnage', partie);
+        const chanId = myBot.messageChannel(reaction.message, 'personnage', partie);
+
+        if(partie.tuto)
+            fieldTextPerso = "Voici le channel personnage.\nC'est dans ce channel que vous pouvez voir les informations concernant votre personnage.";
+        else
+            fieldTextPerso = "Voici votre personnage :";
+
+        reaction.message.guild.channels.get(chanId).send({embed: {
+            color: 15013890,
+            fields: [{
+                name: 'Channel Personnage',
+                value: fieldTextPerso
+            }]
+        } }).then(() => {
+            reaction.message.guild.channels.get(chanId).send({ embed: {
+                color: 0x00AE86,
+                title: '**Personnage**',
+                fields: [{
+                    name: 'Nom',
+                    value: partie.nom,
+                },
+                {
+                    name: 'Sexe',
+                    value: partie.sexe,
+                },
+                {
+                    name: 'Age',
+                    value: partie.age,
+                },
+                {
+                    name: 'Taille',
+                    value: partie.taille,
+                },
+                {
+                    name: 'Poids',
+                    value: partie.poids,
+                }]
+            } })
+            .then(() => {
+
+              myBot.clear(message)
+              .catch((err) => {
+                console.log(err);
+              });
+
+              initJeu.accueilMedecin(reaction.message,partie, tabNR, tabER);
+            });
+        });
+      }
       else {
         message.channel.send('veuillez saisir un poids correct');
       }
@@ -95,8 +147,10 @@ client.on ('message', mess => {
 });
 
 exports.creerPerso = function(pMess, part) {
+  myBot.clear(pMess);
   partie = part;
   message = pMess;
+  state = 0;
   genre();
 };
 

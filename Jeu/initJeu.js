@@ -192,27 +192,29 @@ function bienvenue(message) {
 
 	const partie = sfm.loadSave(message.author.id);
 
-	const chanId = myBot.messageChannel(message, "hub", partie);
+	const chanId = myBot.messageChannel(message, 'hub', partie);
 
-	if(partie.tuto){
-		titre = "Tutoriel";
-		text = "Ceci est le tutoriel du jeu Mellitus.";
+	if(partie.tuto) {
+		titre = 'Tutoriel';
+		text = 'Ceci est le tutoriel du jeu Mellitus.';
 	}
 	else{
-		titre = "Jeu";
-		text = "Vous allez jouer à Mellitus. Bon jeu.";
+		titre = 'Jeu';
+		text = 'Vous allez jouer à Mellitus. Bon jeu.';
 	}
 
 	const embed = new Discord.RichEmbed()
 	.setColor(15013890)
-	.setTitle("Bienvenue dans Mellitus")
+	.setTitle('Bienvenue dans Mellitus')
 
 	.addField(titre, text)
-	.addField("Commencer la partie", "✅")
+	.addField('Commencer la partie ', '✅')
+	.addField('Commencer la partie', '☑')
 
 	message.guild.channels.get(chanId).send({embed})
 	.then(async function (mess) {
 		await mess.react('✅');
+		await mess.react('☑');
 	});
 }
 
