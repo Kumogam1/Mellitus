@@ -95,7 +95,7 @@ exports.graphString = async function(message, partie) {
 
   const embed = new Discord.RichEmbed()
   .setColor(0x00AE86)
-  .addField('**Taux de glycémie**', 'Taux de glycemie : ' + partie.glycemie + ' g/L\nIntervalle à atteindre : entre 0.7 g/L et 1.3 g/L');
+  .addField('**Taux de glycémie**', 'Taux de glycemie : ' + partie.glycemie.toFixed(2).toString() + ' g/L\nIntervalle à atteindre : entre 0.7 g/L et 1.3 g/L');
 
   plotly.getImage(figure, imgOpts, function(error, imageStream) {
       if (error) return console.log (error);

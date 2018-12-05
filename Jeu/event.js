@@ -18,8 +18,7 @@ client.login(config.token);
 
 const conseq = ['crampe', 'courbatures'];
 
-/**
-* Fonction qui lance l'évenement correspondant en fonction de la situation
+/** Fonction qui lance l'évenement correspondant en fonction de la situation
 * @param {string} message - Message discord
 * @param {Object} partie - Objet json de la partie
 * @param {number} partie.nbJour - Nombre de jour de la partie
@@ -80,6 +79,7 @@ exports.event = function event(message, partie, tabN, tabE) {
 	partie.numEvent = (partie.numEvent + 1) % 3;
 	if(partie.partJour == 0 && partie.numEvent == 0  && partie.evenement){
 		partie.numJour++;
+		partie.soda = true; // On remet le soda à vrai afin qu'il puisse en reprendre le lendemain
 	}
 	sfm.save(partie.player, partie);
 
@@ -266,7 +266,12 @@ exports.event = function event(message, partie, tabN, tabE) {
 	}
 };
 
-//Modification
+/** Fonction qui renvoie une conséquence au hasard
+* @param {string} message - Message discord
+* @param {Object} partie - Objet json de la partie
+* @param {string[]} tabN - Tableau des noms d'activités
+* @param {string[]} tabE - Tableau des emojis d'activités
+**/
 function consequence(message, partie, tabN, tabE){
 	let x = 0;
 
@@ -285,18 +290,13 @@ function consequence(message, partie, tabN, tabE){
 	    .addField('Aïe ça fait mal !', partie.consequence[1])//ça va changer
 
 	    message.channel.send({embed});
-	    /*.then(async function (mess) {
-	    	mess.react('➡');
-	    });*/
 	}
 	else{
 		message.delete();
 	}
 }
 
-/**
-* Fonction qui demande le nombre de jour à jouer
-
+/** Fonction qui demande le nombre de jour à jouer
 * @param {string} message - Message discord
 * @param {Object} partie - Objet json de la partie
 * @param {number} partie.nbJour - Nombre de jour de la partie
@@ -353,8 +353,7 @@ function eventNumJour(message, partie) {
 	});
 }
 
-/**
-* Fonction qui pour chaque prise d'insuline sauvegarde le nouveau taux de glycemie
+/** Fonction qui pour chaque prise d'insuline sauvegarde le nouveau taux de glycemie
 * @param {string} message - Message discord
 * @param {Object} partie - Objet json de la partie
 * @param {number} partie.glycemie - Taux de glycemie actuel de l'utilisateur
@@ -367,8 +366,7 @@ function eventInsu(message, partie) {
 	});
 }
 
-/**
-* Fonction qui met en place un choix de plusieurs activités
+/** Fonction qui met en place un choix de plusieurs activités
 * @param {string} message - Message discord
 * @param {string[]} tabN - Tableau des noms d'activités
 * @param {string[]} tabE - Tableau des emojis d'activités
@@ -410,8 +408,7 @@ function eventSport(message, tabN, tabE){
 	});
 }
 
-/**
-* Fonction qui met en place un choix de plusieurs repas
+/** Fonction qui met en place un choix de plusieurs repas
 * @param {string} message - Message discord
 * @param {string[]} tabN - Tableau des noms de repas
 * @param {string[]} tabE - Tableau des emojis de repas
@@ -453,8 +450,7 @@ function eventRepas(message, tabN, tabE){
 	});
 }
 
-/**
-* Fonction qui écrit le message de fin de partie
+/** Fonction qui écrit le message de fin de partie
 * @param {string} message - Message discord
 * @param {Object} partie - Objet json de la partie
 **/
@@ -473,8 +469,7 @@ function eventFin(message, partie){
   message.channel.send({embed});
 }
 
-/**
-* Fonction qui écrit le message de perte de membre du joueur
+/** Fonction qui écrit le message de perte de membre du joueur
 * @param {string} message - Message discord
 * @param {Object} partie - Objet json de la partie
 **/
@@ -494,8 +489,7 @@ function amput(message, partie){
 	});
 }
 
-/**
-* Fonction qui écrit un message expliquant la partie de la journée
+/** Fonction qui écrit un message expliquant la partie de la journée
 * @param {string} message - Message discord
 * @param {string} title - Titre du message
 * @param {string} text - Texte du message
@@ -509,8 +503,7 @@ function title(message, title, text, image){
 	message.channel.send({embed});
 }
 
-/**
-* Fonction qui récapitule les actions faites par l'utilisateur pendant la journée
+/** Fonction qui récapitule les actions faites par l'utilisateur pendant la journée
 * @param {string} message - Message discord
 * @param {Object} partie - Objet json de la partie
 * @param {string[]} partie.activite - Liste des actions faites par l'utilisateur
@@ -552,8 +545,7 @@ function journal(message, partie){
 	});
 }
 
-/**
-* Fonction qui écrit le bilan du patient donné par la médecin
+/** Fonction qui écrit le bilan du patient donné par la médecin
 * @param {string} message - Message discord
 * @param {Object} partie - Objet json de la partie
 **/
@@ -604,15 +596,14 @@ function eventMedecin(message,partie) {
 	.setThumbnail('https://upload.wikimedia.org/wikipedia/commons/thumb/5/57/Caduceus.svg/299px-Caduceus.svg.png') // Symbole médecine
 	.setTimestamp()
 	.addField('Poids', 60 + 'kg')
-	.addField('Taux de glycémie', partie.glycemie.toFixed(2).toString() + ' mmol·L-1')
+	.addField('Taux de glycémie', partie.tabGlycemie[partie.tabGlycemie.length-2].toFixed(2).toString() + ' g/L')
 	.addField('Commentaire', 'Ceci est un commentaire')
 	.addField('Conseil pour les activités', "```\n" + numConseilActivite + "```")
 	.addField('Conseil pour la nutrition',"```\n" + numConseilNutrition + "```")
 	message.channel.send({ embed });
 }
 
-/**
-*Fonction qui permet de calculer l'impact des activités du joueur
+/** Fonction qui permet de calculer l'impact des activités du joueur
 * @param {Object} partie - Objet json de la partie
 * @return impactJour, qui est l'impact sportif journalière du joueur
 */
@@ -622,8 +613,7 @@ function calculImpactActivite(partie) {
 	return impactJour;
 }
 
-/**
-*Fonction qui permet de calculer l'impact nutritionnel du joueur
+/** Fonction qui permet de calculer l'impact nutritionnel du joueur
 * @param {Object} partie - Objet json de la partie
 * @return impactJour, qui est l'impact nutritionnel journalière du joueur
 */
