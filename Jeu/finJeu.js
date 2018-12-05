@@ -112,7 +112,7 @@ exports.msgFin = function msgFin(message, partie) {
 				text = "Bien, un peu plus et tu seras le meilleur.";
 			}
 			else {
-				text = "Toi, ça ce voit que tu es là pour être le meilleur."
+				text = "Toi, ça se voit que tu es là pour être le meilleur."
 			}
 
 			const embed = new Discord.RichEmbed()

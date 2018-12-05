@@ -354,11 +354,12 @@ function text(message) {
     .setColor(0x00AE86)
     .setTitle('Bienvenue dans Mellitus')
 
-    .addField('Qu\'est ce que Mellitus ?', 'Mellitus est un jeu sérieux qui vous met dans la peau d\'une personne diabétique.\nVotre but est de stabiliser votre niveau d\'insuline jusqu\'à la fin de la partie.')
-    .addField('Le diabète', 'Voici un lien qui va vous renovyer sur un pdf qui vous expliquera plus en détail le diabète ➡ https://drive.google.com/open?id=1gZ0tk9ZYoBD4wx7oj_-PMjP2H39tp8gk')
+    .addField('Qu\'est ce que Mellitus ?', 'Jouant la consience du personnage choisi ou créé, Mellitus a pour but de vous apporter une aide, afin de vous apprendre de manière assez ludique comment gérer votre taux d’insuline, tout en gardant le côté serious game. De plus, de nombreux événements vont apparaître lors de la partie afin de développer votre adaptation aux circonstances. En fin de journée, vous aurez accés aux informations concernant votre personnage ainsi qu\'un récapitulatif de votre journée. Le but du jeu étant de rester en vie le plus longtemps possible.')
+    .addField('Le diabète', 'Voici un lien qui va vous renvoyer sur un pdf qui vous expliquera plus en détail le diabète ➡ https://drive.google.com/open?id=1gZ0tk9ZYoBD4wx7oj_-PMjP2H39tp8gk')
     .addField('Comment jouer ?', 'La partie est divisée en jour et chaque jour est une suite de choix. A chaque choix, ses conséquences.\n Durant la partie, vous ferez vos choix de 2 façons différentes : sous forme de texte ou sous forme de boutons.\nLe jeu n\'étant pas terminé, il ne peut accueillir qu\'un seul joueur à la fois.')
     .addField('Lancer le tutoriel : ', '/start')
-    .addField('Commande d\'arrêt d\'urgence : ', '/end');
+    .addField('Arrêt d\'urgence : ', '/end')
+    .addField('Prendre du soda', '/soda  *(augmente votre glycémie de 0.5 mais disponible qu\'une fois par jour)*')
 
     message.channel.send({ embed });
 }
