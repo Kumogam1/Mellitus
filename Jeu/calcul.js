@@ -49,7 +49,7 @@ exports.glyInsu = function glyInsu(partie, dose){
 	const tauxPresent = partie.glycemie;
 	let res = 0;
 
-	const delta = Math.abs(tauxPresent - 1.3);
+	const delta = Math.abs(tauxInit - 1.3);
 	const effect = delta / 32/*calcul.doses(partie)[1]*/;
 
 	res = Math.round((tauxPresent - Math.abs(dose * effect))*100)/100;
