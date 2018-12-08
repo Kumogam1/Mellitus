@@ -136,7 +136,7 @@ client.on('messageReactionAdd', (reaction, user) => {
             if(partie.numEvent == 1) {
                 writeAct(user.id, 'rienM', partie);
                 partie.impactNutrition.push(0);
-                partie.stress += 20;
+                partie.faim++;
                 sfm.save(partie.player, partie);
                 event.event(reaction.message, partie, tabNA, tabEA);
             }
@@ -266,6 +266,7 @@ client.on('messageReactionAdd', (reaction, user) => {
         writeAct(user.id, tabNR[i], partie);
         partie.impactNutrition.push(tabIR[i][0]);
         partie.stress += tabIR[i][1];
+        partie.faim--;
         partie.glycemie = Math.round((partie.glycemie + tabIR[i][2])*100)/100;
         sfm.save(partie.player, partie);
         event.event(reaction.message, partie, tabNA, tabEA);
