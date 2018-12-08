@@ -98,12 +98,16 @@ exports.msgFin = function msgFin(message, partie) {
 
 			if(partie.mort){
 				if(partie.glycemie > 3)
-					textMort = "Tu as fait une crise d'hyperglycémie. Consulte le channel 'Mellitus' pour en savoir plus.\n";
+					textMort = "Tu as fait une crise d'hyperglycémie.";
 				else if(partie.glycemie == 0)
-					textMort = "Tu as fait une crise d'hypoglycemie. Consulte le channel 'Mellitus' pour en savoir plus.\n";
+					textMort = "Tu as fait une crise d'hypoglycemie.";
+				else if(partie.faim > 2)
+					textMort = "Tu est mort de faim.";
 				else
-					textMort = "Tu as fait une crise de stress. Consulte le channel 'Mellitus' pour en savoir plus.\n";
+					textMort = "Tu as fait une crise de stress.";
 			}
+
+			textMort += "\nConsulte le channel 'Mellitus' pour en savoir plus.\n";
 
 			if(partie.numJour < 5) {
 				text = "Je suis sûr que tu peux aller plus loin.";
