@@ -7,6 +7,7 @@ const event = require('./event.js');
 const insuline = require('./priseInsuline.js');
 const sfm = require('./saveFileManagement.js');
 const as = require('./affichageStats.js');
+const cp = require('./creationPerso.js');
 
 const client = new Discord.Client();
 
@@ -64,11 +65,14 @@ client.on('message', (message) => {
         case 'quit':
             finJeu.finJeu(message);
             break;
-          /*
-        case 'create':
-            finJeu.initStat(message.author);
+        case 'soda':
+            if(partie.soda == true)
+            {
+              partie.glycemie = partie.glycemie + 0.5;
+              partie.soda = false;
+            }
+            sfm.save(message.author.id, partie);
             break;
-            */
         case 'text':
           text(message);
           break;
@@ -125,6 +129,9 @@ client.on('messageReactionAdd', (reaction, user) => {
         case '✅':
             choixPerso(reaction.message, partie);
             break;
+        case '☑':
+            cp.creerPerso(reaction.message, partie);
+            break;
         case '❌':
             if(partie.numEvent == 1) {
                 writeAct(user.id, 'rienM', partie);
@@ -144,7 +151,7 @@ client.on('messageReactionAdd', (reaction, user) => {
             break;
         case '➡':
             if(partie.numEvent == -1 && !partie.evenement) {
-                const chanId2 = myBot.messageChannel(reaction.message, "informations", partie);
+                const chanId2 = myBot.messageChannel(reaction.message, 'informations', partie);
 
                 if(partie.tuto)
                     fieldTextInfo = "Voici le channel informations.\nAvant chaque prise d'insuline, un graphique montrant l'évolution de votre taux de glycémie apparaitra dans ce channel.";
@@ -198,13 +205,17 @@ client.on('messageReactionAdd', (reaction, user) => {
         reaction.message.guild.channels.get(chanId).send({embed: {
             color: 15013890,
             fields: [{
-                name: "Channel Personnage",
+                name: 'Channel Personnage',
                 value: fieldTextPerso
             }]
-        }}).then(() => {
+        } }).then(() => {
             reaction.message.guild.channels.get(chanId).send({ embed: {
                 color: 0x00AE86,
-                title: '**Personnage**',
+                author:
+                {
+                  name: 'Personnage ',
+                  icon_url: perso.icone[numPerso]
+                },
                 fields: [{
                     name: 'Nom',
                     value: perso.nom[numPerso],
@@ -225,16 +236,12 @@ client.on('messageReactionAdd', (reaction, user) => {
                     name: 'Poids',
                     value: perso.poids[numPerso],
                 }]
-            }})
+            } })
             .then(() => {
-              async function clear() {
-                fetched = await reaction.message.channel.fetchMessages();
-                reaction.message.channel.bulkDelete(fetched);
-              }
 
-              clear()
+              myBot.clear(reaction.message)
               .catch((err) => {
-                console.log(err)
+                console.log(err);
               });
 
               partie.nom = perso.nom[numPerso];
@@ -246,7 +253,7 @@ client.on('messageReactionAdd', (reaction, user) => {
 
 
 
-              initJeu.accueilMedecin(reaction.message,partie, tabNR, tabER);
+              initJeu.accueilMedecin(reaction.message, partie);
             });
         });
     }
@@ -347,10 +354,12 @@ function text(message) {
     .setColor(0x00AE86)
     .setTitle('Bienvenue dans Mellitus')
 
-    .addField('Qu\'est ce que Mellitus ?', 'Mellitus est un jeu sérieux qui vous met dans la peau d\'une personne diabétique.\nVotre but est de stabiliser votre niveau d\'insuline jusqu\'à la fin de la partie.')
+    .addField('Qu\'est ce que Mellitus ?', 'Jouant la consience du personnage choisi ou créé, Mellitus a pour but de vous apporter une aide, afin de vous apprendre de manière assez ludique comment gérer votre taux d’insuline, tout en gardant le côté serious game. De plus, de nombreux événements vont apparaître lors de la partie afin de développer votre adaptation aux circonstances. En fin de journée, vous aurez accés aux informations concernant votre personnage ainsi qu\'un récapitulatif de votre journée. Le but du jeu étant de rester en vie le plus longtemps possible.')
+    .addField('Le diabète', 'Voici un lien qui va vous renvoyer sur un pdf qui vous expliquera plus en détail le diabète ➡ https://drive.google.com/open?id=1gZ0tk9ZYoBD4wx7oj_-PMjP2H39tp8gk')
     .addField('Comment jouer ?', 'La partie est divisée en jour et chaque jour est une suite de choix. A chaque choix, ses conséquences.\n Durant la partie, vous ferez vos choix de 2 façons différentes : sous forme de texte ou sous forme de boutons.\nLe jeu n\'étant pas terminé, il ne peut accueillir qu\'un seul joueur à la fois.')
     .addField('Lancer le tutoriel : ', '/start')
-    .addField('Commande d\'arrêt d\'urgence : ', '/end');
+    .addField('Arrêt d\'urgence : ', '/end')
+    .addField('Prendre du soda', '/soda  *(augmente votre glycémie de 0.5 mais disponible qu\'une fois par jour)*')
 
     message.channel.send({ embed });
 }
@@ -359,14 +368,8 @@ function text(message) {
 * Fonction qui présente les personnages prédéfinis
 * @param {string} message - Message discord
 **/
-function choixPerso(message, partie){
-    async function clear() {
-        // message.delete();
-        const fetched = await message.channel.fetchMessages();
-        message.channel.bulkDelete(fetched);
-    }
-
-    clear()
+function choixPerso(message, partie) {
+    myBot.clear(message)
     .catch((err) => {
         console.log(err);
     });
@@ -379,7 +382,7 @@ function choixPerso(message, partie){
 
     const embed = new Discord.RichEmbed()
     .setColor(15013890)
-    .setTitle("**Phase personnage**")
+    .setTitle("**Phase personnages**")
     .addField("👶 👦 👧 👨 👩 👴 👵", fieldText)
 
     message.channel.send({ embed })
@@ -417,7 +420,11 @@ function writePerso(message, numPerso) {
     if(numPerso < 3){
         message.channel.send({ embed: {
             color: 0x00AE86,
-            title: '**Personnage ' + i + '**',
+            author:
+            {
+              name: 'Personnage ' + i,
+              icon_url: perso.icone[numPerso]
+            },
             fields: [{
                 name: 'Nom',
                 value: perso.nom[numPerso],
@@ -443,7 +450,11 @@ function writePerso(message, numPerso) {
     else{
         message.channel.send({ embed: {
           color: 0x00AE86,
-          title: '**Personnage D**',
+          author:
+          {
+            name: 'Personnage D',
+            icon_url: perso.icone[3]
+          },
           fields: [{
               name: 'Nom',
               value: perso.nom[3],
@@ -464,7 +475,7 @@ function writePerso(message, numPerso) {
               name: 'Poids',
               value: perso.poids[3],
           }],
-        }})
+        } })
         .then(async function(mess) {
           await mess.react('🇦');
           await mess.react('🇧');
@@ -473,5 +484,11 @@ function writePerso(message, numPerso) {
         });
     }
 }
+
+exports.clear = async function(message) {
+    // message.delete();
+    const fetched = await message.channel.fetchMessages();
+    message.channel.bulkDelete(fetched);
+};
 
 client.login(config.token);

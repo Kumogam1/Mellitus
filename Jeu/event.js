@@ -5,21 +5,20 @@ const event = require('./event.js');
 const finJeu = require('./finJeu.js')
 const insuline = require('./priseInsuline.js');
 const conseilSport = require('./conseilSport.json');
-const conseilNutrition  =require('./conseilNutri.json');
+const conseilNutrition = require('./conseilNutri.json');
 const image = require('./images.js');
-const perso = require("./perso.json");
-const calcul = require("./calcul.js");
+const perso = require('./perso.json');
+const calcul = require('./calcul.js');
 const as = require('./affichageStats.js');
-const config = require("./token.json");
-const eventGly = require("./evenement.json");
+const config = require('./token.json');
+const eventGly = require('./evenement.json');
 
 const client = new Discord.Client();
 client.login(config.token);
 
 const conseq = ['crampe', 'courbatures'];
 
-/**
-* Fonction qui lance l'évenement correspondant en fonction de la situation
+/** Fonction qui lance l'évenement correspondant en fonction de la situation
 * @param {string} message - Message discord
 * @param {Object} partie - Objet json de la partie
 * @param {number} partie.nbJour - Nombre de jour de la partie
@@ -30,18 +29,13 @@ const conseq = ['crampe', 'courbatures'];
 * @param {string[]} tabN - Tableau des noms d'actions
 * @param {string[]} tabE - Tableau des emojis d'actions
 **/
-exports.event = function event(message, partie, tabN, tabE){
+exports.event = function event(message, partie, tabN, tabE) {
 
-	let fieldTitle = "";
-	let fielText = "";
-	let image = "";
+	let fieldTitle = '';
+	let fielText = '';
+	let image = '';
 
-	async function clear() {
-		fetched = await message.channel.fetchMessages();
-		message.channel.bulkDelete(fetched);
-	}
-
-	clear()
+	myBot.clear(message)
 	.catch((err) => {
 		console.log(err)
 	});
@@ -85,6 +79,7 @@ exports.event = function event(message, partie, tabN, tabE){
 	partie.numEvent = (partie.numEvent + 1) % 3;
 	if(partie.partJour == 0 && partie.numEvent == 0  && partie.evenement){
 		partie.numJour++;
+		partie.soda = true; // On remet le soda à vrai afin qu'il puisse en reprendre le lendemain
 	}
 	sfm.save(partie.player, partie);
 
@@ -107,12 +102,12 @@ exports.event = function event(message, partie, tabN, tabE){
 			if(partie.tuto)
 			{
 				fieldText = "Chaque matin, vous devez faire votre prise d'insuline, choisir votre petit déjeuner ainsi qu'une activité matinale au choix.";
-				image = "https://cache.magicmaman.com/data/photo/w800_c18/4c/coq.jpg";
+				image = "https://i.pinimg.com/originals/33/d4/89/33d48901c6036628a03d0f7b0eab039c.jpg";
 			}
 			else
 			{
 				fieldText = "Le soleil se réveille, il fait beau, il fait jour.";
-				image = "https://cache.magicmaman.com/data/photo/w800_c18/4c/coq.jpg";
+				image = "https://i.pinimg.com/originals/33/d4/89/33d48901c6036628a03d0f7b0eab039c.jpg";
 			}
 		}
 		else if(partie.partJour == 1)
@@ -121,12 +116,12 @@ exports.event = function event(message, partie, tabN, tabE){
 			if(partie.tuto)
 			{
 				fieldText = "Tous les après-midi, vous devez faire votre prise d'insuline et vous pouvez choisir votre repas et une activité.";
-				image = "https://www.ouest-france.fr/sites/default/files/styles/image-640x360-p/public/2013/09/27/petits-nuages-le-matin-grand-soleil-lapres-midi-en-mayenne.jpg?itok=bz9oRZwF";
+				image = "http://www.pxleyes.com/images/contests/landscapes-td/fullsize/autumn-afternoon-4d4786da5ffbe_hires.jpg";
 			}
 			else
 			{
 				fieldText = "Repas, sieste, travail";
-				image = "https://www.ouest-france.fr/sites/default/files/styles/image-640x360-p/public/2013/09/27/petits-nuages-le-matin-grand-soleil-lapres-midi-en-mayenne.jpg?itok=bz9oRZwF";
+				image = "http://www.pxleyes.com/images/contests/landscapes-td/fullsize/autumn-afternoon-4d4786da5ffbe_hires.jpg";
 			}
 		}
 		else
@@ -271,7 +266,12 @@ exports.event = function event(message, partie, tabN, tabE){
 	}
 };
 
-//Modification
+/** Fonction qui renvoie une conséquence au hasard
+* @param {string} message - Message discord
+* @param {Object} partie - Objet json de la partie
+* @param {string[]} tabN - Tableau des noms d'activités
+* @param {string[]} tabE - Tableau des emojis d'activités
+**/
 function consequence(message, partie, tabN, tabE){
 	let x = 0;
 
@@ -290,18 +290,13 @@ function consequence(message, partie, tabN, tabE){
 	    .addField('Aïe ça fait mal !', partie.consequence[1])//ça va changer
 
 	    message.channel.send({embed});
-	    /*.then(async function (mess) {
-	    	mess.react('➡');
-	    });*/
 	}
 	else{
 		message.delete();
 	}
 }
 
-/**
-* Fonction qui demande le nombre de jour à jouer
-
+/** Fonction qui demande le nombre de jour à jouer
 * @param {string} message - Message discord
 * @param {Object} partie - Objet json de la partie
 * @param {number} partie.nbJour - Nombre de jour de la partie
@@ -358,8 +353,7 @@ function eventNumJour(message, partie) {
 	});
 }
 
-/**
-* Fonction qui pour chaque prise d'insuline sauvegarde le nouveau taux de glycemie
+/** Fonction qui pour chaque prise d'insuline sauvegarde le nouveau taux de glycemie
 * @param {string} message - Message discord
 * @param {Object} partie - Objet json de la partie
 * @param {number} partie.glycemie - Taux de glycemie actuel de l'utilisateur
@@ -372,8 +366,7 @@ function eventInsu(message, partie) {
 	});
 }
 
-/**
-* Fonction qui met en place un choix de plusieurs activités
+/** Fonction qui met en place un choix de plusieurs activités
 * @param {string} message - Message discord
 * @param {string[]} tabN - Tableau des noms d'activités
 * @param {string[]} tabE - Tableau des emojis d'activités
@@ -415,8 +408,7 @@ function eventSport(message, tabN, tabE){
 	});
 }
 
-/**
-* Fonction qui met en place un choix de plusieurs repas
+/** Fonction qui met en place un choix de plusieurs repas
 * @param {string} message - Message discord
 * @param {string[]} tabN - Tableau des noms de repas
 * @param {string[]} tabE - Tableau des emojis de repas
@@ -439,7 +431,7 @@ function eventRepas(message, tabN, tabE){
 
 	const embed = new Discord.RichEmbed()
 	.setColor(0x00AE86)
-	.setTitle("**J'ai faim !**")
+	.setTitle("**Qu'est ce que je vais manger ?**")
 
 	.addField(tabN[rand1] + " : ", tabE[rand1])
 	.addField(tabN[rand2] + " : ", tabE[rand2])
@@ -458,8 +450,7 @@ function eventRepas(message, tabN, tabE){
 	});
 }
 
-/**
-* Fonction qui écrit le message de fin de partie
+/** Fonction qui écrit le message de fin de partie
 * @param {string} message - Message discord
 * @param {Object} partie - Objet json de la partie
 **/
@@ -478,8 +469,7 @@ function eventFin(message, partie){
   message.channel.send({embed});
 }
 
-/**
-* Fonction qui écrit le message de perte de membre du joueur
+/** Fonction qui écrit le message de perte de membre du joueur
 * @param {string} message - Message discord
 * @param {Object} partie - Objet json de la partie
 **/
@@ -499,8 +489,7 @@ function amput(message, partie){
 	});
 }
 
-/**
-* Fonction qui écrit un message expliquant la partie de la journée
+/** Fonction qui écrit un message expliquant la partie de la journée
 * @param {string} message - Message discord
 * @param {string} title - Titre du message
 * @param {string} text - Texte du message
@@ -514,8 +503,7 @@ function title(message, title, text, image){
 	message.channel.send({embed});
 }
 
-/**
-* Fonction qui récapitule les actions faites par l'utilisateur pendant la journée
+/** Fonction qui récapitule les actions faites par l'utilisateur pendant la journée
 * @param {string} message - Message discord
 * @param {Object} partie - Objet json de la partie
 * @param {string[]} partie.activite - Liste des actions faites par l'utilisateur
@@ -548,8 +536,8 @@ function journal(message, partie){
 	const embed = new Discord.RichEmbed()
 	.setColor(15013890)
 	.setTitle('Journal de bord - Jour ' + partie.numJour)
-	.addField("Récapitulatifs des activités : ", activ[0] + ", " + activ[1] + " et " + activ[2] + ".")
-	.addField("Récapitulatifs des repas : ", repas[0] + ", " + repas[1] + " et " + repas[2] + ".")
+	.addField("Récapitulatif des activités : ", activ[0] + ", " + activ[1] + " et " + activ[2] + ".")
+	.addField("Récapitulatif des repas : ", repas[0] + ", " + repas[1] + " et " + repas[2] + ".")
 
 	message.guild.channels.get(chanId).send({embed})
 	.then(async function (mess){
@@ -557,8 +545,7 @@ function journal(message, partie){
 	});
 }
 
-/**
-* Fonction qui écrit le bilan du patient donné par la médecin
+/** Fonction qui écrit le bilan du patient donné par la médecin
 * @param {string} message - Message discord
 * @param {Object} partie - Objet json de la partie
 **/
@@ -609,15 +596,14 @@ function eventMedecin(message,partie) {
 	.setThumbnail('https://upload.wikimedia.org/wikipedia/commons/thumb/5/57/Caduceus.svg/299px-Caduceus.svg.png') // Symbole médecine
 	.setTimestamp()
 	.addField('Poids', 60 + 'kg')
-	.addField('Taux de glycémie', partie.glycemie.toFixed(2).toString() + ' mmol·L-1')
-	.addField('Commentaires', 'Ceci est un commentaire')
+	.addField('Taux de glycémie', partie.tabGlycemie[partie.tabGlycemie.length-2].toFixed(2).toString() + ' g/L')
+	.addField('Commentaire', 'Ceci est un commentaire')
 	.addField('Conseil pour les activités', "```\n" + numConseilActivite + "```")
 	.addField('Conseil pour la nutrition',"```\n" + numConseilNutrition + "```")
 	message.channel.send({ embed });
 }
 
-/**
-*Fonction qui permet de calculer l'impact des activités du joueur
+/** Fonction qui permet de calculer l'impact des activités du joueur
 * @param {Object} partie - Objet json de la partie
 * @return impactJour, qui est l'impact sportif journalière du joueur
 */
@@ -627,8 +613,7 @@ function calculImpactActivite(partie) {
 	return impactJour;
 }
 
-/**
-*Fonction qui permet de calculer l'impact nutritionnel du joueur
+/** Fonction qui permet de calculer l'impact nutritionnel du joueur
 * @param {Object} partie - Objet json de la partie
 * @return impactJour, qui est l'impact nutritionnel journalière du joueur
 */
