@@ -245,7 +245,7 @@ client.on('messageReactionAdd', (reaction, user) => {
               });
 
               partie.nom = perso.nom[numPerso];
-              partie.sex = perso.sexe[numPerso];
+              partie.sexe = perso.sexe[numPerso];
               partie.age = parseInt(perso.age[numPerso]);
               partie.taille = parseInt(perso.taille[numPerso]);
               partie.poids = parseInt(perso.poids[numPerso]);

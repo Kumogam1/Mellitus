@@ -8,6 +8,7 @@ let state = -1;
 let message;
 const client = new Discord.Client();
 const tab = [];
+const tabNb = ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9"];
 let partie;
 
 client.on('messageReactionAdd', (reaction, user) => {
@@ -32,11 +33,11 @@ client.on('messageReactionAdd', (reaction, user) => {
 });
 
 client.on ('message', mess => {
+
   if (mess.author.bot) {return;}
-  else if (!isNaN(mess) && state < 3 && state >= 0) {
-    mess.channel.send('veuillez entrer des caracteres');
-  }
+
   let param = mess.content.trim();
+
   switch (state) {
     case 1:
       param = param.charAt(0).toUpperCase() + param.slice(1);
@@ -51,41 +52,73 @@ client.on ('message', mess => {
       age();
       break;
     case 3:
-      if (mess.content < 100) {
+      let boolAge = true;
+      if(mess.content.length == 1 || mess.content.length == 2){
+        for(let i = 0; i < mess.content.length; i++){
+          if(!tabNb.includes(mess.content.charAt(i))){
+            boolAge = false;
+          }
+        }
+      }
+      else{
+        boolAge = false;
+      }
+
+      if (boolAge == true) {
         tab.push(mess.content);
         state += 1;
         taille();
       }
       else {
-        message.channel.send('veuillez saisir un age correcte');
+        message.channel.send('Veuillez saisir un age correcte');
       }
       break;
     case 4:
-      if (mess.content > 100 && mess.content < 250) {
-        let tEnM = (mess.content / 100).toFixed(2).toString();
-        tEnM = tEnM.replace('.', 'm');
-        tab.push(tEnM);
+
+      let boolTaille = true;
+      if(mess.content.length == 2 || mess.content.length == 3){
+        for(let i = 0; i < mess.content.length; i++){
+          if(!tabNb.includes(mess.content.charAt(i))){
+            boolTaille = false;
+          }
+        }
+      }
+      else{
+        boolTaille = false;
+      }
+
+      if (boolTaille == true && mess.content > 50 && mess.content < 250) {
+        tab.push(mess.content + "cm");
         state += 1;
         poids();
       }
       else {
-        message.channel.send('veuillez saisir une taille correcte');
+        message.channel.send('Veuillez saisir une taille correcte');
       }
       break;
     case 5:
-      if (mess.content > 35 && mess.content < 200) {
-        tab.push(Number(mess.content).toFixed(0) + 'kg');
-        console.log(tab);
-        console.log(partie);
+
+      let boolPoids = true;
+      if(mess.content.length == 2 || mess.content.length == 3){
+        for(let i = 0; i < mess.content.length; i++){
+          if(!tabNb.includes(mess.content.charAt(i))){
+            boolPoids = false;
+          }
+        }
+      }
+      else{
+        boolPoids = false;
+      }
+
+      if (boolPoids == true && mess.content > 35 && mess.content < 200) {
+        tab.push(mess.content + 'kg');
         state += 1;
-        mess.react('▶');
         partie.nom = tab[1] + ' ' + tab[2];
         partie.sexe = tab[0];
-        partie.age = tab[3];
-        partie.taille = tab[4];
-        partie.poids = tab[5];
-        console.log(partie);
-        sfm.save(message.author.id, partie);
+        partie.age = parseInt(tab[3]);
+        partie.taille = parseInt(tab[4]);
+        partie.poids = parseInt(tab[5]);
+        sfm.save(partie.player, partie);
         const chanId = myBot.messageChannel(message, 'personnage', partie);
 
         const fieldTextPerso = 'Voici votre personnage :';
@@ -110,15 +143,15 @@ client.on ('message', mess => {
                 },
                 {
                     name: 'Age',
-                    value: partie.age,
+                    value: tab[3],
                 },
                 {
                     name: 'Taille',
-                    value: partie.taille,
+                    value: tab[4],
                 },
                 {
                     name: 'Poids',
-                    value: partie.poids,
+                    value: tab[5],
                 }]
             } })
             .then(() => {
@@ -133,7 +166,7 @@ client.on ('message', mess => {
         });
       }
       else {
-        message.channel.send('veuillez saisir un poids correct');
+        message.channel.send('Veuillez saisir un poids correct');
       }
       break;
     default:
@@ -166,21 +199,21 @@ function nom() {
   message.channel.send({ embed: {
     title:'Création du personnage',
     color:0x00AE86,
-    description: 'Nom?',
+    description: 'Quelle est votre nom ?',
   } });
 }
 function prenom() {
   message.channel.send({ embed: {
     color:0x00AE86,
     title:'Création du personnage',
-    description: 'Prénom?',
+    description: 'Quelle est votre prénom ?',
   } });
 }
 function age() {
   message.channel.send({ embed: {
     color:0x00AE86,
     title:'Création du personnage',
-    description: 'Votre age',
+    description: 'Quelle est votre age ?',
   } });
 }
 
@@ -188,7 +221,7 @@ function taille() {
   message.channel.send({ embed: {
     color:0x00AE86,
     title:'Création du personnage',
-    description: 'Taille en cm',
+    description: 'Quelle est votre taille (en cm) ?',
   } });
 }
 
@@ -197,7 +230,7 @@ function poids() {
   message.channel.send({ embed: {
     color:0x00AE86,
     title:'Création du personnage',
-    description: 'poids en kg',
+    description: 'Quelle est votre poids (en kg)?',
   } });
 }
 
