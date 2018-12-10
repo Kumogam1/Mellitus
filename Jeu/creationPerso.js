@@ -70,7 +70,7 @@ client.on ('message', mess => {
         taille();
       }
       else {
-        message.channel.send('Veuillez saisir un age correcte');
+        message.channel.send('Veuillez saisir un âge correct');
       }
       break;
     case 4:
@@ -88,7 +88,7 @@ client.on ('message', mess => {
       }
 
       if (boolTaille == true && mess.content > 50 && mess.content < 250) {
-        tab.push(mess.content + "cm");
+        tab.push(mess.content + ' cm');
         state += 1;
         poids();
       }
@@ -111,9 +111,9 @@ client.on ('message', mess => {
       }
 
       if (boolPoids == true && mess.content > 35 && mess.content < 200) {
-        tab.push(mess.content + 'kg');
+        tab.push(mess.content + ' kg');
         state += 1;
-        partie.nom = tab[1] + ' ' + tab[2];
+        partie.nom = tab[2] + ' ' + tab[1];
         partie.sexe = tab[0];
         partie.age = parseInt(tab[3]);
         partie.taille = parseInt(tab[4]);
@@ -132,7 +132,11 @@ client.on ('message', mess => {
         } }).then(() => {
             message.guild.channels.get(chanId).send({ embed: {
                 color: 0x00AE86,
-                title: '**Personnage**',
+                author:
+                {
+                  name: 'Personnage ',
+                  icon_url: 'https://www.emojimeaning.com/img/img-apple-64/1f601.png',
+                },
                 fields: [{
                     name: 'Nom',
                     value: partie.nom,
@@ -199,21 +203,21 @@ function nom() {
   message.channel.send({ embed: {
     title:'Création du personnage',
     color:0x00AE86,
-    description: 'Quelle est votre nom ?',
+    description: 'Quel est votre nom ?',
   } });
 }
 function prenom() {
   message.channel.send({ embed: {
     color:0x00AE86,
     title:'Création du personnage',
-    description: 'Quelle est votre prénom ?',
+    description: 'Quel est votre prénom ?',
   } });
 }
 function age() {
   message.channel.send({ embed: {
     color:0x00AE86,
     title:'Création du personnage',
-    description: 'Quelle est votre age ?',
+    description: 'Quel est votre age ?',
   } });
 }
 
@@ -230,7 +234,7 @@ function poids() {
   message.channel.send({ embed: {
     color:0x00AE86,
     title:'Création du personnage',
-    description: 'Quelle est votre poids (en kg)?',
+    description: 'Quel est votre poids (en kg)?',
   } });
 }
 
