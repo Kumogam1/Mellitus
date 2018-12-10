@@ -563,12 +563,7 @@ function eventMedecin(message,partie) {
 	let numConseilNutrition; // Numéro du conseil pour la nutrition
 	let numImage; // Numéro pour l'image décrivant la journée du joueur
 	let sommeTotale = sommeImpactActivite + sommeImpactNutrition ; // Somme totale permettant de connaitre le numéro de l'image à afficher
-
-	//Tests :
-	console.log("Impact activité : " + sommeImpactActivite);
-	console.log("Impact nutrition : " + sommeImpactNutrition);
-	console.log("Impact somme totale : " + sommeTotale);
-
+	
 	// Conseil pour le sport :
 
 	if (sommeImpactActivite <= 3) numConseilActivite = conseilSport.c4;
@@ -594,16 +589,15 @@ function eventMedecin(message,partie) {
 	// Message du médecin qui sera affiché
 
 	const embed = new Discord.RichEmbed()
-	.setTitle('Bilan médical de XXX')
+	.setTitle('Bilan médical de '+ partie.nom)
 	.setAuthor('Docteur Greece', 'https://emojipedia-us.s3.dualstack.us-west-1.amazonaws.com/thumbs/120/apple/155/female-health-worker-type-1-2_1f469-1f3fb-200d-2695-fe0f.png')
 	.setColor(808367)
 	.setFooter('Bilan réalisé par Dr Alda Greece','https://emojipedia-us.s3.dualstack.us-west-1.amazonaws.com/thumbs/120/apple/155/female-health-worker-type-1-2_1f469-1f3fb-200d-2695-fe0f.png')
 	.setImage(image.choixImage(numImage))
 	.setThumbnail('https://upload.wikimedia.org/wikipedia/commons/thumb/5/57/Caduceus.svg/299px-Caduceus.svg.png') // Symbole médecine
 	.setTimestamp()
-	.addField('Poids', 60 + 'kg')
-	.addField('Taux de glycémie', partie.tabGlycemie[partie.tabGlycemie.length-2].toFixed(2).toString() + ' g/L')
-	.addField('Commentaire', 'Ceci est un commentaire')
+	.addField('Poids', partie.poids + " kg")
+	.addField('Taux de glycémie', partie.tabGlycemie[partie.tabGlycemie.length-1	].toFixed(2).toString() + ' g/L')
 	.addField('Conseil pour les activités', "```\n" + numConseilActivite + "```")
 	.addField('Conseil pour la nutrition',"```\n" + numConseilNutrition + "```")
 	message.channel.send({ embed });
