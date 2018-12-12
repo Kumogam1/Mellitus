@@ -17,8 +17,8 @@ const tableaux = require('../Evenement/tableaux.json');
 
 // listes pour les activités que le joueur peut pratiquer
 
-const emoteActiviteM = ['🎮','🏃','🛏', '📖'];
-const emoteActiviteA = ['🏀','🏋', '🎮', '🎣', '🏊', '🚶', '🍷', '🎥'];
+const emoteActiviteM = ['🎮', '🏃', '🛏', '📖'];
+const emoteActiviteA = ['🏀', '🏋', '🎮', '🎣', '🏊', '🚶', '🍷', '🎥'];
 const emoteActiviteS = ['🕺', '🚶', '🍷', '🎥', '📺', '📖', '🛏'];
 const emoteRepasM = ['🍏', '🍞', '🥐', '☕', '🥞'];
 const emoteRepasS = ['🍔', '🍖', '🥗', '🍚', '🍝'];
@@ -87,6 +87,9 @@ client.on('message', (message) => {
             sfm.save(message.author.id, partie);
             message.delete();
             break;
+        case 'gly':
+            as.graphString(message, partie);
+            break;
         case 'text':
           text(message);
           break;
@@ -99,7 +102,7 @@ client.on('message', (message) => {
 
 client.on('messageReactionAdd', (reaction, user) => {
 
-	 if(user.bot) return;
+  if(user.bot) return;
 
     const partie = sfm.loadSave(user.id);
 
@@ -168,9 +171,9 @@ client.on('messageReactionAdd', (reaction, user) => {
                 const chanId2 = myBot.messageChannel(reaction.message, 'informations', partie);
 
                 if(partie.tuto)
-                    fieldTextInfo = "Voici le channel informations.\nAvant chaque prise d'insuline, un graphique montrant l'évolution de votre taux de glycémie apparaitra dans ce channel.";
+                    fieldTextInfo = 'Voici le channel informations.\nAvant chaque prise d\'insuline, un graphique montrant l\'évolution de votre taux de glycémie apparaitra dans ce channel.';
                 else
-                    fieldTextInfo = "Un petit récapitulatif du taux de glycémie.";
+                    fieldTextInfo = 'Un petit récapitulatif du taux de glycémie.';
 
                 reaction.message.guild.channels.get(chanId2).send({embed: {
                     color: 15013890,
@@ -178,7 +181,7 @@ client.on('messageReactionAdd', (reaction, user) => {
                         name: "Channel Informations",
                         value: fieldTextInfo
                     }]
-                }});
+                } });
             }
             event.event(reaction.message, partie, tabNR, tabER);
             break;
