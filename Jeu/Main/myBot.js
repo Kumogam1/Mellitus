@@ -378,7 +378,7 @@ function text(message) {
     .addField('Comment jouer ?', 'La partie est divisée en jour et chaque jour est une suite de choix. A chaque choix, ses conséquences.\n Durant la partie, vous ferez vos choix de 2 façons différentes : sous forme de texte ou sous forme de boutons.\nLe jeu n\'étant pas terminé, il ne peut accueillir qu\'un seul joueur à la fois.')
     .addField('Lancer le tutoriel : ', '/start')
     .addField('Arrêt d\'urgence : ', '/end')
-    .addField('Prendre du soda', '/soda  *(augmente votre glycémie de 0.5 mais disponible qu\'une fois par jour)*')
+    .addField('Autre fonction', '/help')
 
     message.channel.send({ embed });
 }
