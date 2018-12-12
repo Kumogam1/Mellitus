@@ -17,8 +17,8 @@ const tableaux = require('../Evenement/tableaux.json');
 
 // listes pour les activités que le joueur peut pratiquer
 
-const emoteActiviteM = ['🎮','🏃','🛏', '📖'];
-const emoteActiviteA = ['🏀','🏋', '🎮', '🎣', '🏊', '🚶', '🍷', '🎥'];
+const emoteActiviteM = ['🎮', '🏃', '🛏', '📖'];
+const emoteActiviteA = ['🏀', '🏋', '🎮', '🎣', '🏊', '🚶', '🍷', '🎥'];
 const emoteActiviteS = ['🕺', '🚶', '🍷', '🎥', '📺', '📖', '🛏'];
 const emoteRepasM = ['🍏', '🍞', '🥐', '☕', '🥞'];
 const emoteRepasS = ['🍔', '🍖', '🥗', '🍚', '🍝'];
@@ -62,7 +62,6 @@ client.on('message', (message) => {
             .addField("/end", "Terminer une partie (Seulement en partie)")
             .addField("/soda", "Prendre un soda et augmenter son insuline (Seulement en partie)")
             .addField("/gly", "Afficher un graphique montrant le taux de glycemie (Seulement en partie)")
-
             message.channel.send({ embed });
             break;
         case 'tuto':
@@ -87,6 +86,9 @@ client.on('message', (message) => {
             sfm.save(message.author.id, partie);
             message.delete();
             break;
+        case 'gly':
+            as.graphString(message, partie);
+            break;
         case 'text':
           text(message);
           break;
@@ -99,7 +101,7 @@ client.on('message', (message) => {
 
 client.on('messageReactionAdd', (reaction, user) => {
 
-	 if(user.bot) return;
+  if(user.bot) return;
 
     const partie = sfm.loadSave(user.id);
 
@@ -168,9 +170,9 @@ client.on('messageReactionAdd', (reaction, user) => {
                 const chanId2 = myBot.messageChannel(reaction.message, 'informations', partie);
 
                 if(partie.tuto)
-                    fieldTextInfo = "Voici le channel informations.\nAvant chaque prise d'insuline, un graphique montrant l'évolution de votre taux de glycémie apparaitra dans ce channel.";
+                    fieldTextInfo = 'Voici le channel informations.\nAvant chaque prise d\'insuline, un graphique montrant l\'évolution de votre taux de glycémie apparaitra dans ce channel.';
                 else
-                    fieldTextInfo = "Un petit récapitulatif du taux de glycémie.";
+                    fieldTextInfo = 'Un petit récapitulatif du taux de glycémie.';
 
                 reaction.message.guild.channels.get(chanId2).send({embed: {
                     color: 15013890,
@@ -178,7 +180,7 @@ client.on('messageReactionAdd', (reaction, user) => {
                         name: "Channel Informations",
                         value: fieldTextInfo
                     }]
-                }});
+                } });
             }
             event.event(reaction.message, partie, tabNR, tabER);
             break;
@@ -325,15 +327,10 @@ exports.messageChannel = function messageChannel(message, chanName, partie) {
 	const listChan2 = finJeu.listChan(message, partie);
 
     let id = 1;
-
     listChan2.forEach(channel => {
-        if(channel.name === chanName) {
-            const chan = message.guild.channels.find(chann => {
-                if(chann.name == chanName) {
-                    return chann;
-                }
-            });
-            id = chan.id;
+        if(channel.name === chanName)
+        {
+            id = channel.id;
         }
     });
     return id;  //----------Modifié----------//
@@ -374,11 +371,11 @@ function text(message) {
     .setTitle('Bienvenue dans Mellitus')
 
     .addField('Qu\'est ce que Mellitus ?', 'Jouant la consience du personnage choisi ou créé, Mellitus a pour but de vous apporter une aide, afin de vous apprendre de manière assez ludique comment gérer votre taux d’insuline, tout en gardant le côté serious game. De plus, de nombreux événements vont apparaître lors de la partie afin de développer votre adaptation aux circonstances. En fin de journée, vous aurez accés aux informations concernant votre personnage ainsi qu\'un récapitulatif de votre journée. Le but du jeu étant de rester en vie le plus longtemps possible.')
-    .addField('Le diabète', 'Voici un lien qui va vous renvoyer sur un pdf qui vous expliquera plus en détail le diabète ➡ https://drive.google.com/open?id=1gZ0tk9ZYoBD4wx7oj_-PMjP2H39tp8gk')
+    .addField('Le diabète', 'Voici un lien qui va vous renvoyer sur un pdf qui vous expliquera plus en détail le diabète ➡ https://drive.google.com/open?id=1AZ9kk6WSVgL33GI2OUzjU2g6XPzKwNqX')
     .addField('Comment jouer ?', 'La partie est divisée en jour et chaque jour est une suite de choix. A chaque choix, ses conséquences.\n Durant la partie, vous ferez vos choix de 2 façons différentes : sous forme de texte ou sous forme de boutons.\nLe jeu n\'étant pas terminé, il ne peut accueillir qu\'un seul joueur à la fois.')
     .addField('Lancer le tutoriel : ', '/start')
     .addField('Arrêt d\'urgence : ', '/end')
-    .addField('Autre fonction', '/help')
+    .addField('Autres commandes : ', '/help')
 
     message.channel.send({ embed });
 }

@@ -91,7 +91,7 @@ function initChannel(message, partie, rolePers, channelName, chanGrpId) {
 				'SEND_MESSAGES': false
 			});
 
-			if(channelName == "Hub"){
+			if(channelName == 'Hub') {
 				chan2.overwritePermissions(message.guild.roles.find(role => {
 					if(role.name == rolePers) {
 						return role;
@@ -229,6 +229,7 @@ exports.accueilMedecin = function accueilMedecin(message, partie)
 {
 	const doseInit = calcul.doses(partie)[0];
 	const doseObj = calcul.doses(partie)[1];
+	const augmentation = calcul.doses(partie)[2];
 
 	const embed = new Discord.RichEmbed()
 	.setTitle('Bienvenue')
@@ -242,7 +243,7 @@ exports.accueilMedecin = function accueilMedecin(message, partie)
 						' à l\'aide d\'un bilan à chaque fin de journée dans lequel je vais vous donner des conseils ainsi qu\'un commentaire sur votre journée.')
 	.addField('(1)', '*Le diabète se caractérise par une hyperglycémie chronique,' +
 						'c’est-à-dire un excès de sucre dans le sang et donc un taux de glucose (glycémie) trop élevé*')
-	.addField('Conseil de début de partie', 'Pour ce début de partie, il sera recommandé de prendre une dose d\'insuline de ' + doseInit + '. Votre objectif sera d\'atteindre une dose d\'insuline de ' + doseObj + '.')
+	.addField('Conseil de début de partie', 'Pour ce début de partie, il sera recommandé de prendre une dose d\'insuline de ' + doseInit.toFixed().toString() + '. Votre objectif sera d\'atteindre une dose d\'insuline de ' + doseObj.toFixed().toString() + '. Pour cela il vous est recommandé d\'augmenter votre dose de ' + augmentation + ' lors de chacune de vos prises.')
 
 	message.channel.send({ embed })
 	.then(async function(message) {
