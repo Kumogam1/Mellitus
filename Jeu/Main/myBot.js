@@ -3,17 +3,17 @@ const fs = require('fs');
 const myBot = require('./myBot.js');
 const initJeu = require('./initJeu.js');
 const finJeu = require('./finJeu.js');
-const event = require('./event.js');
-const insuline = require('./priseInsuline.js');
+const event = require('../Evenement/event.js');
+const insuline = require('../Evenement/priseInsuline.js');
 const sfm = require('./saveFileManagement.js');
-const as = require('./affichageStats.js');
-const cp = require('./creationPerso.js');
+const as = require('../Graphiques/affichageStats.js');
+const cp = require('../Personnage/creationPerso.js');
 
 const client = new Discord.Client();
 
-const config = require('./token.json');
-const perso = require('./perso.json');
-const tableaux = require('./tableaux.json');
+const config = require('../token.json');
+const perso = require('../Personnage/perso.json');
+const tableaux = require('../Evenement/tableaux.json');
 
 // listes pour les activités que le joueur peut pratiquer
 
@@ -53,6 +53,18 @@ client.on('message', (message) => {
           sfm.save(message.author.id, partie);
           initJeu.initJeu(message, client);
           break;
+        case 'help':
+            const embed = new Discord.RichEmbed()
+            .setColor(15013890)
+            .setTitle("**Help**")
+            .addField("/start", "Commencer une partie")
+            .addField("/tuto", "Commencer un tutoriel")
+            .addField("/end", "Terminer une partie (Seulement en partie)")
+            .addField("/soda", "Prendre un soda et augmenter son insuline (Seulement en partie)")
+            .addField("/gly", "Afficher un graphique montrant le taux de glycemie (Seulement en partie)")
+
+            message.channel.send({ embed });
+            break;
         case 'tuto':
             partie.nbJour = 1;
             partie.tuto = true;
@@ -68,10 +80,12 @@ client.on('message', (message) => {
         case 'soda':
             if(partie.soda == true)
             {
-              partie.glycemie = partie.glycemie + 0.5;
+              partie.glycemie += 0.5;
+              partie.tabGlycemie[partie.tabGlycemie.length-1] += 0.5;
               partie.soda = false;
             }
             sfm.save(message.author.id, partie);
+            message.delete();
             break;
         case 'text':
           text(message);
@@ -267,7 +281,9 @@ client.on('messageReactionAdd', (reaction, user) => {
         partie.impactNutrition.push(tabIR[i][0]);
         partie.stress += tabIR[i][1];
         partie.faim--;
-        partie.glycemie = Math.round((partie.glycemie + tabIR[i][2])*100)/100;
+        let ajoutGly = Math.round((partie.glycemie + tabIR[i][2])*100)/100;
+        partie.glycemie = ajoutGly;
+        partie.tabGlycemie[partie.tabGlycemie.length-1] = ajoutGly;
         sfm.save(partie.player, partie);
         event.event(reaction.message, partie, tabNA, tabEA);
     }
@@ -281,7 +297,9 @@ client.on('messageReactionAdd', (reaction, user) => {
         partie.impactActivite.push(tabIA[i][0]);
         partie.partJour = (partie.partJour + 1) % 3;
         partie.stress += tabIA[i][1];
-        partie.glycemie = Math.round((partie.glycemie + tabIA[i][2])*100)/100;
+        let ajoutGly = Math.round((partie.glycemie + tabIA[i][2])*100)/100;
+        partie.glycemie = ajoutGly;
+        partie.tabGlycemie[partie.tabGlycemie.length-1] = ajoutGly;
         sfm.save(partie.player, partie);
         event.event(reaction.message, partie, tabNR, tabER);
     }

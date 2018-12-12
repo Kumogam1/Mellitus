@@ -1,8 +1,8 @@
 const Discord = require('discord.js');
-const sfm = require('./saveFileManagement.js');
-const config = require('./token.json');
-const myBot = require('./myBot.js');
-const initJeu = require('./initJeu.js');
+const sfm = require('../Main/saveFileManagement.js');
+const config = require('../token.json');
+const myBot = require('../Main/myBot.js');
+const initJeu = require('../Main/initJeu.js');
 
 let state = -1;
 let message;
@@ -16,13 +16,13 @@ client.on('messageReactionAdd', (reaction, user) => {
   switch(reaction.emoji.name) {
     case '🚹':
       state += 1;
-      tab.push('Homme');
+      partie.tabPerso.push('Homme');
       reaction.message.delete();
       nom();
       break;
     case '🚺':
       state += 1;
-      tab.push('Femme');
+      partie.tabPerso.push('Femme');
       reaction.message.delete();
       nom();
       break;
@@ -41,14 +41,14 @@ client.on ('message', mess => {
   switch (state) {
     case 1:
       param = param.charAt(0).toUpperCase() + param.slice(1);
-      tab.push(param);
+      partie.tabPerso.push(param);
       state += 1;
       prenom();
       break;
     case 2:
       state += 1;
       param = param.charAt(0).toUpperCase() + param.slice(1);
-      tab.push(param);
+      partie.tabPerso.push(param);
       age();
       break;
     case 3:
@@ -65,7 +65,7 @@ client.on ('message', mess => {
       }
 
       if (boolAge == true) {
-        tab.push(mess.content);
+        partie.tabPerso.push(mess.content);
         state += 1;
         taille();
       }
@@ -88,7 +88,7 @@ client.on ('message', mess => {
       }
 
       if (boolTaille == true && mess.content > 50 && mess.content < 250) {
-        tab.push(mess.content + ' cm');
+        partie.tabPerso.push(mess.content + ' cm');
         state += 1;
         poids();
       }
@@ -111,13 +111,14 @@ client.on ('message', mess => {
       }
 
       if (boolPoids == true && mess.content > 35 && mess.content < 200) {
-        tab.push(mess.content + ' kg');
+        partie.tabPerso.push(mess.content + ' kg');
+        sfm.save(partie.player, partie);
         state += 1;
-        partie.nom = tab[2] + ' ' + tab[1];
-        partie.sexe = tab[0];
-        partie.age = parseInt(tab[3]);
-        partie.taille = parseInt(tab[4]);
-        partie.poids = parseInt(tab[5]);
+        partie.nom = partie.tabPerso[2] + ' ' + partie.tabPerso[1];
+        partie.sexe = partie.tabPerso[0];
+        partie.age = parseInt(partie.tabPerso[3]);
+        partie.taille = parseInt(partie.tabPerso[4]);
+        partie.poids = parseInt(partie.tabPerso[5]);
         sfm.save(partie.player, partie);
         const chanId = myBot.messageChannel(message, 'personnage', partie);
 
@@ -147,15 +148,15 @@ client.on ('message', mess => {
                 },
                 {
                     name: 'Age',
-                    value: tab[3],
+                    value: partie.tabPerso[3],
                 },
                 {
                     name: 'Taille',
-                    value: tab[4],
+                    value: partie.tabPerso[4],
                 },
                 {
                     name: 'Poids',
-                    value: tab[5],
+                    value: partie.tabPerso[5],
                 }]
             } })
             .then(() => {

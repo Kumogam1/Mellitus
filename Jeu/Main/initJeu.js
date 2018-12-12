@@ -1,8 +1,8 @@
 const Discord = require('discord.js');
 const sfm = require('./saveFileManagement.js');
 const myBot = require('./myBot.js');
-const calcul = require('./calcul.js');
-const event = require('./event.js');
+const calcul = require('../Evenement/calcul.js');
+const event = require('../Evenement/event.js');
 /**
 * Fonction installant la partie
 * @param {string} message - Message discord
@@ -152,6 +152,7 @@ function initChannelGrp(message, partie, channelGrpName, rolePers) {
 		res = chanGrp.id;
 		partie.chanGrp = chanGrp.id;
 		partie.player = message.author.id;
+		partie.tabPerso = [];
 		partie.nom = '';
 		partie.sexe = '';
 		partie.age = 0;
@@ -209,8 +210,8 @@ function bienvenue(message) {
 	.setTitle('Bienvenue dans Mellitus')
 
 	.addField(titre, text)
-	.addField('Commencer la partie ', '✅')
-	.addField('Commencer la partie', '☑')
+	.addField('Choisir un personnage prédéfini : ', '✅')
+	.addField('Créer son propre personnage : ', '☑')
 
 	message.guild.channels.get(chanId).send({embed})
 	.then(async function (mess) {
