@@ -87,7 +87,7 @@ client.on('message', (message) => {
             sfm.save(message.author.id, partie);
             message.delete();
             break;
-        case 'insuline':
+        case 'gly':
             as.graphString(message, partie);
             break;
         case 'text':
