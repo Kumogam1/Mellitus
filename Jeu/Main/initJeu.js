@@ -91,7 +91,7 @@ function initChannel(message, partie, rolePers, channelName, chanGrpId) {
 				'SEND_MESSAGES': false
 			});
 
-			if(channelName == "Hub"){
+			if(channelName == 'Hub') {
 				chan2.overwritePermissions(message.guild.roles.find(role => {
 					if(role.name == rolePers) {
 						return role;
