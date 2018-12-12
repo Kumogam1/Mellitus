@@ -72,6 +72,7 @@ exports.event = function event(message, partie, tabN, tabE) {
 		finJeu.msgFin(message, partie);
 		return;
 	}
+
 	//Perte de membre (vie très basse)
 	else if(partie.vie == 20 && partie.amput == 0 && (partie.glycemie > 3 || partie.glycemie == 0)){
 		console.log("amputation");
@@ -238,8 +239,8 @@ exports.event = function event(message, partie, tabN, tabE) {
 					case 2:
 						eventSport(message, tabN, tabE);
 						break;
-					}
-					break;
+				}
+				break;
 			case 1:
 				switch(partie.numEvent){
 					case 0:
@@ -251,8 +252,8 @@ exports.event = function event(message, partie, tabN, tabE) {
 					case 2:
 						eventSport(message, tabN, tabE);
 						break;
-					}
-					break;
+				}
+				break;
 			case 2:
 				switch(partie.numEvent){
 					case 0:
@@ -482,8 +483,8 @@ function eventFin(message, partie){
 function amput(message, partie){
 	let membre = ["bras gauche", "bras droit", "jambe gauche", "jambe droit"];
 	let rand = myBot.getRandomInt(4);
-	let title = "C'est pas votre jour !";
-	let text = "Vous venez de perdre votre " + membre[rand] + " ! Vous savez, ce n'est que la conséquence de vos choix. Mais ne vous inquiétez pas, vous n'êtes pas mort, c'est déjà ça.";
+	let title = "Aïe, aïe, aïe, coup dur pour le joueur français !";
+	let text = "Vous venez de perdre votre " + membre[rand] + " ! En effet, vous êtes encore en vie. Ce n'est que la conséquence de vos choix, donc c'est entièrement votre faute. Mais heureusement, une mauvaise nouvelle en cache une bonne, vous n'êtes pas mort, c'est déjà ça.";
 
 	const embed = new Discord.RichEmbed()
 	.setColor(0x00AE86)

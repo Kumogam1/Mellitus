@@ -26,7 +26,7 @@ exports.doses = function doses(partie) {
 exports.glyMatin = function glyMatin(partie) {
 	let tauxAvantHier = 0;
 	if(partie.tabGlycemie.length > 4)
-		tauxAvantHier = partie.tabGlycemie[partie.tabGlycemie.length - 5];
+		tauxAvantHier = partie.tabGlycemie[partie.tabGlycemie.length - 6];
 	else
 		tauxAvantHier = partie.tabGlycemie[0];
 
@@ -53,6 +53,19 @@ exports.glyInsu = function glyInsu(partie, dose) {
 	const effect = delta / calcul.doses(partie)[1];
 
 	res = Math.round((tauxPresent - Math.abs(dose * effect)) * 100) / 100;
+
+	if(res < 0)
+		res = 0;
+
+	partie.glycemie = res;
+	partie.tabGlycemie.push(res);
+}
+
+exports.glyInsuLente = function glyInsuLente(partie, dose) {
+	const tauxPresent = partie.glycemie;
+	let res = 0;
+
+	res = Math.round((tauxPresent - (dose/calcul.doses(partie)[1] * 2)) * 100) / 100;
 
 	if(res < 0)
 		res = 0;
