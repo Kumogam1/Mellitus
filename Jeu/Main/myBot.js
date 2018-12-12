@@ -328,15 +328,10 @@ exports.messageChannel = function messageChannel(message, chanName, partie) {
 	const listChan2 = finJeu.listChan(message, partie);
 
     let id = 1;
-
+    console.log(listChan2);
     listChan2.forEach(channel => {
         if(channel.name === chanName) {
-            const chan = message.guild.channels.find(chann => {
-                if(chann.name == chanName) {
-                    return chann;
-                }
-            });
-            id = chan.id;
+            id = channel.id;
         }
     });
     return id;  //----------Modifié----------//

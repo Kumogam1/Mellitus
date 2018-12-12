@@ -96,33 +96,33 @@ exports.msgFin = function msgFin(message, partie) {
 			let textMort = "";
 			let text = "";
 
-			if(partie.mort){
+			if(partie.mort) {
 				if(partie.glycemie > 3)
-					textMort = "Tu as fait une crise d'hyperglycémie.";
+					textMort = 'Tu as fait une crise d\'hyperglycémie.';
 				else if(partie.glycemie == 0)
-					textMort = "Tu as fait une crise d'hypoglycemie.";
+					textMort = 'Tu as fait une crise d\'hypoglycemie.';
 				else if(partie.faim > 2)
-					textMort = "Tu est mort de faim.";
+					textMort = 'Tu est mort de faim.';
 				else
-					textMort = "Tu as fait une crise de stress.";
+					textMort = 'Tu as fait une crise de stress.';
 			}
 
-			textMort += "\nConsulte le channel 'Mellitus' pour en savoir plus.\n";
+			textMort += '\nConsulte le channel \'Mellitus\' pour en savoir plus.\n';
 
 			if(partie.numJour < 5) {
-				text = "Je suis sûr que tu peux aller plus loin.";
+				text = 'Je suis sûr que tu peux aller plus loin.';
 			}
 			else if(partie.numJour < 10) {
-				text = "Bien, un peu plus et tu seras le meilleur.";
+				text = 'Bien, un peu plus et tu seras le meilleur.';
 			}
 			else {
-				text = "Toi, ça se voit que tu es là pour être le meilleur."
+				text = 'Toi, ça se voit que tu es là pour être le meilleur.'
 			}
 
 			const embed = new Discord.RichEmbed()
 			.setColor(15013890)
-			.setImage("https://imgcs.artprintimages.com/img/print/peinture/color-me-happy-game-over-red_a-g-15238157-0.jpg")
-			.addField("__**C'est perdu ou gagné ? A toi de juger !**__", textMort + 'Vous avez tenu ' + partie.numJour + ' jour(s).\n' + text + '\n\n')
+			.setImage('https://imgcs.artprintimages.com/img/print/peinture/color-me-happy-game-over-red_a-g-15238157-0.jpg')
+			.addField('__**C\'est perdu ou gagné ? A toi de juger !**__', textMort + 'Vous avez tenu ' + partie.numJour + ' jour(s).\n' + text + '\n\n')
 			.addField('Pour quitter la partie : ', '/quit');
 
 			message.channel.send({ embed });
