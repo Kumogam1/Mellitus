@@ -1,16 +1,16 @@
 const Discord = require('discord.js');
-const sfm = require('./saveFileManagement.js');
-const myBot = require('./myBot.js');
+const sfm = require('../Main/saveFileManagement.js');
+const myBot = require('../Main/myBot.js');
 const event = require('./event.js');
-const finJeu = require('./finJeu.js')
+const finJeu = require('../Main/finJeu.js')
 const insuline = require('./priseInsuline.js');
 const conseilSport = require('./conseilSport.json');
 const conseilNutrition = require('./conseilNutri.json');
 const image = require('./images.js');
-const perso = require('./perso.json');
+const perso = require('../Personnage/perso.json');
 const calcul = require('./calcul.js');
-const as = require('./affichageStats.js');
-const config = require('./token.json');
+const as = require('../Graphiques/affichageStats.js');
+const config = require('../token.json');
 const eventGly = require('./evenement.json');
 
 const client = new Discord.Client();
