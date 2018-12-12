@@ -9,7 +9,7 @@
 const plotly = require('plotly')('EdouardGU', 'QZcGQlBForcRLDGw5zTj');
 const fs = require('fs');
 const Discord = require('discord.js');
-const myBot = require('./myBot.js');
+const myBot = require('../Main/myBot.js');
 
 const imgOpts = {
     format: 'png',
@@ -99,10 +99,10 @@ exports.graphString = async function(message, partie) {
 
   plotly.getImage(figure, imgOpts, function(error, imageStream) {
       if (error) return console.log (error);
-      const fileStream = fs.createWriteStream('./' + partie.player + '.png');
+      const fileStream = fs.createWriteStream('../Graphiques/' + partie.player + '.png');
       const stream = imageStream.pipe(fileStream);
       stream.on('finish', async function() {
-        await message.guild.channels.get(chanId).send({ files :['./' + partie.player + '.png'] });
+        await message.guild.channels.get(chanId).send({ files :['../Graphiques/' + partie.player + '.png'] });
         await message.guild.channels.get(chanId).send({ embed });
       });
   });

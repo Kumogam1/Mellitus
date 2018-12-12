@@ -1,6 +1,6 @@
 const Discord = require('discord.js');
 const client = new Discord.Client();
-const config = require('./token.json');
+const config = require('../token.json');
 client.login(config.token);
 
 const sfm = require('./saveFileManagement.js');
