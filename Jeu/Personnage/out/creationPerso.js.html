@@ -1,4 +1,32 @@
-const Discord = require('discord.js');
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: creationPerso.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: creationPerso.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>const Discord = require('discord.js');
 const sfm = require('../Main/saveFileManagement.js');
 const config = require('../token.json');
 const myBot = require('../Main/myBot.js');
@@ -7,7 +35,8 @@ const initJeu = require('../Main/initJeu.js');
 let state = -1;
 let message;
 const client = new Discord.Client();
-const tabNb = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9'];
+const tab = [];
+const tabNb = ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9"];
 let partie;
 let image;
 
@@ -65,7 +94,7 @@ client.on ('message', mess => {
           let boolAge = true;
           if(mess.content.length == 1 || mess.content.length == 2)
           {
-            for(let i = 0; i < mess.content.length; i++)
+            for(let i = 0; i &lt; mess.content.length; i++)
             {
               if(!tabNb.includes(mess.content.charAt(i)))
               {
@@ -78,7 +107,7 @@ client.on ('message', mess => {
             boolAge = false;
           }
           // Choix de l'âge
-          if (boolAge == true && mess.content > 10 && mess.content < 120)
+          if (boolAge == true &amp;&amp; mess.content > 10 &amp;&amp; mess.content &lt; 120)
           {
             partie.tabPerso.push(mess.content + ' ans');
             state += 1;
@@ -90,12 +119,11 @@ client.on ('message', mess => {
           }
           break;
     case 4:
-<<<<<<< HEAD
           myBot.clear(message);
           let boolTaille = true;
           if(mess.content.length == 2 || mess.content.length == 3)
           {
-            for(let i = 0; i < mess.content.length; i++)
+            for(let i = 0; i &lt; mess.content.length; i++)
             {
               if(!tabNb.includes(mess.content.charAt(i)))
               {
@@ -108,7 +136,7 @@ client.on ('message', mess => {
             boolTaille = false;
           }
           // Choix de la taille
-          if (boolTaille == true && mess.content > 50 && mess.content < 250)
+          if (boolTaille == true &amp;&amp; mess.content > 50 &amp;&amp; mess.content &lt; 250)
           {
             partie.tabPerso.push(mess.content + ' cm');
             state += 1;
@@ -124,7 +152,7 @@ client.on ('message', mess => {
           let boolPoids = true;
           if(mess.content.length == 2 || mess.content.length == 3)
           {
-            for(let i = 0; i < mess.content.length; i++)
+            for(let i = 0; i &lt; mess.content.length; i++)
             {
               if(!tabNb.includes(mess.content.charAt(i)))
               {
@@ -134,40 +162,10 @@ client.on ('message', mess => {
           }
           else
           {
-=======
-      myBot.clear(message);
-      let boolTaille = true;
-      if(mess.content.length == 2 || mess.content.length == 3) {
-        for(let i = 0; i < mess.content.length; i++) {
-          if(!tabNb.includes(mess.content.charAt(i))) {
-            boolTaille = false;
-          }
-        }
-      }
-      else {
-        boolTaille = false;
-      }
-
-      if (boolTaille == true && mess.content > 50 && mess.content < 250) {
-        partie.tabPerso.push(mess.content + ' cm');
-        state += 1;
-        poids();
-      }
-      else {
-        message.channel.send('Veuillez saisir une taille correcte');
-      }
-      break;
-    case 5:
-      myBot.clear(message);
-      let boolPoids = true;
-      if(mess.content.length == 2 || mess.content.length == 3) {
-        for(let i = 0; i < mess.content.length; i++){
-          if(!tabNb.includes(mess.content.charAt(i))) {
->>>>>>> 0f683d0c78fc55f7bdf8e50cd621aa02d8eb55a1
             boolPoids = false;
           }
           // Choix du poids
-          if (boolPoids == true && mess.content > 35 && mess.content < 200)
+          if (boolPoids == true &amp;&amp; mess.content > 35 &amp;&amp; mess.content &lt; 200)
           {
             partie.tabPerso.push(mess.content + ' kg');
             sfm.save(partie.player, partie);
@@ -320,3 +318,26 @@ function poids()
 }
 
 client.login(config.token);
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Global</h3><ul><li><a href="global.html#age">age</a></li><li><a href="global.html#creerPerso">creerPerso</a></li><li><a href="global.html#genre">genre</a></li><li><a href="global.html#nom">nom</a></li><li><a href="global.html#poids">poids</a></li><li><a href="global.html#prenom">prenom</a></li><li><a href="global.html#taille">taille</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Thu Dec 13 2018 14:29:53 GMT+0100 (CET)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

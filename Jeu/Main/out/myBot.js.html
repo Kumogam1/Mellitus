@@ -1,4 +1,32 @@
-const Discord = require('discord.js');
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: myBot.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: myBot.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>const Discord = require('discord.js');
 const fs = require('fs');
 const myBot = require('./myBot.js');
 const initJeu = require('./initJeu.js');
@@ -84,7 +112,7 @@ client.on('message', (message) => {
               partie.soda = false;
             }
             else{
-              message.channel.send('Vous avez déjà pris votre cannette quotidiens !');
+              message.channel.send("Vous avez déjà pris votre cannette quotidiens !");
             }
             sfm.save(message.author.id, partie);
             message.delete();
@@ -183,7 +211,7 @@ client.on('messageReactionAdd', (reaction, user) => {
             }
             break;
         case '➡':
-            if(partie.numEvent == -1 && !partie.evenement) {
+            if(partie.numEvent == -1 &amp;&amp; !partie.evenement) {
                 const chanId2 = myBot.messageChannel(reaction.message, 'informations', partie);
 
                 if(partie.tuto)
@@ -194,7 +222,7 @@ client.on('messageReactionAdd', (reaction, user) => {
                 reaction.message.guild.channels.get(chanId2).send({embed: {
                     color: 15013890,
                     fields: [{
-                        name: 'Channel Informations',
+                        name: "Channel Informations",
                         value: fieldTextInfo
                     }]
                 } });
@@ -231,9 +259,9 @@ client.on('messageReactionAdd', (reaction, user) => {
         const chanId = myBot.messageChannel(reaction.message, 'personnage', partie);
 
         if(partie.tuto)
-            fieldTextPerso = 'Voici le channel personnage.\nC\'est dans ce channel que vous pouvez voir les informations concernant votre personnage.';
+            fieldTextPerso = "Voici le channel personnage.\nC'est dans ce channel que vous pouvez voir les informations concernant votre personnage.";
         else
-            fieldTextPerso = 'Voici votre personnage :';
+            fieldTextPerso = "Voici votre personnage :";
 
         reaction.message.guild.channels.get(chanId).send({embed: {
             color: 15013890,
@@ -293,7 +321,7 @@ client.on('messageReactionAdd', (reaction, user) => {
 
     // Quand on choisi le repas
     if(tabER.includes(reaction.emoji.name)) {
-        let i = 0;
+        var i = 0;
         while(tabER[i] != reaction.emoji.name)
             i++;
         writeAct(user.id, tabNR[i], partie);
@@ -309,7 +337,7 @@ client.on('messageReactionAdd', (reaction, user) => {
 
     // Quand on choisi la sport
     if(tabEA.includes(reaction.emoji.name)) {
-        let i = 0;
+        var i = 0;
         while(tabEA[i] != reaction.emoji.name)
             i++;
         writeAct(user.id, tabNA[i], partie);
@@ -403,19 +431,19 @@ function choixPerso(message, partie) {
     });
 
     if(partie.tuto)
-        fieldText = 'C\'est ici que vous devez choisir un personnage.\nChaque personnage a des caractéristiques différentes, qui influeront sur votre partie.\n' +
-                    'Pour choisir un personnage, cliquez sur la réaction correspondant au numéro du personnage choisit.';
+        fieldText = "C'est ici que vous devez choisir un personnage.\nChaque personnage a des caractéristiques différentes, qui influeront sur votre partie.\n" +
+                    "Pour choisir un personnage, cliquez sur la réaction correspondant au numéro du personnage choisit.";
     else
-        fieldText = 'Choisissez un personnage.';
+        fieldText = "Choisissez un personnage.";
 
     const embed = new Discord.RichEmbed()
     .setColor(15013890)
-    .setTitle('**Phase personnages**')
-    .addField('👶 👦 👧 👨 👩 👴 👵', fieldText)
+    .setTitle("**Phase personnages**")
+    .addField("👶 👦 👧 👨 👩 👴 👵", fieldText)
 
     message.channel.send({ embed })
     .then((msg) => {
-      for(let i = 0; i < 4; i++) {
+      for(let i = 0; i &lt; 4; i++) {
           writePerso(msg, i);
       }
     });
@@ -444,7 +472,7 @@ function writePerso(message, numPerso) {
             break;
     }
 
-    if(numPerso < 3) {
+    if(numPerso &lt; 3){
         message.channel.send({ embed: {
             color: 0x00AE86,
             author:
@@ -472,7 +500,7 @@ function writePerso(message, numPerso) {
                 name: 'Poids',
                 value: perso.poids[numPerso],
             }],
-        } });
+        }});
     }
     else{
         message.channel.send({ embed: {
@@ -522,3 +550,26 @@ exports.clear = async function(message) {
 };
 
 client.login(config.token);
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Global</h3><ul><li><a href="global.html#choixPerso">choixPerso</a></li><li><a href="global.html#clear">clear</a></li><li><a href="global.html#getRandomInt">getRandomInt</a></li><li><a href="global.html#messageChannel">messageChannel</a></li><li><a href="global.html#text">text</a></li><li><a href="global.html#writeAct">writeAct</a></li><li><a href="global.html#writePerso">writePerso</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Thu Dec 13 2018 14:30:14 GMT+0100 (CET)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>
