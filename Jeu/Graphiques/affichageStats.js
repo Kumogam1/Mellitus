@@ -95,12 +95,8 @@ exports.graphString = async function(message, partie)
       chan = channel;
     }
   });
-
-  if(partie.numJour != 0 || partie.partJour != 0)
-  {
-    console.log(chan);
+  if(partie.numJour != 0 || partie.partJour != 0) {
     const fetched = await chan.fetchMessages();
-    console.log();
     chan.bulkDelete(fetched);
   }
 

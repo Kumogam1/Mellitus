@@ -13,25 +13,33 @@ let image;
 
 client.on('messageReactionAdd', (reaction, user) => {
   if(user.bot) return;
-  switch(reaction.emoji.name) // Choix du sexe du personnage
-  {
-    case '🚹':
-    state += 1;
-    partie.tabPerso.push('Homme');
-    reaction.message.delete();
-    image = 'https://emojipedia-us.s3.dualstack.us-west-1.amazonaws.com/thumbs/120/apple/155/mens-symbol_1f6b9.png';
-    nom();
-    break;
-    case '🚺':
-    state += 1;
-    partie.tabPerso.push('Femme');
-    reaction.message.delete();
-    image = 'https://emojipedia-us.s3.dualstack.us-west-1.amazonaws.com/thumbs/120/apple/155/womens-symbol_1f6ba.png';
-    nom();
-    break;
-    default:
-    console.log('err');
-    break;
+  if(state == 0 || state == 6) {
+    switch(reaction.emoji.name) {
+      case '🚹':
+        state += 1;
+        partie.tabPerso.push('Homme');
+        reaction.message.delete();
+        image = 'https://emojipedia-us.s3.dualstack.us-west-1.amazonaws.com/thumbs/120/apple/155/mens-symbol_1f6b9.png';
+        nom();
+        break;
+      case '🚺':
+        state += 1;
+        partie.tabPerso.push('Femme');
+        reaction.message.delete();
+        image = 'https://emojipedia-us.s3.dualstack.us-west-1.amazonaws.com/thumbs/120/apple/155/womens-symbol_1f6ba.png';
+        nom();
+        break;
+      case '🚬':
+        partie.tabPerso.push('Oui');
+        reaction.message.delete();
+        finalisation();
+        break;
+      case '🚭':
+        partie.tabPerso.push('Non');
+        reaction.message.delete();
+        finalisation();
+        break;
+      }
   }
 });
 
@@ -61,147 +69,38 @@ client.on ('message', mess => {
           age();
           break;
     case 3:
-          myBot.clear(message);
-          let boolAge = true;
-          if(mess.content.length == 1 || mess.content.length == 2)
-          {
-            for(let i = 0; i < mess.content.length; i++)
-            {
-              if(!tabNb.includes(mess.content.charAt(i)))
-              {
-                boolAge = false;
-              }
-            }
-          }
-          else
-          {
-            boolAge = false;
-          }
-          // Choix de l'âge
-          if (boolAge == true && mess.content > 10 && mess.content < 120)
-          {
-            partie.tabPerso.push(mess.content + ' ans');
-            state += 1;
-            taille();
-          }
-          else
-          {
-            message.channel.send('Veuillez saisir un âge correct');
-          }
-          break;
+      myBot.clear(message);
+      if (testNombre(mess) && mess.content > 10 && mess.content < 120) {
+        partie.tabPerso.push(mess.content + ' ans');
+        state += 1;
+        taille();
+      }
+      else {
+        message.channel.send('Veuillez saisir un âge correct');
+      }
+      break;
     case 4:
-          myBot.clear(message);
-          let boolTaille = true;
-          if(mess.content.length == 2 || mess.content.length == 3)
-          {
-            for(let i = 0; i < mess.content.length; i++)
-            {
-              if(!tabNb.includes(mess.content.charAt(i)))
-              {
-                boolTaille = false;
-              }
-            }
-          }
-          else
-          {
-            boolTaille = false;
-          }
-          // Choix de la taille
-          if (boolTaille == true && mess.content > 50 && mess.content < 250)
-          {
-            partie.tabPerso.push(mess.content + ' cm');
-            state += 1;
-            poids();
-          }
-          else
-          {
-            message.channel.send('Veuillez saisir une taille correcte');
-          }
-          break;
+      myBot.clear(message);
+      if (testNombre(mess) && mess.content > 50 && mess.content < 250) {
+        partie.tabPerso.push(mess.content + ' cm');
+        state += 1;
+        poids();
+      }
+      else {
+        message.channel.send('Veuillez saisir une taille correcte');
+      }
+      break;
     case 5:
-          myBot.clear(message);
-          let boolPoids = true;
-          if(mess.content.length == 2 || mess.content.length == 3)
-          {
-            for(let i = 0; i < mess.content.length; i++)
-            {
-              if(!tabNb.includes(mess.content.charAt(i)))
-              {
-                boolPoids = false;
-              }
-            }
-          }
-          else
-          {
-            boolPoids = false;
-          }
-          // Choix du poids
-          if (boolPoids == true && mess.content > 35 && mess.content < 200)
-          {
-            partie.tabPerso.push(mess.content + ' kg');
-            sfm.save(partie.player, partie);
-            state += 1;
-            partie.nom = partie.tabPerso[2] + ' ' + partie.tabPerso[1];
-            partie.sexe = partie.tabPerso[0];
-            partie.age = parseInt(partie.tabPerso[3]);
-            partie.taille = parseInt(partie.tabPerso[4]);
-            partie.poids = parseInt(partie.tabPerso[5]);
-            sfm.save(partie.player, partie);
-            const chanId = myBot.messageChannel(message, 'personnage', partie);
-            const fieldTextPerso = 'Voici votre personnage :';
-
-            message.guild.channels.get(chanId).send({ embed: {
-              color: 15013890,
-              fields: [{
-                name: 'Channel Personnage',
-                value: fieldTextPerso
-              }]
-              }}).then(() => {
-              message.guild.channels.get(chanId).send({ embed: {
-                color: 0x00AE86,
-                author:
-                {
-                  name: 'Personnage ',
-                  icon_url: image,
-                },
-                fields: [{
-                  name: 'Nom',
-                  value: partie.nom,
-                },
-                {
-                  name: 'Sexe',
-                  value: partie.sexe,
-                },
-                {
-                  name: 'Age',
-                  value: partie.tabPerso[3],
-                },
-                {
-                  name: 'Taille',
-                  value: partie.tabPerso[4],
-                },
-                {
-                  name: 'Poids',
-                  value: partie.tabPerso[5],
-                }]
-              } })
-              .then(() => {
-                myBot.clear(message)
-                .catch((err) => {
-                  console.log(err);
-                });
-                initJeu.accueilMedecin(message, partie);
-              });
-            });
-          }
-          else
-          {
-            message.channel.send('Veuillez saisir un poids correct');
-          }
-          break;
-    default:
-          console.log('err');
-          break;
+      myBot.clear(message);
+      if (testNombre(mess) && mess.content > 35 && mess.content < 200) {
+          partie.tabPerso.push(mess.content + ' kg');
+          state += 1;
+          fumeur();
+      }
+      else {
+        message.channel.send('Veuillez saisir un poids correct');
+      }
+      break;
   }
 });
 
@@ -286,6 +185,108 @@ function poids()
     title:'Création du personnage',
     description: 'Quel est votre poids (en kg)?',
   } });
+}
+
+function fumeur() {
+  message.channel.send({ embed: {
+    color:0x00AE86,
+    title:'Création du personnage',
+    description: 'Etes vous fumeur ?',
+  } })
+  .then(async function(mGenre) {
+      await mGenre.react('🚬');
+      await mGenre.react('🚭');
+    });
+}
+
+function finalisation() {
+  state += 1;
+  partie.nom = partie.tabPerso[2] + ' ' + partie.tabPerso[1];
+  partie.sexe = partie.tabPerso[0];
+  partie.age = parseInt(partie.tabPerso[3]);
+  partie.taille = parseInt(partie.tabPerso[4]);
+  partie.poids = parseInt(partie.tabPerso[5]);
+  partie.fumeur = partie.tabPerso[6];
+  partie.obesite = calculIMC(partie);
+  sfm.save(partie.player, partie);
+  calculIMC(partie);
+  const chanId = myBot.messageChannel(message, 'personnage', partie);
+
+  const fieldTextPerso = 'Voici votre personnage :';
+
+  message.guild.channels.get(chanId).send({ embed: {
+      color: 15013890,
+      fields: [{
+          name: 'Channel Personnage',
+          value: fieldTextPerso,
+      }],
+  } }).then(() => {
+      message.guild.channels.get(chanId).send({ embed: {
+          color: 0x00AE86,
+          author:
+          {
+            name: 'Personnage ',
+            icon_url: image,
+          },
+          fields: [{
+              name: 'Nom',
+              value: partie.nom,
+          },
+          {
+              name: 'Sexe',
+              value: partie.sexe,
+          },
+          {
+              name: 'Age',
+              value: partie.tabPerso[3],
+          },
+          {
+              name: 'Taille',
+              value: partie.tabPerso[4],
+          },
+          {
+              name: 'Poids',
+              value: partie.tabPerso[5],
+          },
+          {
+              name: 'Fumeur ?',
+              value: partie.tabPerso[6],
+          }],
+      } })
+      .then(() => {
+
+        myBot.clear(message)
+        .catch((err) => {
+          console.log(err);
+        });
+
+        initJeu.accueilMedecin(message, partie);
+      });
+  });
+}
+
+function calculIMC(partie) {
+    const imc = partie.poids / (partie.taille * partie.taille)
+    let obesite;
+    if(imc < 30) {
+      obesite = 'non'
+    }
+    else {
+      obesite = 'oui'
+    }
+    return obesite;
+}
+
+function testNombre(message) {
+  let isNb = true;
+  if(message.content.length == 2 || message.content.length == 3) {
+    for(let i = 0; i < message.content.length; i++) {
+      if(!tabNb.includes(message.content.charAt(i))) {
+        isNb = false;
+      }
+    }
+  }
+  return isNb;
 }
 
 client.login(config.token);
