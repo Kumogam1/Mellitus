@@ -10,6 +10,7 @@ const client = new Discord.Client();
 const tab = [];
 const tabNb = ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9"];
 let partie;
+let image;
 
 client.on('messageReactionAdd', (reaction, user) => {
   if(user.bot) return;
@@ -18,12 +19,14 @@ client.on('messageReactionAdd', (reaction, user) => {
       state += 1;
       partie.tabPerso.push('Homme');
       reaction.message.delete();
+      image = 'https://emojipedia-us.s3.dualstack.us-west-1.amazonaws.com/thumbs/120/apple/155/mens-symbol_1f6b9.png';
       nom();
       break;
     case '🚺':
       state += 1;
       partie.tabPerso.push('Femme');
       reaction.message.delete();
+      image = 'https://emojipedia-us.s3.dualstack.us-west-1.amazonaws.com/thumbs/120/apple/155/womens-symbol_1f6ba.png';
       nom();
       break;
     default:
@@ -67,8 +70,8 @@ client.on ('message', mess => {
         boolAge = false;
       }
 
-      if (boolAge == true) {
-        partie.tabPerso.push(mess.content);
+      if (boolAge == true && mess.content > 10 && mess.content < 120) {
+        partie.tabPerso.push(mess.content + ' ans');
         state += 1;
         taille();
       }
@@ -139,7 +142,7 @@ client.on ('message', mess => {
                 author:
                 {
                   name: 'Personnage ',
-                  icon_url: 'https://www.emojimeaning.com/img/img-apple-64/1f601.png',
+                  icon_url: image,
                 },
                 fields: [{
                     name: 'Nom',
