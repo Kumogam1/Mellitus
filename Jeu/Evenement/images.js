@@ -1,3 +1,8 @@
+
+/** Fonction qui permet de sélectionner la bonne image à afficher dans le bilan journalier du personnage
+ * @param {number} resultat - résultat qui est le total des impacts alimentaires, activités du personnage pour le jour
+ * @return {string} lien - lien contenant l'image à afficher
+ */
 exports.choixImage = function choixImage(resultat)
 {
   switch(resultat)
