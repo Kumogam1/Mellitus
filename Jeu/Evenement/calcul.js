@@ -9,6 +9,11 @@ sinon elle se fera 1 unité par 1 unité.
 
 const calcul = require('./calcul.js');
 
+/** Fonction qui calcul la dose de glycémie à prendre
+ * @param {Object} partie - Objet json de la partie
+ * @param {number} partie.poids - Poids du personnage
+ * @return {number} doseGlycemie - La dose de glycémie
+ */
 exports.doses = function doses(partie) {
 	const doseInit = partie.poids / 10;
 	const doseObj = 0.4 * partie.poids;
@@ -23,6 +28,12 @@ exports.doses = function doses(partie) {
 	return doseGlycemie;
 };
 
+/** Fonction qui calcul la dose de glycémie du matin
+ * @param {Object} partie - Objet json de la partie
+ * @param {number} partie.tabGlycemie - Tableau contenant tous les taux de glycémie
+ * @param {number} partie.glycemie - Taux de glycémie actuelle
+ * @return {number} doseGlycemie - La dose de glycémie
+ */
 exports.glyMatin = function glyMatin(partie) {
 	let tauxAvantHier = 0;
 	if(partie.tabGlycemie.length > 4)
@@ -44,6 +55,12 @@ exports.glyMatin = function glyMatin(partie) {
 	partie.tabGlycemie.push(res);
 };
 
+/** Fonction qui calcul la glycémie lente
+ * @param {Object} partie - Objet json de la partie
+ * @param {number} partie.tabGlycemie - Tableau contenant tous les taux de glycémie
+ * @param {number} partie.glycemie - Taux de glycémie actuelle
+ * @param {number} dose - La dose d'insuline que l'on prend
+ */
 exports.glyInsu = function glyInsu(partie, dose) {
 	const tauxInit = partie.tabGlycemie[0];
 	const tauxPresent = partie.glycemie;
