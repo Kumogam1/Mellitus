@@ -509,11 +509,7 @@ function eventMedecin(message, partie) {
 	let numConseilActivite; // Numéro du conseil pour l'activité
 	let numConseilNutrition; // Numéro du conseil pour la nutrition
 	let numImage; // Numéro pour l'image décrivant la journée du joueur
-<<<<<<< HEAD
-	let sommeTotale = sommeImpactActivite + sommeImpactNutrition ; // Somme totale permettant de connaitre le numéro de l'image à afficher
-=======
 	const sommeTotale = sommeImpactActivite + sommeImpactNutrition ; // Somme totale permettant de connaitre le numéro de l'image à afficher
->>>>>>> 0f683d0c78fc55f7bdf8e50cd621aa02d8eb55a1
 
 	// Conseil pour le sport :
 

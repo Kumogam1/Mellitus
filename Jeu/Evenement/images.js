@@ -1,12 +1,3 @@
-<<<<<<< HEAD
-const Discord = require('discord.js');
-
-/** Fonction qui permet de sélectionner la bonne image à afficher dans le bilan journalier
- * @param {number} resultat - résultat qui est le total des impacts alimentaires, activités du personnage pour le jour
- * @return {string} lien - lien contenant l'image à afficher 
- */
-=======
->>>>>>> 0f683d0c78fc55f7bdf8e50cd621aa02d8eb55a1
 exports.choixImage = function choixImage(resultat)
 {
   switch(resultat)

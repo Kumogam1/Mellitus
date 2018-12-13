@@ -90,7 +90,6 @@ client.on ('message', mess => {
           }
           break;
     case 4:
-<<<<<<< HEAD
           myBot.clear(message);
           let boolTaille = true;
           if(mess.content.length == 2 || mess.content.length == 3)
@@ -134,36 +133,6 @@ client.on ('message', mess => {
           }
           else
           {
-=======
-      myBot.clear(message);
-      let boolTaille = true;
-      if(mess.content.length == 2 || mess.content.length == 3) {
-        for(let i = 0; i < mess.content.length; i++) {
-          if(!tabNb.includes(mess.content.charAt(i))) {
-            boolTaille = false;
-          }
-        }
-      }
-      else {
-        boolTaille = false;
-      }
-
-      if (boolTaille == true && mess.content > 50 && mess.content < 250) {
-        partie.tabPerso.push(mess.content + ' cm');
-        state += 1;
-        poids();
-      }
-      else {
-        message.channel.send('Veuillez saisir une taille correcte');
-      }
-      break;
-    case 5:
-      myBot.clear(message);
-      let boolPoids = true;
-      if(mess.content.length == 2 || mess.content.length == 3) {
-        for(let i = 0; i < mess.content.length; i++){
-          if(!tabNb.includes(mess.content.charAt(i))) {
->>>>>>> 0f683d0c78fc55f7bdf8e50cd621aa02d8eb55a1
             boolPoids = false;
           }
           // Choix du poids
