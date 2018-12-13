@@ -13,6 +13,7 @@ let image;
 
 client.on('messageReactionAdd', (reaction, user) => {
   if(user.bot) return;
+
   if(state == 0 || state == 6) {
     switch(reaction.emoji.name) {
       case '🚹':
@@ -45,10 +46,7 @@ client.on('messageReactionAdd', (reaction, user) => {
 
 client.on ('message', mess => {
 
-  if (mess.author.bot)
-  {
-    return;
-  }
+  if (mess.author.bot) return;
 
   let param = mess.content.trim();
 

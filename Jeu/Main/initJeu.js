@@ -12,12 +12,14 @@ exports.initJeu = function initJeu(message, client) {
 
 	if(!message.member.roles.some(r=>['Joueur'].includes(r.name))) {
 
-		// creation d'un fichier de sauvegarde de sauvegarde
-		// lecture de ce fichier de sauvegarde
+		//On récupère les informations concernant le joueur
 		const partie = sfm.loadSave(message.author.id);
 		const eventName = 'Joueur';
+
+		//Création et assignation des roles au joueur
 		const rolePers = initRole(message, eventName, client);
 
+		//Création des channels
 		initChannelGrp(message, partie, message.author.username, rolePers);
 
 		message.delete();
@@ -37,14 +39,17 @@ exports.initJeu = function initJeu(message, client) {
 **/
 function initRole(message, eventName, client) {
 
+	//Nom du role
 	const nomRole = eventName + '-' + message.author.username;
-	// let myRole = message.guild.roles.find('name', 'Joueur');
 
+	//Recherche du role 'Joueur'
 	const myRole = message.guild.roles.find(role => {
 		if(role.name == 'Joueur') {
 			return role;
 		}
 	});
+
+	//Ajout du role 'Joueur' au joueur
 	message.member.addRole(myRole);
 
 	message.guild.createRole({
@@ -52,6 +57,7 @@ function initRole(message, eventName, client) {
 		color: 0x00FF00,
 		permissions: 0,
 	}).then(role => {
+		//Ajout du role 'Joueur-pseudo' au joueur
 		message.member.addRole(role, nomRole)
 		.catch(error => client.catch(error));
 	})
@@ -77,7 +83,7 @@ function initChannel(message, partie, rolePers, channelName, chanGrpId) {
 		// Place le channel textuel dans la catégorie de jeu
 		chan.setParent(chanGrpId)
 		.then((chan2) => {
-
+			//On établit les permissions
 			chan2.overwritePermissions(message.guild.roles.find(role => {
 				if(role.name == '@everyone') {
 					return role;
@@ -146,6 +152,8 @@ function initChannelGrp(message, partie, channelGrpName, rolePers) {
 	let res = '';
 	server.createChannel(channelGrpName, 'category')
 	.then(async chanGrp => {
+
+		//On initialise toutes les informations du joueur
 		res = chanGrp.id;
 		partie.chanGrp = chanGrp.id;
 		partie.player = message.author.id;
@@ -189,8 +197,10 @@ function initChannelGrp(message, partie, channelGrpName, rolePers) {
 **/
 function bienvenue(message) {
 
+	//on récupère les informations du joueur
 	const partie = sfm.loadSave(message.author.id);
 
+	//On cherche l'id du channel 'hub'
 	const chanId = myBot.messageChannel(message, 'hub', partie);
 
 	if(partie.tuto) {
@@ -239,7 +249,7 @@ exports.accueilMedecin = function accueilMedecin(message, partie)
 						' à l\'aide d\'un bilan à chaque fin de journée dans lequel je vais vous donner des conseils ainsi qu\'un commentaire sur votre journée.')
 	.addField('(1)', '*Le diabète se caractérise par une hyperglycémie chronique,' +
 						'c’est-à-dire un excès de sucre dans le sang et donc un taux de glucose (glycémie) trop élevé*')
-	.addField('Conseil de début de partie', 'Pour ce début de partie, il sera recommandé de prendre une dose d\'insuline de ' + doseInit.toFixed().toString() + '. Votre objectif sera d\'atteindre une dose d\'insuline de ' + doseObj.toFixed().toString() + '. Pour cela il vous est recommandé d\'augmenter votre dose de ' + augmentation + ' lors de chacune de vos prises.')
+	.addField('Conseil de début de partie', 'Votre objectif sera d\'atteindre un taux de glycémie entre 0.7g/L et 1.3g/L. Pour cela il est recommandé de commencer en prenant une dose d\'insuline de ' + doseInit.toFixed().toString() + ' (un dixième de votre poids) et de l\'augmenter de ' + augmentation + ' lors de chacune de vos prises jusqu\'à arriver à un taux convenable.')
 
 	message.channel.send({ embed })
 	.then(async function(message) {
