@@ -7,8 +7,7 @@ const initJeu = require('../Main/initJeu.js');
 let state = -1;
 let message;
 const client = new Discord.Client();
-const tab = [];
-const tabNb = ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9"];
+const tabNb = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9'];
 let partie;
 let image;
 
@@ -82,14 +81,14 @@ client.on ('message', mess => {
     case 4:
       myBot.clear(message);
       let boolTaille = true;
-      if(mess.content.length == 2 || mess.content.length == 3){
-        for(let i = 0; i < mess.content.length; i++){
-          if(!tabNb.includes(mess.content.charAt(i))){
+      if(mess.content.length == 2 || mess.content.length == 3) {
+        for(let i = 0; i < mess.content.length; i++) {
+          if(!tabNb.includes(mess.content.charAt(i))) {
             boolTaille = false;
           }
         }
       }
-      else{
+      else {
         boolTaille = false;
       }
 
@@ -105,9 +104,9 @@ client.on ('message', mess => {
     case 5:
       myBot.clear(message);
       let boolPoids = true;
-      if(mess.content.length == 2 || mess.content.length == 3){
+      if(mess.content.length == 2 || mess.content.length == 3) {
         for(let i = 0; i < mess.content.length; i++){
-          if(!tabNb.includes(mess.content.charAt(i))){
+          if(!tabNb.includes(mess.content.charAt(i))) {
             boolPoids = false;
           }
         }

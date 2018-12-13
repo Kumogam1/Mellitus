@@ -10,6 +10,7 @@ const plotly = require('plotly')('EdouardGU', 'QZcGQlBForcRLDGw5zTj');
 const fs = require('fs');
 const Discord = require('discord.js');
 const myBot = require('../Main/myBot.js');
+const finJeu = require('../Main/finJeu.js');
 
 const imgOpts = {
     format: 'png',
@@ -86,12 +87,21 @@ exports.graphString = async function(message, partie) {
 
   const chanId = myBot.messageChannel(message, 'informations', partie);
 
-  if(partie.numJour != 0 || partie.partJour != 0) {
-    const chan = myBot.messageChannel(message, 'informations', partie);
-    const fetched = await chan.fetchMessages();
-    message.channel.bulkDelete(fetched);
-  }
+  const listChan = finJeu.listChan(message, partie);
 
+  let chan;
+  listChan.forEach(channel => {
+    if(channel.name === 'informations')
+    {
+      chan = channel;
+    }
+  });
+  if(partie.numJour != 0 || partie.partJour != 0) {
+    console.log(chan);
+    const fetched = await chan.fetchMessages();
+    console.log();
+    chan.bulkDelete(fetched);
+  }
   let partJ;
   switch (partie.partJour) {
     case 0:

@@ -17,8 +17,6 @@ exports.finJeu = function finJeu(message) {
 		deletChannel(message);
 		deletRole(message);
 		fj.initStat(message.author);
-		//sfm.deleteSave(message.author.id);
-
 		message.delete();
 	}
 	else {
@@ -86,15 +84,15 @@ exports.msgFin = function msgFin(message, partie) {
 	message.delete();
 
 	if(message.member.roles.some(r=>['Joueur'].includes(r.name))) {
-		if(message.channel.name == "hub") {
+		if(message.channel.name == 'hub') {
 
 			myBot.clear(message)
 			.catch((err) => {
 				console.log(err)
 			});
 
-			let textMort = "";
-			let text = "";
+			let textMort = '';
+			let text = '';
 
 			if(partie.mort) {
 				if(partie.glycemie > 3)
@@ -116,7 +114,7 @@ exports.msgFin = function msgFin(message, partie) {
 				text = 'Bien, un peu plus et tu seras le meilleur.';
 			}
 			else {
-				text = 'Toi, ça se voit que tu es là pour être le meilleur.'
+				text = 'Toi, ça se voit que tu es là pour être le meilleur.';
 			}
 
 			const embed = new Discord.RichEmbed()
@@ -142,7 +140,7 @@ exports.msgFin = function msgFin(message, partie) {
 exports.listChan = function listChan(message, partie) {
 
 	// Creation d'une liste des channels que le joueur peut voir
-	let listedChannels = [];
+	const listedChannels = [];
 
 	message.guild.channels.forEach(channel => {
 		if (channel.parentID == partie.chanGrp || channel.id == partie.chanGrp) {
@@ -160,7 +158,7 @@ exports.listChan = function listChan(message, partie) {
 exports.initStat = function initStat(user) {
 	const partie = {};
 
-	partie.chanGrp = "";
+	partie.chanGrp = '';
 	partie.player = user.id;
 	partie.partJour = 0;
 	partie.numEvent = 0;
