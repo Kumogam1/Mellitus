@@ -240,7 +240,7 @@ exports.accueilMedecin = function accueilMedecin(message, partie)
 	.setThumbnail('https://upload.wikimedia.org/wikipedia/commons/thumb/5/57/Caduceus.svg/299px-Caduceus.svg.png') // Symbole médecine
 	.setTimestamp() // Crée de l'espace
 	.addField('Bonjour ' + partie.nom, 'Je m\'appelle Alda Greece, je serai votre diabètologue tout le long du jeu.\n' +
-						'Vous êtes actuellement atteinte de diabète **(1)**. Je vais en conséquence vous aider à gérer votre taux d\'insuline,' +
+						'Vous êtes actuellement atteint(e) de diabète **(1)**. Je vais en conséquence vous aider à gérer votre taux d\'insuline,' +
 						' à l\'aide d\'un bilan à chaque fin de journée dans lequel je vais vous donner des conseils ainsi qu\'un commentaire sur votre journée.')
 	.addField('(1)', '*Le diabète se caractérise par une hyperglycémie chronique,' +
 						'c’est-à-dire un excès de sucre dans le sang et donc un taux de glucose (glycémie) trop élevé*')
