@@ -244,7 +244,7 @@ exports.accueilMedecin = function accueilMedecin(message, partie)
 						' à l\'aide d\'un bilan à chaque fin de journée dans lequel je vais vous donner des conseils ainsi qu\'un commentaire sur votre journée.')
 	.addField('(1)', '*Le diabète se caractérise par une hyperglycémie chronique,' +
 						'c’est-à-dire un excès de sucre dans le sang et donc un taux de glucose (glycémie) trop élevé*')
-	.addField('Conseil de début de partie', 'Pour ce début de partie, il sera recommandé de prendre une dose d\'insuline de ' + doseInit.toFixed().toString() + '. Votre objectif sera d\'atteindre une dose d\'insuline de ' + doseObj.toFixed().toString() + '. Pour cela il vous est recommandé d\'augmenter votre dose de ' + augmentation + ' lors de chacune de vos prises.')
+	.addField('Conseil de début de partie', 'Votre objectif sera d\'atteindre un taux de glycémie entre 0.7g/L et 1.3g/L. Pour cela il est recommandé de commencer en prenant une dose d\'insuline de ' + doseInit.toFixed().toString() + ' (un dixième de votre poids) et de l\'augmenter de ' + augmentation + ' lors de chacune de vos prises jusqu\'à arriver à un taux convenable.')
 
 	message.channel.send({ embed })
 	.then(async function(message) {
