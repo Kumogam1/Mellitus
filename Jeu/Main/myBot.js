@@ -48,7 +48,7 @@ client.on('message', (message) => {
 
       switch(command) {
         case 'start':
-          partie.nbJour = -2;
+          partie.nbJour = -2;   
           partie.tuto = false;
           sfm.save(message.author.id, partie);
           initJeu.initJeu(message, client);
@@ -59,9 +59,10 @@ client.on('message', (message) => {
             .setTitle("**Help**")
             .addField("/start", "Commencer une partie")
             .addField("/tuto", "Commencer un tutoriel")
-            .addField("/end", "Terminer une partie (Seulement en partie)")
-            .addField("/soda", "Prendre un soda et augmenter son insuline (Seulement en partie)")
-            .addField("/gly", "Afficher un graphique montrant le taux de glycemie (Seulement en partie)")
+            .addField("/end", "Terminer une partie *(Seulement en partie)*")
+            .addField("/insu", "Utiliser le stylo d'insuline *(Seulement en partie, 3 fois par jour)*")
+            .addField("/soda", "Prendre un soda et augmenter son insuline *(Seulement en partie, 1 fois par jour)*")
+            .addField("/gly", "Afficher un graphique montrant le taux de glycemie *(Seulement en partie)*")
             message.channel.send({ embed });
             break;
         case 'tuto':
@@ -386,7 +387,7 @@ function text(message) {
     .addField('Qu\'est ce que Mellitus ?', 'Jouant la consience du personnage choisi ou créé, Mellitus a pour but de vous apporter une aide, afin de vous apprendre de manière assez ludique comment gérer votre taux d’insuline, tout en gardant le côté serious game. De plus, de nombreux événements vont apparaître lors de la partie afin de développer votre adaptation aux circonstances. En fin de journée, vous aurez accés aux informations concernant votre personnage ainsi qu\'un récapitulatif de votre journée. Le but du jeu étant de rester en vie le plus longtemps possible.')
     .addField('Le diabète', 'Voici un lien qui va vous renvoyer sur un pdf qui vous expliquera plus en détail le diabète ➡ https://drive.google.com/open?id=1AZ9kk6WSVgL33GI2OUzjU2g6XPzKwNqX')
     .addField('Comment jouer ?', 'La partie est divisée en jour et chaque jour est une suite de choix. A chaque choix, ses conséquences.\n Durant la partie, vous ferez vos choix de 2 façons différentes : sous forme de texte ou sous forme de boutons.\nLe jeu n\'étant pas terminé, il ne peut accueillir qu\'un seul joueur à la fois.')
-    .addField('Lancer le tutoriel : ', '/start')
+    .addField('Lancer le jeu : ', '/start')
     .addField('Arrêt d\'urgence : ', '/end')
     .addField('Autres commandes : ', '/help')
 

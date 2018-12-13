@@ -5,7 +5,7 @@ const fs = require('fs');
 * return {Object} save - objet json de la partie
 **/
 exports.loadSave = function loadSave(userId) {
-  let save = fs.readFileSync('../sauvegardesPartie/' + userId + '.json');
+  let save = fs.readFileSync('../Sauvegardes/' + userId + '.json');
   save = JSON.parse(save);
   return save;
 };
@@ -15,7 +15,7 @@ exports.loadSave = function loadSave(userId) {
 * @param {Object} partie - objet json de la partie
 **/
 exports.save = function save(userId, partie) {
-  const fileName = '../sauvegardesPartie/' + userId + '.json';
+  const fileName = '../Sauvegardes/' + userId + '.json';
   fs.writeFileSync(fileName, JSON.stringify(partie, null, 2));
 };
 
@@ -24,5 +24,5 @@ exports.save = function save(userId, partie) {
 * @param {Snowflake} userId - id du joueur
 **/
 exports.deleteSave = function deleteSave(userId) {
-  fs.unlinkSync('../sauvegardesPartie/' + userId + '.json');
+  fs.unlinkSync('../Sauvegardes/' + userId + '.json');
 };
