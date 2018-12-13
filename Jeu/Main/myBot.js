@@ -97,13 +97,14 @@ client.on('message', (message) => {
               partie.nbInsu--;
             }
             else{
-              message.channel.send("Vous avez déjà pris vos stylos d'insulines quotidiens !");
+              message.channel.send('Vous avez déjà pris vos stylos d\'insulines quotidiens !');
             }
             sfm.save(message.author.id, partie);
             message.delete();
             break;
         case 'gly':
             as.graphString(message, partie);
+            message.delete();
             break;
         case 'text':
           text(message);
