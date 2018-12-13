@@ -12,6 +12,7 @@ const calcul = require('./calcul.js');
 const as = require('../Graphiques/affichageStats.js');
 const config = require('../token.json');
 const eventGly = require('./evenement.json');
+const tableaux = require('./tableaux.json');
 
 const client = new Discord.Client();
 client.login(config.token);
@@ -273,6 +274,39 @@ exports.event = function event(message, partie, tabN, tabE) {
 	}
 };
 
+<<<<<<< HEAD
+=======
+/** Fonction qui renvoie une conséquence au hasard
+* @param {string} message - Message discord
+* @param {Object} partie - Objet json de la partie
+* @param {string[]} tabN - Tableau des noms d'activités
+* @param {string[]} tabE - Tableau des emojis d'activités
+**/
+function consequence(message, partie, tabN, tabE){
+	let x = 0;
+
+    for(let i = 0; i < partie.activite.length; i++){
+    	x = myBot.getRandomInt(10);
+    	if(x > 1){
+    		partie.consequence.push(conseq[1]);
+    		sfm.save(partie.player, partie);
+    	}
+    }
+
+    if(partie.consequence.length > 0){
+    	const embed = new Discord.RichEmbed()
+	    .setColor(0x00AE86)
+
+	    .addField('Aïe ça fait mal !', partie.consequence[1])//ça va changer
+
+	    message.channel.send({embed});
+	}
+	else{
+		message.delete();
+	}
+}
+
+>>>>>>> ab440acdf58977f3b12bb310a390503adb524fbf
 /** Fonction qui pour chaque prise d'insuline sauvegarde le nouveau taux de glycemie
 * @param {string} message - Message discord
 * @param {Object} partie - Objet json de la partie
@@ -286,15 +320,25 @@ function eventInsu(message, partie) {
 	});
 }
 
+<<<<<<< HEAD
 function eventActu(message, partie) {
+=======
+/** Fonction qui raconte un actualité
+* @param {string} message - Message discord
+* @param {Object} partie - Objet json de la partie
+* @param {number} partie.player - Identifiant de l'utilisateur
+* @param {number[]} partie.tabGlycemie - Tableau de tous les taux de glycémie du joueur
+**/
+function eventActu(message, partie){
+>>>>>>> ab440acdf58977f3b12bb310a390503adb524fbf
 	as.graphString(message, partie)
 	.then(() => {
+
+		let rand = myBot.getRandomInt(28);
 		const embed = new Discord.RichEmbed()
 		.setColor(0x00AE86)
-
-		.addField("**Actualités**", "cqsjcb")
-		.addField("Ne rien faire : ", '❌')
-
+		.setTitle("**Actualités**")
+		.addField(tableaux.actu[rand][0], tableaux.actu[rand][1])
 
 		message.channel.send({embed})
 		.then(async function (mess) {
