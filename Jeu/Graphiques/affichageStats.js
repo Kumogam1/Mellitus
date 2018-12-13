@@ -1,11 +1,4 @@
-/**
-* graphString : dessine un graph dans un string avec du ascii
-* bornMax : int : borne max du graph
-* bornMin : int : borne min du graph
-* nbLignes : int : nombres de lignes pour le graph
-* tabDonnes : tab[int] : tableau contenant les donnes pour le graphique
-* res : string
-**/
+
 const plotly = require('plotly')('EdouardGU', 'QZcGQlBForcRLDGw5zTj');
 const fs = require('fs');
 const Discord = require('discord.js');
@@ -18,7 +11,16 @@ const imgOpts = {
     height: 500,
 };
 
-exports.graphString = async function(message, partie) {
+/** Fonction qui permet de créer et afficher le graphe
+* graphString : dessine un graphe dans un string avec du ascii
+* bornMax : int : borne max du graph
+* bornMin : int : borne min du graph
+* nbLignes : int : nombres de lignes pour le graph
+* tabDonnes : tab[int] : tableau contenant les donnes pour le graphique
+* res : string
+**/
+exports.graphString = async function(message, partie)
+{
   const tab = partie.tabGlycemie;
   let max = 0;
   try {
@@ -83,27 +85,31 @@ exports.graphString = async function(message, partie) {
       range: [0, 3],
     },
   };
+
   const figure = { 'data': [tGlyce, intMax, intMin, hyperglycemie, hypoglycemie], 'layout':layout };
-
   const chanId = myBot.messageChannel(message, 'informations', partie);
-
   const listChan = finJeu.listChan(message, partie);
-
   let chan;
+
   listChan.forEach(channel => {
     if(channel.name === 'informations')
     {
       chan = channel;
     }
   });
-  if(partie.numJour != 0 || partie.partJour != 0) {
+
+  if(partie.numJour != 0 || partie.partJour != 0)
+  {
     console.log(chan);
     const fetched = await chan.fetchMessages();
     console.log();
     chan.bulkDelete(fetched);
   }
+
+  // Switch qui permet d'obtenir la partie de la journée en string. Qui sera rajouté au titre de l'embed qui accompagne le graphe 
   let partJ;
-  switch (partie.partJour) {
+  switch (partie.partJour)
+  {
     case 0:
           partJ = 'du matin';
           break;

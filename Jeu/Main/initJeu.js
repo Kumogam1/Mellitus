@@ -3,8 +3,8 @@ const sfm = require('./saveFileManagement.js');
 const myBot = require('./myBot.js');
 const calcul = require('../Evenement/calcul.js');
 const event = require('../Evenement/event.js');
-/**
-* Fonction installant la partie
+
+/** Fonction initialisant la partie
 * @param {string} message - Message discord
 * @param {Client} client - Le Client utilisé pour le jeu
 **/
@@ -29,12 +29,11 @@ exports.initJeu = function initJeu(message, client) {
 	}
 };
 
-/**
-* Fonction créant un role joueur à l'utilisateur
+/** Fonction créant un role joueur à l'utilisateur
 * @param {string} message - Message discord
 * @param {string} eventName - Prefix du role de l'utilisateur
 * @param {Client} client - Le Client utilisé pour le jeu
-* @returns {string} Nom du role joueur de l'utilisateur
+* @return {string} Nom du role joueur de l'utilisateur
 **/
 function initRole(message, eventName, client) {
 
@@ -60,14 +59,13 @@ function initRole(message, eventName, client) {
 	return nomRole;
 }
 
-/**
-* Fonction créant un channel visible que pour l'utilisateur
+/** Fonction créant un channel visible que pour l'utilisateur
 * @param {string} message - Message discord
 * @param {Object} partie - Objet json de la partie
 * @param {string} rolePers - Nom du role joueur de l'utilisateur
 * @param {string} channelName - Nom du channel à créer
 * @param {Snowflake} chanGrpId - Identifiant du channel catégorie
-* @returns {string} Texte vérifiant l'ajout
+* @return {string} Texte vérifiant l'ajout
 **/
 function initChannel(message, partie, rolePers, channelName, chanGrpId) {
 
@@ -126,8 +124,7 @@ function initChannel(message, partie, rolePers, channelName, chanGrpId) {
 	return '```Added```';
 }
 
-/**
-* Fonction initialisant les channels et les caractéristique de l'utilisateur
+/** Fonction initialisant les channels et les caractéristique de l'utilisateur
 * @param {string} message - Message discord
 * @param {Object} partie - Objet json de la partie
 * @param {Snowflake} partie.chanGrp - Identifiant du channel catégorie
@@ -142,7 +139,7 @@ function initChannel(message, partie, rolePers, channelName, chanGrpId) {
 * @param {number[]} partie.tabGlycemie - Tableau de tous les taux de glycémie de l'utilisateur
 * @param {string} channelGrpName - Nom du channel catégorie
 * @param {string} rolePers - Nom du role joueur de l'utilisateur
-* @returns {Snowflake} Identifiant du channel catégorie
+* @return {Snowflake} Identifiant du channel catégorie
 **/
 function initChannelGrp(message, partie, channelGrpName, rolePers) {
 	const server = message.guild;
@@ -187,8 +184,7 @@ function initChannelGrp(message, partie, channelGrpName, rolePers) {
 	return res;
 }
 
-/**
-* Fonction qui écrit le message de lancement de partie
+/** Fonction qui écrit le message de lancement de partie
 * @param {string} message - Message discord
 **/
 function bienvenue(message) {
@@ -221,11 +217,10 @@ function bienvenue(message) {
 	});
 }
 
-/**
-* Fonction qui écrit le message de bienvenue du médecin
+/** Fonction qui écrit le message de bienvenue du médecin
 * @param {string} message - Message discord
+* @param {string} partie.nom - Nom du personnage
 **/
-
 exports.accueilMedecin = function accueilMedecin(message, partie)
 {
 	const doseInit = calcul.doses(partie)[0];

@@ -10,6 +10,11 @@ client.login(config.token);
 
 const tabNb = ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9"];
 
+/** Fonction qui affiche un embed pour la prise d'insuline et qui récupère la valeur
+* @param {string} message - Message discord
+* @param {Object} partie - Objet json de la partie
+* @param {number} partie.insuline - Permet de prendre de l'insuline, ou pas
+ */
 exports.priseInsuline = function priseInsuline(message, partie) {
 
   let insuline = '-1';
