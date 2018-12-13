@@ -97,9 +97,6 @@ client.on ('message', mess => {
         message.channel.send('Veuillez saisir un poids correct');
       }
       break;
-    default:
-      console.log('err');
-      break;
   }
 });
 
@@ -175,8 +172,6 @@ function fumeur() {
 }
 
 function finalisation() {
-
-  sfm.save(partie.player, partie);
   state += 1;
   partie.nom = partie.tabPerso[2] + ' ' + partie.tabPerso[1];
   partie.sexe = partie.tabPerso[0];
@@ -184,7 +179,9 @@ function finalisation() {
   partie.taille = parseInt(partie.tabPerso[4]);
   partie.poids = parseInt(partie.tabPerso[5]);
   partie.fumeur = partie.tabPerso[6];
+  partie.obesite = calculIMC(partie);
   sfm.save(partie.player, partie);
+  calculIMC(partie);
   const chanId = myBot.messageChannel(message, 'personnage', partie);
 
   const fieldTextPerso = 'Voici votre personnage :';
@@ -238,6 +235,18 @@ function finalisation() {
         initJeu.accueilMedecin(message, partie);
       });
   });
+}
+
+function calculIMC(partie) {
+    const imc = partie.poids / (partie.taille * partie.taille)
+    let obesite;
+    if(imc < 30) {
+      obesite = 'non'
+    }
+    else {
+      obesite = 'oui'
+    }
+    return obesite;
 }
 
 function testNombre(message) {
