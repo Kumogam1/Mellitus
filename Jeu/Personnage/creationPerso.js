@@ -40,27 +40,30 @@ client.on ('message', mess => {
 
   switch (state) {
     case 1:
+      myBot.clear(message);
       param = param.charAt(0).toUpperCase() + param.slice(1);
       partie.tabPerso.push(param);
       state += 1;
       prenom();
       break;
     case 2:
+      myBot.clear(message);
       state += 1;
       param = param.charAt(0).toUpperCase() + param.slice(1);
       partie.tabPerso.push(param);
       age();
       break;
     case 3:
+      myBot.clear(message);
       let boolAge = true;
-      if(mess.content.length == 1 || mess.content.length == 2){
-        for(let i = 0; i < mess.content.length; i++){
-          if(!tabNb.includes(mess.content.charAt(i))){
+      if(mess.content.length == 1 || mess.content.length == 2) {
+        for(let i = 0; i < mess.content.length; i++) {
+          if(!tabNb.includes(mess.content.charAt(i))) {
             boolAge = false;
           }
         }
       }
-      else{
+      else {
         boolAge = false;
       }
 
@@ -74,7 +77,7 @@ client.on ('message', mess => {
       }
       break;
     case 4:
-
+      myBot.clear(message);
       let boolTaille = true;
       if(mess.content.length == 2 || mess.content.length == 3){
         for(let i = 0; i < mess.content.length; i++){
@@ -97,7 +100,7 @@ client.on ('message', mess => {
       }
       break;
     case 5:
-
+      myBot.clear(message);
       let boolPoids = true;
       if(mess.content.length == 2 || mess.content.length == 3){
         for(let i = 0; i < mess.content.length; i++){
