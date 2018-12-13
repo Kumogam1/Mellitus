@@ -40,120 +40,120 @@ exports.event = function event(message, partie, tabN, tabE) {
 		console.log(err)
 	});
 
-	if(partie.stress < 0){
+	if(partie.stress < 0) {
 		partie.stress = 0;
 		sfm.save(partie.player, partie);
 	}
 
-	if(partie.faim < 0){
+	if(partie.faim < 0) {
 		partie.faim = 0;
 		sfm.save(partie.player, partie);
 	}
 
 	//Perte de vie
-	if(partie.glycemie > 3 || partie.glycemie == 0 || partie.faim > 2 || partie.stress > 100){
-		console.log(partie.faim + " : c'est ma faim");
-		if(partie.numEvent == 0 && partie.amput != 1){
-			console.log("vie-20");
+	if(partie.glycemie > 3 || partie.glycemie == 0 || partie.faim > 2 || partie.stress > 100) {
+		console.log(partie.faim + ' : c\'est ma faim');
+		if(partie.numEvent == 0 && partie.amput != 1) {
+			console.log('vie-20');
 			partie.vie -= 20;
 			sfm.save(partie.player, partie);
 		}
-		else if(partie.amput == 1){
+		else if(partie.amput == 1) {
 			partie.amput++;
 			sfm.save(partie.player, partie);
 		}
 	}
 
-	//Mort (vie à 0)
-	if(partie.vie == 0 && partie.numEvent == 0){
-		console.log("mort");
+	// Mort (vie à 0)
+	if(partie.vie == 0 && partie.numEvent == 0) {
+		console.log('mort');
 		partie.mort = true;
 		sfm.save(partie.player, partie);
 		finJeu.msgFin(message, partie);
 		return;
 	}
 
-	//Perte de membre (vie très basse)
-	else if(partie.vie == 20 && partie.amput == 0 && (partie.glycemie > 3 || partie.glycemie == 0)){
-		console.log("amputation");
+	// Perte de membre (vie très basse)
+	else if(partie.vie == 20 && partie.amput == 0 && (partie.glycemie > 3 || partie.glycemie == 0)) {
+		console.log('amputation');
 		amput(message, partie);
 		partie.amput = 1;
 		sfm.save(partie.player, partie);
 		return;
 	}
 
-	//Passer à l'etape suivante
+	// Passer à l'etape suivante
 	partie.numEvent = (partie.numEvent + 1) % 3;
-	if(partie.partJour == 0 && partie.numEvent == 0  && partie.evenement){
+	if(partie.partJour == 0 && partie.numEvent == 0 && partie.evenement) {
 		partie.numJour++;
 		partie.soda = true; // On remet le soda à vrai afin qu'il puisse en reprendre le lendemain
 		partie.nbInsu = 3;
 	}
 	sfm.save(partie.player, partie);
 
-	//Journal et message du docteur en fin de journée
-	if(partie.numJour > 0 && partie.partJour == 0 && partie.numEvent == 0 && partie.evenement){
+	// Journal et message du docteur en fin de journée
+	if(partie.numJour > 0 && partie.partJour == 0 && partie.numEvent == 0 && partie.evenement) {
 		journal(message, partie);
 		calcul.glyMatin(partie);
 	}
 
-	//Fin du tuto
-	if(partie.nbJour == partie.numJour){
+	// Fin du tuto
+	if(partie.nbJour == partie.numJour) {
 		eventFin(message, partie);
 		return;
 	}
 
-	//title + evenement glycemie
-	if(partie.numEvent == 0  && partie.evenement){
+	// Title + evenement glycemie
+	if(partie.numEvent == 0 && partie.evenement) {
 
-		if(partie.partJour == 0){
-			fieldTitle = "C'est le matin!";
+		if(partie.partJour == 0) {
+			fieldTitle = 'C\'est le matin!';
 			if(partie.tuto)
 			{
-				fieldText = "Chaque matin, vous devez faire votre prise d'insuline, choisir votre petit déjeuner ainsi qu'une activité matinale au choix.";
-				image = "https://i.pinimg.com/originals/33/d4/89/33d48901c6036628a03d0f7b0eab039c.jpg";
+				fieldText = 'Chaque matin, vous devez faire votre prise d\'insuline, choisir votre petit déjeuner ainsi qu\'une activité matinale au choix.';
+				image = 'https://i.pinimg.com/originals/33/d4/89/33d48901c6036628a03d0f7b0eab039c.jpg';
 			}
 			else
 			{
-				fieldText = "Le soleil se réveille, il fait beau, il fait jour.";
-				image = "https://i.pinimg.com/originals/33/d4/89/33d48901c6036628a03d0f7b0eab039c.jpg";
+				fieldText = 'Le soleil se réveille, il fait beau, il fait jour.';
+				image = 'https://i.pinimg.com/originals/33/d4/89/33d48901c6036628a03d0f7b0eab039c.jpg';
 			}
 		}
 		else if(partie.partJour == 1)
 		{
-			fieldTitle = "C'est l'après-midi!";
+			fieldTitle = 'C\'est l\'après-midi!';
 			if(partie.tuto)
 			{
-				fieldText = "Tous les après-midi, vous devez faire votre prise d'insuline et vous pouvez choisir votre repas et une activité.";
-				image = "http://www.pxleyes.com/images/contests/landscapes-td/fullsize/autumn-afternoon-4d4786da5ffbe_hires.jpg";
+				fieldText = 'Tous les après-midi, vous devez faire votre prise d\'insuline et vous pouvez choisir votre repas et une activité.';
+				image = 'http://www.pxleyes.com/images/contests/landscapes-td/fullsize/autumn-afternoon-4d4786da5ffbe_hires.jpg';
 			}
 			else
 			{
-				fieldText = "Repas, sieste, travail";
-				image = "http://www.pxleyes.com/images/contests/landscapes-td/fullsize/autumn-afternoon-4d4786da5ffbe_hires.jpg";
+				fieldText = 'Repas, sieste, travail';
+				image = 'http://www.pxleyes.com/images/contests/landscapes-td/fullsize/autumn-afternoon-4d4786da5ffbe_hires.jpg';
 			}
 		}
 		else
 		{
-			fieldTitle = "C'est le soir!";
+			fieldTitle = 'C\'est le soir!';
 			if(partie.tuto)
 			{
-				fieldText = "Tous les soirs, vous devez faire votre prise d'insuline et vous pouvez choisir votre diner et si vous sortez avec des amis.";
-				image = "https://steemitimages.com/DQmQASwATrfV59SZLYEmeNcb8HC7uoRxQEq1VsCScqkTbPo/IMG_20170911_090319.jpg";
+				fieldText = 'Tous les soirs, vous devez faire votre prise d\'insuline et vous pouvez choisir votre diner et si vous sortez avec des amis.';
+				image = 'https://steemitimages.com/DQmQASwATrfV59SZLYEmeNcb8HC7uoRxQEq1VsCScqkTbPo/IMG_20170911_090319.jpg';
 			}
 			else
 			{
-				fieldText = "😴😴😴";
-				image = "https://steemitimages.com/DQmQASwATrfV59SZLYEmeNcb8HC7uoRxQEq1VsCScqkTbPo/IMG_20170911_090319.jpg";
+				fieldText = '😴😴😴';
+				image = 'https://steemitimages.com/DQmQASwATrfV59SZLYEmeNcb8HC7uoRxQEq1VsCScqkTbPo/IMG_20170911_090319.jpg';
 			}
 		}
 
 		title(message, fieldTitle, fieldText, image);
 
-		if(partie.glycemie > 2){		//hyperglycemie
+		if(partie.glycemie > 2) {		//hyperglycemie
 			let rand = myBot.getRandomInt(4);
-			let title = "";
-			let text = "";
+			let title = '';
+			let text = '';
 
 			switch(rand){
 				case 0:
@@ -178,8 +178,8 @@ exports.event = function event(message, partie, tabN, tabE) {
 			.setColor(0x00AE86)
 			.addField(title, text)
 
-			message.channel.send({embed})
-			.then(async function (mess) {
+			message.channel.send({ embed })
+			.then(async function(mess) {
 				mess.react('➡');
 			});
 
@@ -188,12 +188,12 @@ exports.event = function event(message, partie, tabN, tabE) {
 			sfm.save(partie.player, partie);
 			return;
 		}
-		else if(partie.glycemie < 0.6){		//hypoglycemie
+		else if(partie.glycemie < 0.6) {		//hypoglycemie
 			let rand = myBot.getRandomInt(3);
-			let title = "";
-			let text = "";
+			let title = '';
+			let text = '';
 
-			switch(rand){
+			switch(rand) {
 				case 0:
 					title = eventGly.hypo1[0];
 					text = eventGly.hypo1[1];
@@ -212,8 +212,8 @@ exports.event = function event(message, partie, tabN, tabE) {
 			.setColor(0x00AE86)
 			.addField(title, text)
 
-			message.channel.send({embed})
-			.then(async function (mess) {
+			message.channel.send({ embed })
+			.then(async function(mess) {
 				mess.react('➡');
 			});
 
@@ -224,13 +224,13 @@ exports.event = function event(message, partie, tabN, tabE) {
 		}
 	}
 
-	//Rotation des evenements
-	if(partie.nbJour != partie.numJour){
+	// Rotation des evenements
+	if(partie.nbJour != partie.numJour) {
 		partie.evenement = true;
 		sfm.save(partie.player, partie);
-		switch(partie.partJour){
+		switch(partie.partJour) {
 			case 0:
-				switch(partie.numEvent){
+				switch(partie.numEvent) {
 					case 0:
 						//consequence(message, partie, tabN, tabE);
 						eventInsu(message, partie);
@@ -244,7 +244,7 @@ exports.event = function event(message, partie, tabN, tabE) {
 				}
 				break;
 			case 1:
-				switch(partie.numEvent){
+				switch(partie.numEvent) {
 					case 0:
 						eventActu(message, partie);
 						break;
@@ -257,7 +257,7 @@ exports.event = function event(message, partie, tabN, tabE) {
 				}
 				break;
 			case 2:
-				switch(partie.numEvent){
+				switch(partie.numEvent) {
 					case 0:
 						eventActu(message, partie);
 						break;
@@ -265,8 +265,6 @@ exports.event = function event(message, partie, tabN, tabE) {
 						eventRepas(message, tabN, tabE);
 						break;
 					case 2:
-						//partie.numJour++;
-						//sfm.save(partie.player, partie);
 						eventSport(message, tabN, tabE);
 						break;
 				}
@@ -274,93 +272,6 @@ exports.event = function event(message, partie, tabN, tabE) {
 		}
 	}
 };
-
-/** Fonction qui renvoie une conséquence au hasard
-* @param {string} message - Message discord
-* @param {Object} partie - Objet json de la partie
-* @param {string[]} tabN - Tableau des noms d'activités
-* @param {string[]} tabE - Tableau des emojis d'activités
-**/
-function consequence(message, partie, tabN, tabE){
-	let x = 0;
-
-    for(let i = 0; i < partie.activite.length; i++){
-    	x = myBot.getRandomInt(10);
-    	if(x > 1){
-    		partie.consequence.push(conseq[1]);
-    		sfm.save(partie.player, partie);
-    	}
-    }
-
-    if(partie.consequence.length > 0){
-    	const embed = new Discord.RichEmbed()
-	    .setColor(0x00AE86)
-
-	    .addField('Aïe ça fait mal !', partie.consequence[1])//ça va changer
-
-	    message.channel.send({embed});
-	}
-	else{
-		message.delete();
-	}
-}
-
-/** Fonction qui demande le nombre de jour à jouer
-* @param {string} message - Message discord
-* @param {Object} partie - Objet json de la partie
-* @param {number} partie.nbJour - Nombre de jour de la partie
-* @param {number} partie.choixPerso - Entier qui permet au joueur d'entrer le nombre de jour
-**/
-function eventNumJour(message, partie) {
-
-	const embed = new Discord.RichEmbed()
-    .setColor(0x00AE86)
-    .addField("Une limite à la partie ?", "Choisissez un nombre de jour ")
-  	message.channel.send({embed});
-
-	partie.choixPerso = 1;
-	sfm.save(message.author.id, partie);
-
-	let nbChoix = '-1';
-
-	client.on ('message', message => {
-
-		if(message.author.bot) return;
-
-		if(message.member.roles.some(r=>['Joueur'].includes(r.name))) {
-
-			if (partie.choixPerso == 1) {
-			nbChoix = parseInt(message.content);
-
-				if(Number.isInteger(nbChoix)){
-					if(nbChoix < 1 || isNaN(nbChoix)) {
-						message.channel.send("Alors là, c'est pas possible.");
-					}
-					else if(nbChoix > 10) {
-						message.channel.send('Tu veux jouer pendant 40 ans ou quoi ?');
-					}
-					else {
-						partie.choixPerso = 0;
-						if(partie.tuto){
-							partie.nbJour = 1;
-							sfm.save(partie.player, partie);
-						}
-						else{
-							partie.nbJour = nbChoix;
-							sfm.save(message.author.id, partie);
-						}
-						sfm.save(message.author.id, partie);
-						message.react('➡');
-						//event.event(message, partie, tabN, tabE);
-					}
-				}
-				else {
-					message.channel.send("Je comprend pas ce que tu racontes.");
-				}
-			}
-		}
-	});
-}
 
 /** Fonction qui pour chaque prise d'insuline sauvegarde le nouveau taux de glycemie
 * @param {string} message - Message discord
@@ -375,7 +286,7 @@ function eventInsu(message, partie) {
 	});
 }
 
-function eventActu(message, partie){
+function eventActu(message, partie) {
 	as.graphString(message, partie)
 	.then(() => {
 		const embed = new Discord.RichEmbed()
@@ -586,7 +497,7 @@ function eventMedecin(message,partie) {
 	let numConseilNutrition; // Numéro du conseil pour la nutrition
 	let numImage; // Numéro pour l'image décrivant la journée du joueur
 	let sommeTotale = sommeImpactActivite + sommeImpactNutrition ; // Somme totale permettant de connaitre le numéro de l'image à afficher
-	
+
 	// Conseil pour le sport :
 
 	if (sommeImpactActivite <= 3) numConseilActivite = conseilSport.c4;

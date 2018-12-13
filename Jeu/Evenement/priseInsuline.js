@@ -3,22 +3,22 @@ const fs = require('fs');
 const event = require('./event.js');
 const sfm = require('../Main/saveFileManagement.js');
 const calcul = require('./calcul.js');
-const config = require("../token.json");
+const config = require('../token.json');
 
 const client = new Discord.Client();
 client.login(config.token);
 
-const tabNb = ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9"];
+const tabNb = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9'];
 
 exports.priseInsuline = function priseInsuline(message, partie) {
 
   let insuline = '-1';
 
-  text = "C'est l'heure de la prise d'insuline.";
+  text = 'C\'est l\'heure de la prise d\'insuline.';
 
   const embed = new Discord.RichEmbed()
     .setColor(0x00AE86)
-    .addField(text, "Je dois prendre de l'insuline (entre 0 et 80 unités): ")
+    .addField(text, 'Je dois prendre de l\'insuline (entre 0 et 80 unités): ')
   message.channel.send({embed});
 
   partie.insuline = 1;
@@ -35,9 +35,9 @@ exports.priseInsuline = function priseInsuline(message, partie) {
         let bool = true;
         if (partie.insuline == 1)
         {
-          if(message.content.length == 1 || message.content.length == 2){
-            for(let i = 0; i < message.content.length; i++){
-              if(!tabNb.includes(message.content.charAt(i))){
+          if(message.content.length == 1 || message.content.length == 2) {
+            for(let i = 0; i < message.content.length; i++) {
+              if(!tabNb.includes(message.content.charAt(i))) {
                 bool = false;
               }
             }
@@ -62,7 +62,7 @@ exports.priseInsuline = function priseInsuline(message, partie) {
             }
           }
           else{
-            message.channel.send("Mettez-y du votre aussi !")
+            message.channel.send('Mettez-y du votre aussi !')
           }
         }
       }
