@@ -214,8 +214,8 @@ function bienvenue(message) {
 	.addField('Choisir un personnage prédéfini : ', '✅')
 	.addField('Créer son propre personnage : ', '☑')
 
-	message.guild.channels.get(chanId).send({embed})
-	.then(async function (mess) {
+	message.guild.channels.get(chanId).send({ embed })
+	.then(async function(mess) {
 		await mess.react('✅');
 		await mess.react('☑');
 	});
