@@ -86,12 +86,10 @@ exports.graphString = async function(message, partie) {
   const chanId = myBot.messageChannel(message, 'informations', partie);
 
   if(partie.numJour != 0 || partie.partJour != 0) {
-    myBot.clear(message)
-    .catch((err) => {
-      console.log(err);
-    });
+    const chan = myBot.messageChannel(message, 'informations', partie);
+    const fetched = await chan.fetchMessages();
+    message.channel.bulkDelete(fetched);
   }
-
 
   const embed = new Discord.RichEmbed()
   .setColor(0x00AE86)
