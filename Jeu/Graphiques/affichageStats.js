@@ -69,6 +69,7 @@ exports.graphString = async function(message, partie) {
       color: '#fc0000',
     },
   };
+
   const layout = {
     showlegend: false,
     xaxis: {
@@ -91,9 +92,22 @@ exports.graphString = async function(message, partie) {
     message.channel.bulkDelete(fetched);
   }
 
+  let partJ;
+  switch (partie.partJour) {
+    case 0:
+          partJ = 'du matin';
+          break;
+    case 1:
+          partJ = 'de l\'après-midi';
+          break;
+    case 2:
+          partJ = 'du soir';
+          break;
+  }
+
   const embed = new Discord.RichEmbed()
   .setColor(0x00AE86)
-  .addField('**Taux de glycémie: **' + partie.partJour.toString(), 'Taux de glycemie : ' + partie.glycemie.toFixed(2).toString() + ' g/L\nIntervalle à atteindre : entre 0.7 g/L et 1.3 g/L');
+  .addField('**Taux de glycémie ' + partJ + '**', 'Taux de glycemie : ' + partie.glycemie.toFixed(2).toString() + ' g/L\nIntervalle à atteindre : entre 0.7 g/L et 1.3 g/L');
 
   plotly.getImage(figure, imgOpts, function(error, imageStream) {
       if (error) return console.log (error);
