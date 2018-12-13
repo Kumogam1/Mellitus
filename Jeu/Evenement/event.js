@@ -442,6 +442,7 @@ function amput(message, partie) {
 * @param {string} message - Message discord
 * @param {string} title - Titre du message
 * @param {string} text - Texte du message
+* @param {string} image - Image du message
 **/
 function title(message, title, text, image) {
 	const embed = new Discord.RichEmbed()
@@ -494,8 +495,11 @@ function journal(message, partie) {
 	});
 }
 
-/** Fonction qui écrit le bilan du patient donné par la médecin
+/** Fonction qui affiche le bilan du patient donné par la médecin
 * @param {string} message - Message discord
+* @param {string} partie.nom - Nom du personnage
+* @param {number} partie.poids - Poids du personnage
+* @param {number} partie.tabGlycemie - Tableau contenant tous les taux de glycémie
 * @param {Object} partie - Objet json de la partie
 **/
 function eventMedecin(message, partie) {
@@ -548,6 +552,7 @@ function eventMedecin(message, partie) {
 
 /** Fonction qui permet de calculer l'impact des activités du joueur
 * @param {Object} partie - Objet json de la partie
+* @param {Integer} partie.impactActivite - Tableau contenant les impacts des activités du joueur
 * @return impactJour, qui est l'impact sportif journalière du joueur
 */
 function calculImpactActivite(partie) {
@@ -558,6 +563,7 @@ function calculImpactActivite(partie) {
 
 /** Fonction qui permet de calculer l'impact nutritionnel du joueur
 * @param {Object} partie - Objet json de la partie
+* @param {Integer} partie.impactNutrition - Tableau contenant les impacts de la nutrition du joueur
 * @return impactJour, qui est l'impact nutritionnel journalière du joueur
 */
 function calculImpactNutrition(partie) {

@@ -7,8 +7,7 @@ const sfm = require('./saveFileManagement.js');
 const fj = require('./finJeu.js');
 const myBot = require('./myBot.js');
 
-/**
-* Fonction terminant la partie
+/** Fonction terminant la partie
 * @param {string} message - Message discord
 **/
 exports.finJeu = function finJeu(message) {
@@ -24,8 +23,7 @@ exports.finJeu = function finJeu(message) {
 	}
 };
 
-/**
-* Fonction enlevant les roles de l'utilisateur
+/** Fonction enlevant les roles de l'utilisateur
 * @param {string} message - Message discord
 **/
 function deletRole(message) {
@@ -46,8 +44,7 @@ function deletRole(message) {
 	});
 }
 
-/**
-* Fonction supprimant les channels de la partie de l'utilisateur
+/** Fonction supprimant les channels de la partie de l'utilisateur
 * @param {string} message - Message discord
 **/
 function deletChannel(message) {
@@ -73,8 +70,7 @@ function deletChannel(message) {
 	});
 }
 
-/**
-* Fonction de message de fin de partie
+/** Fonction de message de fin de partie
 * @param {string} message - Message discord
 * @param {Object} partie - Objet json de la partie
 * @param {number} partie.numJour - Numéro du jour actuel
@@ -131,8 +127,7 @@ exports.msgFin = function msgFin(message, partie) {
 	}
 }
 
-/**
-* Fonction listant les channels de la partie de l'utilisateur
+/** Fonction listant les channels de la partie de l'utilisateur
 * @param {string} message - Message discord
 * @param {Object} partie - Objet json de la partie
 * @param {string} partie.chanGrp - Identifiant du channel catégorie
@@ -151,8 +146,7 @@ exports.listChan = function listChan(message, partie) {
 	return listedChannels;
 };
 
-/**
-* Fonction initialisant les channels et les caractéristique de l'utilisateur
+/** Fonction initialisant les channels et les caractéristiques de l'utilisateur
 * @param {string} user - Message discord
 **/
 exports.initStat = function initStat(user) {
