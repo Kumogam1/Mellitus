@@ -274,39 +274,6 @@ exports.event = function event(message, partie, tabN, tabE) {
 	}
 };
 
-<<<<<<< HEAD
-=======
-/** Fonction qui renvoie une conséquence au hasard
-* @param {string} message - Message discord
-* @param {Object} partie - Objet json de la partie
-* @param {string[]} tabN - Tableau des noms d'activités
-* @param {string[]} tabE - Tableau des emojis d'activités
-**/
-function consequence(message, partie, tabN, tabE){
-	let x = 0;
-
-    for(let i = 0; i < partie.activite.length; i++){
-    	x = myBot.getRandomInt(10);
-    	if(x > 1){
-    		partie.consequence.push(conseq[1]);
-    		sfm.save(partie.player, partie);
-    	}
-    }
-
-    if(partie.consequence.length > 0){
-    	const embed = new Discord.RichEmbed()
-	    .setColor(0x00AE86)
-
-	    .addField('Aïe ça fait mal !', partie.consequence[1])//ça va changer
-
-	    message.channel.send({embed});
-	}
-	else{
-		message.delete();
-	}
-}
-
->>>>>>> ab440acdf58977f3b12bb310a390503adb524fbf
 /** Fonction qui pour chaque prise d'insuline sauvegarde le nouveau taux de glycemie
 * @param {string} message - Message discord
 * @param {Object} partie - Objet json de la partie
@@ -320,32 +287,28 @@ function eventInsu(message, partie) {
 	});
 }
 
-<<<<<<< HEAD
-function eventActu(message, partie) {
-=======
 /** Fonction qui raconte un actualité
 * @param {string} message - Message discord
 * @param {Object} partie - Objet json de la partie
 * @param {number} partie.player - Identifiant de l'utilisateur
 * @param {number[]} partie.tabGlycemie - Tableau de tous les taux de glycémie du joueur
 **/
-function eventActu(message, partie){
->>>>>>> ab440acdf58977f3b12bb310a390503adb524fbf
+function eventActu(message, partie) {
 	as.graphString(message, partie)
 	.then(() => {
 
-		let rand = myBot.getRandomInt(28);
+		const rand = myBot.getRandomInt(28);
 		const embed = new Discord.RichEmbed()
 		.setColor(0x00AE86)
-		.setTitle("**Actualités**")
+		.setTitle('**Actualités**')
 		.addField(tableaux.actu[rand][0], tableaux.actu[rand][1])
 
-		message.channel.send({embed})
-		.then(async function (mess) {
+		message.channel.send({ embed })
+		.then(async function(mess) {
 			mess.react('➡');
 		});
 
-		partie.tabGlycemie.push(partie.tabGlycemie[partie.tabGlycemie.length-1]);
+		partie.tabGlycemie.push(partie.tabGlycemie[partie.tabGlycemie.length - 1]);
 		sfm.save(partie.player, partie);
 	});
 }
@@ -355,35 +318,37 @@ function eventActu(message, partie){
 * @param {string[]} tabN - Tableau des noms d'activités
 * @param {string[]} tabE - Tableau des emojis d'activités
 **/
-function eventSport(message, tabN, tabE){
+function eventSport(message, tabN, tabE) {
 
-	var rand1 = myBot.getRandomInt(tabN.length);
+	const rand1 = myBot.getRandomInt(tabN.length);
 
-	var rand2 = rand1;
+	let rand2 = rand1;
 	while(rand2 == rand1)
+	{
 		rand2 = myBot.getRandomInt(tabN.length);
+	}
 
-	var rand3 = rand1;
+	let rand3 = rand1;
 	while(rand3 == rand1 || rand3 == rand2)
 		rand3 = myBot.getRandomInt(tabN.length);
 
-	var rand4 = rand1;
+	let rand4 = rand1;
 	while(rand4 == rand1 || rand4 == rand2 || rand4 == rand3)
 		rand4 = myBot.getRandomInt(tabN.length);
 
 	const embed = new Discord.RichEmbed()
 	.setColor(0x00AE86)
-	.setTitle("**J'ai le temps de faire une activité, qu'est ce que je fais ?**")
+	.setTitle('**J\'ai le temps de faire une activité, qu\'est ce que je fais ?**')
 
-	.addField(tabN[rand1] + " : ", tabE[rand1])
-	.addField(tabN[rand2] + " : ", tabE[rand2])
-	.addField(tabN[rand3] + " : ", tabE[rand3])
-	.addField(tabN[rand4] + " : ", tabE[rand4])
-	.addField("Ne rien faire : ", '❌')
+	.addField(tabN[rand1] + ' : ', tabE[rand1])
+	.addField(tabN[rand2] + ' : ', tabE[rand2])
+	.addField(tabN[rand3] + ' : ', tabE[rand3])
+	.addField(tabN[rand4] + ' : ', tabE[rand4])
+	.addField('Ne rien faire : ', '❌')
 
 
-	message.channel.send({embed})
-	.then(async function (mess) {
+	message.channel.send({ embed })
+	.then(async function(mess) {
 		await mess.react(tabE[rand1]);
 		await mess.react(tabE[rand2]);
 		await mess.react(tabE[rand3]);
@@ -397,35 +362,35 @@ function eventSport(message, tabN, tabE){
 * @param {string[]} tabN - Tableau des noms de repas
 * @param {string[]} tabE - Tableau des emojis de repas
 **/
-function eventRepas(message, tabN, tabE){
+function eventRepas(message, tabN, tabE) {
 
-	var rand1 = myBot.getRandomInt(tabN.length);
+	const rand1 = myBot.getRandomInt(tabN.length);
 
-	var rand2 = rand1;
+	let rand2 = rand1;
 	while(rand2 == rand1)
 		rand2 = myBot.getRandomInt(tabN.length);
 
-	var rand3 = rand1;
+	let rand3 = rand1;
 	while(rand3 == rand1 || rand3 == rand2)
 		rand3 = myBot.getRandomInt(tabN.length);
 
-	var rand4 = rand1;
+	let rand4 = rand1;
 	while(rand4 == rand1 || rand4 == rand2 || rand4 == rand3)
 		rand4 = myBot.getRandomInt(tabN.length);
 
 	const embed = new Discord.RichEmbed()
 	.setColor(0x00AE86)
-	.setTitle("**Qu'est ce que je vais manger ?**")
+	.setTitle('**Qu\'est ce que je vais manger ?**')
 
-	.addField(tabN[rand1] + " : ", tabE[rand1])
-	.addField(tabN[rand2] + " : ", tabE[rand2])
-	.addField(tabN[rand3] + " : ", tabE[rand3])
-	.addField(tabN[rand4] + " : ", tabE[rand4])
-	.addField("Ne rien manger : ", '❌')
+	.addField(tabN[rand1] + ' : ', tabE[rand1])
+	.addField(tabN[rand2] + ' : ', tabE[rand2])
+	.addField(tabN[rand3] + ' : ', tabE[rand3])
+	.addField(tabN[rand4] + ' : ', tabE[rand4])
+	.addField('Ne rien manger : ', '❌')
 
 
-	message.channel.send({embed})
-	.then(async function (mess) {
+	message.channel.send({ embed })
+	.then(async function(mess) {
 		await mess.react(tabE[rand1]);
 		await mess.react(tabE[rand2]);
 		await mess.react(tabE[rand3]);
@@ -438,37 +403,37 @@ function eventRepas(message, tabN, tabE){
 * @param {string} message - Message discord
 * @param {Object} partie - Objet json de la partie
 **/
-function eventFin(message, partie){
+function eventFin(message, partie) {
   if(partie.tuto)
-    fieldTextInfo = "J'espère que vous avez apprécié le tutoriel.";
+    fieldTextInfo = 'J\'espère que vous avez apprécié le tutoriel.';
   else
-    fieldTextInfo = "J'espère que vous avez apprécié la partie.";
+    fieldTextInfo = 'J\'espère que vous avez apprécié la partie.';
 
   const embed = new Discord.RichEmbed()
   .setColor(15013890)
 
-  .addField("C'est la fin de la partie.", fieldTextInfo)
-  .addField("Pour quitter la partie, tapez : ", "/end")
+  .addField('C\'est la fin de la partie.', fieldTextInfo)
+  .addField('Pour quitter la partie, tapez : ', '/end')
 
-  message.channel.send({embed});
+  message.channel.send({ embed });
 }
 
 /** Fonction qui écrit le message de perte de membre du joueur
 * @param {string} message - Message discord
 * @param {Object} partie - Objet json de la partie
 **/
-function amput(message, partie){
-	let membre = ["bras gauche", "bras droit", "jambe gauche", "jambe droit"];
-	let rand = myBot.getRandomInt(4);
-	let title = "Aïe, aïe, aïe, coup dur pour le joueur français !";
-	let text = "Vous venez de perdre votre " + membre[rand] + " ! En effet, vous êtes encore en vie. Ce n'est que la conséquence de vos choix, donc c'est entièrement votre faute. Mais heureusement, une mauvaise nouvelle en cache une bonne, vous n'êtes pas mort, c'est déjà ça.";
+function amput(message, partie) {
+	const membre = ['bras gauche', 'bras droit', 'jambe gauche', 'jambe droit'];
+	const rand = myBot.getRandomInt(4);
+	const title = 'Aïe, aïe, aïe, coup dur pour le joueur français !';
+	const text = 'Vous venez de perdre votre ' + membre[rand] + ' ! En effet, vous êtes encore en vie. Ce n\'est que la conséquence de vos choix, donc c\'est entièrement votre faute. Mais heureusement, une mauvaise nouvelle en cache une bonne, vous n\'êtes pas mort, c\'est déjà ça.';
 
 	const embed = new Discord.RichEmbed()
 	.setColor(0x00AE86)
 	.addField(title, text)
 
-	message.channel.send({embed})
-	.then(async function (mess) {
+	message.channel.send({ embed })
+	.then(async function(mess) {
 		mess.react('➡');
 	});
 }
@@ -478,13 +443,13 @@ function amput(message, partie){
 * @param {string} title - Titre du message
 * @param {string} text - Texte du message
 **/
-function title(message, title, text, image){
+function title(message, title, text, image) {
 	const embed = new Discord.RichEmbed()
 	.setColor(15013890)
 	.setImage(image)
 	.addField(title, text)
 
-	message.channel.send({embed});
+	message.channel.send({ embed });
 }
 
 /** Fonction qui récapitule les actions faites par l'utilisateur pendant la journée
@@ -493,22 +458,22 @@ function title(message, title, text, image){
 * @param {string[]} partie.activite - Liste des actions faites par l'utilisateur
 * @param {number} partie.numJour - Numéro du jour
 **/
-function journal(message, partie){
+function journal(message, partie) {
 	const chanId = myBot.messageChannel(message, 'journal', partie);
 
 	const nbAct = partie.activite.length;
 	const activ = [partie.activite[nbAct-5], partie.activite[nbAct-3], partie.activite[nbAct-1]];
 	const repas = [partie.activite[nbAct-6], partie.activite[nbAct-4], partie.activite[nbAct-2]];
 
-	for(let i = 0; i < 3; i++){
-		if(activ[i] == "rienA"){
-			activ[i] = "repos";
+	for(let i = 0; i < 3; i++) {
+		if(activ[i] == 'rienA') {
+			activ[i] = 'repos';
 		}
 	}
 
-	for(let i = 0; i < 3; i++){
-		if(repas[i] == "rienM"){
-			repas[i] = "saut de repas";
+	for(let i = 0; i < 3; i++) {
+		if(repas[i] == 'rienM') {
+			repas[i] = 'saut de repas';
 		}
 	}
 
@@ -520,12 +485,12 @@ function journal(message, partie){
 	const embed = new Discord.RichEmbed()
 	.setColor(15013890)
 	.setTitle('Journal de bord - Jour ' + partie.numJour)
-	.addField("Récapitulatif des activités : ", activ[0] + ", " + activ[1] + " et " + activ[2] + ".")
-	.addField("Récapitulatif des repas : ", repas[0] + ", " + repas[1] + " et " + repas[2] + ".")
+	.addField('Récapitulatif des activités : ', activ[0] + ', ' + activ[1] + ' et ' + activ[2] + '.')
+	.addField('Récapitulatif des repas : ', repas[0] + ', ' + repas[1] + ' et ' + repas[2] + '.')
 
-	message.guild.channels.get(chanId).send({embed})
-	.then(async function (mess){
-		eventMedecin(mess,partie);
+	message.guild.channels.get(chanId).send({ embed })
+	.then(async function(mess) {
+		eventMedecin(mess, partie);
 	});
 }
 
@@ -533,28 +498,28 @@ function journal(message, partie){
 * @param {string} message - Message discord
 * @param {Object} partie - Objet json de la partie
 **/
-function eventMedecin(message,partie) {
+function eventMedecin(message, partie) {
 
-	let sommeImpactActivite = calculImpactActivite(partie);
-	let sommeImpactNutrition = calculImpactNutrition(partie);
+	const sommeImpactActivite = calculImpactActivite(partie);
+	const sommeImpactNutrition = calculImpactNutrition(partie);
 	let numConseilActivite; // Numéro du conseil pour l'activité
 	let numConseilNutrition; // Numéro du conseil pour la nutrition
 	let numImage; // Numéro pour l'image décrivant la journée du joueur
-	let sommeTotale = sommeImpactActivite + sommeImpactNutrition ; // Somme totale permettant de connaitre le numéro de l'image à afficher
+	const sommeTotale = sommeImpactActivite + sommeImpactNutrition ; // Somme totale permettant de connaitre le numéro de l'image à afficher
 
 	// Conseil pour le sport :
 
 	if (sommeImpactActivite <= 3) numConseilActivite = conseilSport.c4;
 	else if (sommeImpactActivite <= 7) numConseilActivite = conseilSport.c3;
-	else if (sommeImpactActivite <=12) numConseilActivite = conseilSport.c2;
+	else if (sommeImpactActivite <= 12) numConseilActivite = conseilSport.c2;
 	else numConseilActivite = conseilSport.c1;
 
 	// Conseil pour la nutrition
 
 	if (sommeImpactNutrition == 0) numConseilNutrition = conseilNutrition.c5;
 	else if (sommeImpactNutrition > 0 && sommeImpactNutrition <= 3) numConseilNutrition = conseilNutrition.c4;
-	else if (sommeImpactNutrition <= 7) numConseilNutrition= conseilNutrition.c3;
-	else if (sommeImpactNutrition <=12) numConseilNutrition = conseilNutrition.c2;
+	else if (sommeImpactNutrition <= 7) numConseilNutrition = conseilNutrition.c3;
+	else if (sommeImpactNutrition <= 12) numConseilNutrition = conseilNutrition.c2;
 	else numConseilNutrition = conseilNutrition.c1;
 
 	// Numéro de l'image
@@ -567,17 +532,17 @@ function eventMedecin(message,partie) {
 	// Message du médecin qui sera affiché
 
 	const embed = new Discord.RichEmbed()
-	.setTitle('Bilan médical de '+ partie.nom)
+	.setTitle('Bilan médical de ' + partie.nom)
 	.setAuthor('Docteur Greece', 'https://emojipedia-us.s3.dualstack.us-west-1.amazonaws.com/thumbs/120/apple/155/female-health-worker-type-1-2_1f469-1f3fb-200d-2695-fe0f.png')
 	.setColor(808367)
-	.setFooter('Bilan réalisé par Dr Alda Greece','https://emojipedia-us.s3.dualstack.us-west-1.amazonaws.com/thumbs/120/apple/155/female-health-worker-type-1-2_1f469-1f3fb-200d-2695-fe0f.png')
+	.setFooter('Bilan réalisé par Dr Alda Greece', 'https://emojipedia-us.s3.dualstack.us-west-1.amazonaws.com/thumbs/120/apple/155/female-health-worker-type-1-2_1f469-1f3fb-200d-2695-fe0f.png')
 	.setImage(image.choixImage(numImage))
 	.setThumbnail('https://upload.wikimedia.org/wikipedia/commons/thumb/5/57/Caduceus.svg/299px-Caduceus.svg.png') // Symbole médecine
 	.setTimestamp()
-	.addField('Poids', partie.poids + " kg")
-	.addField('Taux de glycémie', partie.tabGlycemie[partie.tabGlycemie.length-1	].toFixed(2).toString() + ' g/L')
-	.addField('Conseil pour les activités', "```\n" + numConseilActivite + "```")
-	.addField('Conseil pour la nutrition',"```\n" + numConseilNutrition + "```")
+	.addField('Poids', partie.poids + ' kg')
+	.addField('Taux de glycémie', partie.tabGlycemie[partie.tabGlycemie.length - 1	].toFixed(2).toString() + ' g/L')
+	.addField('Conseil pour les activités', '```\n' + numConseilActivite + '```')
+	.addField('Conseil pour la nutrition', '```\n' + numConseilNutrition + '```')
 	message.channel.send({ embed });
 }
 
@@ -587,7 +552,7 @@ function eventMedecin(message,partie) {
 */
 function calculImpactActivite(partie) {
 	const nbImpact = partie.impactActivite.length;
-	const impactJour = partie.impactActivite[nbImpact-3] + partie.impactActivite[nbImpact-2] + partie.impactActivite[nbImpact-1];
+	const impactJour = partie.impactActivite[nbImpact - 3] + partie.impactActivite[nbImpact - 2] + partie.impactActivite[nbImpact - 1];
 	return impactJour;
 }
 
@@ -597,6 +562,6 @@ function calculImpactActivite(partie) {
 */
 function calculImpactNutrition(partie) {
 	const nbImpact = partie.impactNutrition.length;
-	const impactJour = partie.impactNutrition[nbImpact-3] + partie.impactNutrition[nbImpact-2] + partie.impactNutrition[nbImpact-1];
+	const impactJour = partie.impactNutrition[nbImpact - 3] + partie.impactNutrition[nbImpact - 2] + partie.impactNutrition[nbImpact - 1];
 	return impactJour;
 }

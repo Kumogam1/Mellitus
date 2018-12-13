@@ -14,12 +14,12 @@ exports.priseInsuline = function priseInsuline(message, partie) {
 
   let insuline = '-1';
 
-  text = 'C\'est l\'heure de la prise d\'insuline.';
+  const text = 'C\'est l\'heure de la prise d\'insuline.';
 
   const embed = new Discord.RichEmbed()
     .setColor(0x00AE86)
     .addField(text, 'Je dois prendre de l\'insuline (entre 0 et 80 unités): ')
-  message.channel.send({embed});
+  message.channel.send({ embed });
 
   partie.insuline = 1;
   sfm.save(message.author.id, partie);
