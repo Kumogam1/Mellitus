@@ -14,10 +14,7 @@ exports.priseInsuline = function priseInsuline(message, partie) {
 
   let insuline = '-1';
 
-  if(partie.numEvent == 0 && partie.partJour == 0)
-    text = "C'est l'heure de la prise d'insuline lente.";
-  else
-    text = "C'est l'heure de la prise d'insuline rapide.";
+  text = "C'est l'heure de la prise d'insuline.";
 
   const embed = new Discord.RichEmbed()
     .setColor(0x00AE86)
@@ -58,10 +55,7 @@ exports.priseInsuline = function priseInsuline(message, partie) {
             }
             else
             {
-              if(partie.numEvent == 0 && partie.partJour == 0)
-                calcul.glyInsuLente(partie, insuline);
-              else
-                calcul.glyInsu(partie, insuline);
+              calcul.glyInsu(partie, insuline);
               partie.insuline = 0;
               sfm.save(message.author.id, partie);
               message.react('➡');

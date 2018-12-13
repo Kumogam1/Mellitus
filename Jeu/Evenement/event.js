@@ -87,6 +87,7 @@ exports.event = function event(message, partie, tabN, tabE) {
 	if(partie.partJour == 0 && partie.numEvent == 0  && partie.evenement){
 		partie.numJour++;
 		partie.soda = true; // On remet le soda à vrai afin qu'il puisse en reprendre le lendemain
+		partie.nbInsu = 3;
 	}
 	sfm.save(partie.player, partie);
 
@@ -104,6 +105,7 @@ exports.event = function event(message, partie, tabN, tabE) {
 
 	//title + evenement glycemie
 	if(partie.numEvent == 0  && partie.evenement){
+
 		if(partie.partJour == 0){
 			fieldTitle = "C'est le matin!";
 			if(partie.tuto)
@@ -244,7 +246,7 @@ exports.event = function event(message, partie, tabN, tabE) {
 			case 1:
 				switch(partie.numEvent){
 					case 0:
-						eventInsu(message, partie);
+						eventActu(message, partie);
 						break;
 					case 1:
 						eventRepas(message, tabN, tabE);
@@ -257,7 +259,7 @@ exports.event = function event(message, partie, tabN, tabE) {
 			case 2:
 				switch(partie.numEvent){
 					case 0:
-						eventInsu(message, partie);
+						eventActu(message, partie);
 						break;
 					case 1:
 						eventRepas(message, tabN, tabE);
@@ -370,6 +372,26 @@ function eventInsu(message, partie) {
 	as.graphString(message, partie)
 	.then(() => {
 		insuline.priseInsuline(message, partie);
+	});
+}
+
+function eventActu(message, partie){
+	as.graphString(message, partie)
+	.then(() => {
+		const embed = new Discord.RichEmbed()
+		.setColor(0x00AE86)
+
+		.addField("**Actualités**", "cqsjcb")
+		.addField("Ne rien faire : ", '❌')
+
+
+		message.channel.send({embed})
+		.then(async function (mess) {
+			mess.react('➡');
+		});
+
+		partie.tabGlycemie.push(partie.tabGlycemie[partie.tabGlycemie.length-1]);
+		sfm.save(partie.player, partie);
 	});
 }
 

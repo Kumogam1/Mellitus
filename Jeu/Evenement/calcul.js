@@ -60,16 +60,3 @@ exports.glyInsu = function glyInsu(partie, dose) {
 	partie.glycemie = res;
 	partie.tabGlycemie.push(res);
 }
-
-exports.glyInsuLente = function glyInsuLente(partie, dose) {
-	const tauxPresent = partie.glycemie;
-	let res = 0;
-
-	res = Math.round((tauxPresent - (dose/calcul.doses(partie)[1] * 2)) * 100) / 100;
-
-	if(res < 0)
-		res = 0;
-
-	partie.glycemie = res;
-	partie.tabGlycemie.push(res);
-}

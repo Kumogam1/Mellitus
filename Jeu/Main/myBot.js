@@ -79,9 +79,25 @@ client.on('message', (message) => {
         case 'soda':
             if(partie.soda == true)
             {
-              partie.glycemie += 0.5;
-              partie.tabGlycemie[partie.tabGlycemie.length-1] += 0.5;
+              partie.glycemie += 0.3;
+              partie.tabGlycemie[partie.tabGlycemie.length-1] += 0.3;
               partie.soda = false;
+            }
+            else{
+              message.channel.send("Vous avez déjà pris votre cannette quotidiens !");
+            }
+            sfm.save(message.author.id, partie);
+            message.delete();
+            break;
+        case 'insu':
+            if(partie.nbInsu > 0)
+            {
+              partie.glycemie -= 0.3;
+              partie.tabGlycemie[partie.tabGlycemie.length-1] -= 0.3;
+              partie.nbInsu--;
+            }
+            else{
+              message.channel.send("Vous avez déjà pris vos stylos d'insulines quotidiens !");
             }
             sfm.save(message.author.id, partie);
             message.delete();
