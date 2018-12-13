@@ -21,6 +21,7 @@ exports.priseInsuline = function priseInsuline(message, partie) {
 
   const text = 'C\'est l\'heure de la prise d\'insuline.';
 
+  //On affiche le message qui prévient le joueur qu'il faut prendre un dose d'insuline
   const embed = new Discord.RichEmbed()
     .setColor(0x00AE86)
     .addField(text, 'Je dois prendre de l\'insuline (entre 0 et 80 unités): ')
@@ -31,44 +32,52 @@ exports.priseInsuline = function priseInsuline(message, partie) {
 
   client.on ('message', message => {
 
+    //Si l'auteur du message est un bot, on fait rien
     if(message.author.bot) return;
 
-    if(!message.content.startsWith(config.prefix)) {
+    //Si le message ne contient pas de préfix, que le joueur est en partie et que le channel du message est le channel 'hub'
+    if(!message.content.startsWith(config.prefix) && message.member.roles.some(r=>['Joueur'].includes(r.name)) && message.channel.name == 'hub') {
+      let bool = true;
 
-      if(message.member.roles.some(r=>['Joueur'].includes(r.name)))
+      //Si le joueur est bien dans une phase de prise d'insuline
+      if (partie.insuline == 1)
       {
-        let bool = true;
-        if (partie.insuline == 1)
-        {
-          if(message.content.length == 1 || message.content.length == 2) {
-            for(let i = 0; i < message.content.length; i++) {
-              if(!tabNb.includes(message.content.charAt(i))) {
-                bool = false;
-              }
+        //Si le message est bien un entier
+        if(message.content.length == 1 || message.content.length == 2) {
+          for(let i = 0; i < message.content.length; i++) {
+            if(!tabNb.includes(message.content.charAt(i))) {
+              bool = false;
             }
           }
-          else{
-            bool = false;
-          }
-          insuline = parseInt(message.content);
+        }
+        else{
+          bool = false;
+        }
 
-          if(bool == true)
+        //On convertit le message en entier
+        insuline = parseInt(message.content);
+
+        //Si le message était bien un entier
+        if(bool == true)
+        {
+          //Si la dose n'est pas comprise entre 0 et 80
+          if(insuline < 0 || insuline > 80 || isNaN(insuline))
           {
-            if(insuline < 0 || insuline > 80 || isNaN(insuline))
-            {
-              message.channel.send('Entrez une valeur comprise entre 0 et 80 !');
-            }
-            else
-            {
-              calcul.glyInsu(partie, insuline);
-              partie.insuline = 0;
-              sfm.save(message.author.id, partie);
-              message.react('➡');
-            }
+            //Message d'erreur
+            message.channel.send('Entrez une valeur comprise entre 0 et 80 !');
           }
-          else{
-            message.channel.send('Mettez-y du votre aussi !')
+          //Sinon
+          else
+          {
+            //On calcule le nouveau taux de glycémie
+            calcul.glyInsu(partie, insuline);
+            partie.insuline = 0;
+            sfm.save(message.author.id, partie);
+            message.react('➡');
           }
+        }
+        else{
+          message.channel.send('Mettez-y du votre aussi !')
         }
       }
     }

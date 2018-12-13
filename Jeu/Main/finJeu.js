@@ -12,10 +12,18 @@ const myBot = require('./myBot.js');
 **/
 exports.finJeu = function finJeu(message) {
 
+	//Si le joueur est en jeu
 	if(message.member.roles.some(r=>['Joueur'].includes(r.name))) {
+		//Supprimer les channels
 		deletChannel(message);
+
+		//Supprimer/retirer les roles
 		deletRole(message);
+
+		//Reinitialiser les informations du joueur
 		fj.initStat(message.author);
+
+		//Supprimer le message /quit
 		message.delete();
 	}
 	else {
@@ -27,19 +35,24 @@ exports.finJeu = function finJeu(message) {
 * @param {string} message - Message discord
 **/
 function deletRole(message) {
+
+	//Recherche du role à retirer
 	const suppRoleJoueur = message.guild.roles.find(role => {
 		if(role.name == 'Joueur') {
 			return role;
 		}
 	});
 
+	//On retire ce role
 	message.member.removeRole(suppRoleJoueur)
 	.then(() => {
+		//Recherche du role à supprimer
 		const suppRolePerso = message.guild.roles.find(role => {
 			if(role.name == 'Joueur-' + message.author.username) {
 				return role;
 			}
 		});
+		//On supprime ce role
 		suppRolePerso.delete();
 	});
 }
@@ -49,11 +62,13 @@ function deletRole(message) {
 **/
 function deletChannel(message) {
 
+	//Chargement des informations du joueur
 	const partie = sfm.loadSave(message.author.id);
 
+	//Liste des channels de la partie du joueur
 	const listedChannels = fj.listChan(message, partie);
 
-	// Suppression des channels et du groupe de channels pour la partie
+	// Suppression des channels de la liste
 	listedChannels.forEach(channel => {
 		channel.overwritePermissions(message.guild.roles.find(role => {
 			if(role.name == '@everyone') {
@@ -77,11 +92,16 @@ function deletChannel(message) {
 **/
 exports.msgFin = function msgFin(message, partie) {
 
+	//Suppression du message /end
 	message.delete();
 
+	//Si le joueur est en partie
 	if(message.member.roles.some(r=>['Joueur'].includes(r.name))) {
+
+		//Si le message ce situe dans le channel hub
 		if(message.channel.name == 'hub') {
 
+			//On nettoie le channel des message
 			myBot.clear(message)
 			.catch((err) => {
 				console.log(err)
@@ -90,6 +110,7 @@ exports.msgFin = function msgFin(message, partie) {
 			let textMort = '';
 			let text = '';
 
+			//Création de la raison de la mort
 			if(partie.mort) {
 				if(partie.glycemie > 3)
 					textMort = 'Tu as fait une crise d\'hyperglycémie.';
@@ -103,16 +124,15 @@ exports.msgFin = function msgFin(message, partie) {
 
 			textMort += '\nConsulte le channel \'Mellitus\' pour en savoir plus.\n';
 
-			if(partie.numJour < 5) {
+			//Message en fonction du jour atteint
+			if(partie.numJour < 5)
 				text = 'Je suis sûr que tu peux aller plus loin.';
-			}
-			else if(partie.numJour < 10) {
+			else if(partie.numJour < 10)
 				text = 'Bien, un peu plus et tu seras le meilleur.';
-			}
-			else {
+			else
 				text = 'Toi, ça se voit que tu es là pour être le meilleur.';
-			}
 
+			//on écrit le message
 			const embed = new Discord.RichEmbed()
 			.setColor(15013890)
 			.setImage('https://imgcs.artprintimages.com/img/print/peinture/color-me-happy-game-over-red_a-g-15238157-0.jpg')
@@ -137,6 +157,7 @@ exports.listChan = function listChan(message, partie) {
 	// Creation d'une liste des channels que le joueur peut voir
 	const listedChannels = [];
 
+	//On met dans cette liste tous les channels de la partie du joueur
 	message.guild.channels.forEach(channel => {
 		if (channel.parentID == partie.chanGrp || channel.id == partie.chanGrp) {
 			listedChannels.push(channel);
@@ -150,8 +171,11 @@ exports.listChan = function listChan(message, partie) {
 * @param {string} user - Message discord
 **/
 exports.initStat = function initStat(user) {
+
+	//Création d'une collection comprenant les informations
 	const partie = {};
 
+	//Mise à zero des informations
 	partie.chanGrp = '';
 	partie.player = user.id;
 	partie.partJour = 0;

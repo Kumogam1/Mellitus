@@ -16,31 +16,28 @@ client.on('messageReactionAdd', (reaction, user) => {
   switch(reaction.emoji.name) // Choix du sexe du personnage
   {
     case '🚹':
-    state += 1;
-    partie.tabPerso.push('Homme');
-    reaction.message.delete();
-    image = 'https://emojipedia-us.s3.dualstack.us-west-1.amazonaws.com/thumbs/120/apple/155/mens-symbol_1f6b9.png';
-    nom();
-    break;
+      state += 1;
+      partie.tabPerso.push('Homme');
+      reaction.message.delete();
+      image = 'https://emojipedia-us.s3.dualstack.us-west-1.amazonaws.com/thumbs/120/apple/155/mens-symbol_1f6b9.png';
+      nom();
+      break;
     case '🚺':
-    state += 1;
-    partie.tabPerso.push('Femme');
-    reaction.message.delete();
-    image = 'https://emojipedia-us.s3.dualstack.us-west-1.amazonaws.com/thumbs/120/apple/155/womens-symbol_1f6ba.png';
-    nom();
-    break;
+      state += 1;
+      partie.tabPerso.push('Femme');
+      reaction.message.delete();
+      image = 'https://emojipedia-us.s3.dualstack.us-west-1.amazonaws.com/thumbs/120/apple/155/womens-symbol_1f6ba.png';
+      nom();
+      break;
     default:
-    console.log('err');
-    break;
+      console.log('err');
+      break;
   }
 });
 
 client.on ('message', mess => {
 
-  if (mess.author.bot)
-  {
-    return;
-  }
+  if (mess.author.bot) return;
 
   let param = mess.content.trim();
 
