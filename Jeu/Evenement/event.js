@@ -12,6 +12,7 @@ const calcul = require('./calcul.js');
 const as = require('../Graphiques/affichageStats.js');
 const config = require('../token.json');
 const eventGly = require('./evenement.json');
+const tableaux = require('./tableaux.json');
 
 const client = new Discord.Client();
 client.login(config.token);
@@ -305,63 +306,6 @@ function consequence(message, partie, tabN, tabE){
 	}
 }
 
-/** Fonction qui demande le nombre de jour à jouer
-* @param {string} message - Message discord
-* @param {Object} partie - Objet json de la partie
-* @param {number} partie.nbJour - Nombre de jour de la partie
-* @param {number} partie.choixPerso - Entier qui permet au joueur d'entrer le nombre de jour
-**/
-function eventNumJour(message, partie) {
-
-	const embed = new Discord.RichEmbed()
-    .setColor(0x00AE86)
-    .addField("Une limite à la partie ?", "Choisissez un nombre de jour ")
-  	message.channel.send({embed});
-
-	partie.choixPerso = 1;
-	sfm.save(message.author.id, partie);
-
-	let nbChoix = '-1';
-
-	client.on ('message', message => {
-
-		if(message.author.bot) return;
-
-		if(message.member.roles.some(r=>['Joueur'].includes(r.name))) {
-
-			if (partie.choixPerso == 1) {
-			nbChoix = parseInt(message.content);
-
-				if(Number.isInteger(nbChoix)){
-					if(nbChoix < 1 || isNaN(nbChoix)) {
-						message.channel.send("Alors là, c'est pas possible.");
-					}
-					else if(nbChoix > 10) {
-						message.channel.send('Tu veux jouer pendant 40 ans ou quoi ?');
-					}
-					else {
-						partie.choixPerso = 0;
-						if(partie.tuto){
-							partie.nbJour = 1;
-							sfm.save(partie.player, partie);
-						}
-						else{
-							partie.nbJour = nbChoix;
-							sfm.save(message.author.id, partie);
-						}
-						sfm.save(message.author.id, partie);
-						message.react('➡');
-						//event.event(message, partie, tabN, tabE);
-					}
-				}
-				else {
-					message.channel.send("Je comprend pas ce que tu racontes.");
-				}
-			}
-		}
-	});
-}
-
 /** Fonction qui pour chaque prise d'insuline sauvegarde le nouveau taux de glycemie
 * @param {string} message - Message discord
 * @param {Object} partie - Objet json de la partie
@@ -375,15 +319,21 @@ function eventInsu(message, partie) {
 	});
 }
 
+/** Fonction qui raconte un actualité
+* @param {string} message - Message discord
+* @param {Object} partie - Objet json de la partie
+* @param {number} partie.player - Identifiant de l'utilisateur
+* @param {number[]} partie.tabGlycemie - Tableau de tous les taux de glycémie du joueur
+**/
 function eventActu(message, partie){
 	as.graphString(message, partie)
 	.then(() => {
+
+		let rand = myBot.getRandomInt(28);
 		const embed = new Discord.RichEmbed()
 		.setColor(0x00AE86)
-
-		.addField("**Actualités**", "cqsjcb")
-		.addField("Ne rien faire : ", '❌')
-
+		.setTitle("**Actualités**")
+		.addField(tableaux.actu[rand][0], tableaux.actu[rand][1])
 
 		message.channel.send({embed})
 		.then(async function (mess) {
