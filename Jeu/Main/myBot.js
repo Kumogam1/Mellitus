@@ -350,6 +350,12 @@ client.on('messageReactionAdd', (reaction, user) => {
       while(tabER[i] != reaction.emoji.name)
           i++;
 
+      if(partie.breakdown <= 0){
+        if(i == 0)
+          i++;
+        else
+          i--;
+      }
       // Sauvegarde dans le tableau des activités
       writeAct(user.id, tabNR[i], partie);
 
@@ -361,6 +367,8 @@ client.on('messageReactionAdd', (reaction, user) => {
       // Modification du stress et de la faim
       partie.stress += tabIR[i][1];
       partie.faim--;
+
+      // Modification de la glycémie
       let ajoutGly = Math.round((partie.glycemie + tabIR[i][2])*100)/100;
       partie.glycemie = ajoutGly;
       partie.tabGlycemie[partie.tabGlycemie.length-1] = ajoutGly;
@@ -391,6 +399,8 @@ client.on('messageReactionAdd', (reaction, user) => {
 
       // Modification du stress
       partie.stress += tabIA[i][1];
+
+      // Modification de la glycémie
       let ajoutGly = Math.round((partie.glycemie + tabIA[i][2])*100)/100;
       partie.glycemie = ajoutGly;
       partie.tabGlycemie[partie.tabGlycemie.length-1] = ajoutGly;
@@ -451,7 +461,8 @@ exports.getRandomInt = function getRandomInt(max) {
 * @param {string} message - Message discord
 **/
 function text(message) {
-  
+
+  // Supprime le message
   message.delete();
 
   const embed = new Discord.RichEmbed()
