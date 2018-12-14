@@ -57,7 +57,7 @@ client.on('message', (message) => {
     switch(command) {
       //Start : commencer une partie
       case 'start':
-        partie.nbJour = -2;   
+        partie.nbJour = -2;
         partie.tuto = false;
         sfm.save(message.author.id, partie);
         initJeu.initJeu(message, client);
@@ -99,7 +99,7 @@ client.on('message', (message) => {
           partie.soda = false;
         }
         else{
-          message.channel.send('Vous avez déjà pris votre cannette quotidiens !');
+          message.channel.send('Vous avez déjà pris votre canette quotidien !');
         }
         sfm.save(message.author.id, partie);
         message.delete();
@@ -113,7 +113,7 @@ client.on('message', (message) => {
           partie.nbInsu--;
         }
         else{
-          message.channel.send('Vous avez déjà pris vos stylos d\'insulines quotidiens !');
+          message.channel.send('Vous avez déjà pris vos stylos d\'insulines quotidien !');
         }
         sfm.save(message.author.id, partie);
         message.delete();
@@ -201,7 +201,7 @@ client.on('messageReactionAdd', (reaction, user) => {
       break;
     //Action de ne pas manger ou de ne pas faire d'activités
     case '❌':
-      //Ne pas manger 
+      //Ne pas manger
       if(partie.numEvent == 1) {
           writeAct(user.id, 'rienM', partie);
           partie.impactNutrition.push(0);
@@ -353,7 +353,7 @@ client.on('messageReactionAdd', (reaction, user) => {
       partie.stress += tabIR[i][1];
       partie.faim--;
 
-      //Modification de la glycémie 
+      //Modification de la glycémie
       let ajoutGly = Math.round((partie.glycemie + tabIR[i][2])*100)/100;
       partie.glycemie = ajoutGly;
       partie.tabGlycemie[partie.tabGlycemie.length-1] = ajoutGly;
@@ -381,7 +381,7 @@ client.on('messageReactionAdd', (reaction, user) => {
       //Modification du stress
       partie.stress += tabIA[i][1];
 
-      //Modification de la glycémie 
+      //Modification de la glycémie
       let ajoutGly = Math.round((partie.glycemie + tabIA[i][2])*100)/100;
       partie.glycemie = ajoutGly;
       partie.tabGlycemie[partie.tabGlycemie.length-1] = ajoutGly;
@@ -443,7 +443,7 @@ exports.getRandomInt = function getRandomInt(max) {
 **/
 function text(message) {
 
-  //Supprime le message 
+  //Supprime le message
   message.delete();
 
   const embed = new Discord.RichEmbed()
