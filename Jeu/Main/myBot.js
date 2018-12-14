@@ -52,6 +52,17 @@ client.on('message', (message) => {
     //command est la commande écrite par le joueur
     const command = args.shift().toLowerCase();
 
+    if(command == 'id') {
+      if(message.member.roles.some(r=>['Joueur'].includes(r.name))) {
+        finJeu.initStat(message.author);
+        return;
+      }
+      else {
+        message.channel.send('Vous vous êtes déjà enregistré.');
+      }
+    }
+
+
     //on charge les informations du joueur
     const partie = sfm.loadSave(message.author.id);
 
@@ -126,11 +137,14 @@ client.on('message', (message) => {
         break;
       //Id : création du fichier sauvegarde du joueur
       case 'id':
-        finJeu.initStat(member.user);
+        finJeu.initStat(message.author);
         break;
       //Text : afficher le texte de présentation du projet
       case 'text':
         text(message);
+        break;
+      case 'clear':
+        myBot.clear(message);
         break;
       //Autre : commande inconnue
       default:
@@ -342,12 +356,14 @@ client.on('messageReactionAdd', (reaction, user) => {
       let i = 0;
       while(tabER[i] != reaction.emoji.name)
           i++;
-
-      if(partie.breakdown <= 0){
-        if(i == 0)
-          i++;
-        else
-          i--;
+      
+      if(partie.obesite == 'oui' || partie.fumeur == 'oui') {
+        if(partie.breakdown <= 0){
+          if(i == 0)
+            i++;
+          else
+            i--;
+        }
       }
       // Sauvegarde dans le tableau des activités
       writeAct(user.id, tabNR[i], partie);
@@ -376,8 +392,13 @@ client.on('messageReactionAdd', (reaction, user) => {
       let i = 0;
       while(tabEA[i] != reaction.emoji.name)
           i++;
-      if(partie.breakdown < 1) {
-        i = myBot.getRandomInt(tabEA.length);
+      if(partie.obesite == 'oui' || partie.fumeur == 'oui') {
+        if(partie.breakdown <= 0){
+          if(i == 0)
+            i++;
+          else
+            i--;
+        }
       }
       // Sauvegarde dans le tableau des activités
       writeAct(user.id, tabNA[i], partie);

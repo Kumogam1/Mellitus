@@ -5,15 +5,11 @@ client.login(config.token);
 
 exports.calculBk = function(partie, tab, index) {
   let val;
-  console.log(tab);
-  console.log(index);
   if(partie.obesite == 'oui') {
     val = tab[index][4];
-    console.log(val);
   }
   else if (partie.obesite == 'oui') {
     val = tab[index][3];
-    console.log(val);
   }
   return val;
 };
