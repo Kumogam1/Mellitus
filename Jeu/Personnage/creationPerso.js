@@ -13,6 +13,7 @@ let image;
 
 client.on('messageReactionAdd', (reaction, user) => {
   if(user.bot) return;
+
   if(state == 0 || state == 6) {
     switch(reaction.emoji.name) {
       case '🚹':
@@ -45,25 +46,26 @@ client.on('messageReactionAdd', (reaction, user) => {
 
 client.on ('message', mess => {
 
-  if (mess.author.bot) {return;}
+  if (mess.author.bot) return;
 
   let param = mess.content.trim();
 
-  switch (state) {
+  switch (state) // Permettant de choisir l'état de la création du personnage
+  {
     case 1:
-      myBot.clear(message);
-      param = param.charAt(0).toUpperCase() + param.slice(1);
-      partie.tabPerso.push(param);
-      state += 1;
-      prenom();
-      break;
+          myBot.clear(message);
+          param = param.charAt(0).toUpperCase() + param.slice(1);
+          partie.tabPerso.push(param);
+          state += 1;
+          prenom();
+          break;
     case 2:
-      myBot.clear(message);
-      state += 1;
-      param = param.charAt(0).toUpperCase() + param.slice(1);
-      partie.tabPerso.push(param);
-      age();
-      break;
+          myBot.clear(message);
+          state += 1;
+          param = param.charAt(0).toUpperCase() + param.slice(1);
+          partie.tabPerso.push(param);
+          age();
+          break;
     case 3:
       myBot.clear(message);
       if (testNombre(mess) && mess.content > 10 && mess.content < 120) {
@@ -100,7 +102,12 @@ client.on ('message', mess => {
   }
 });
 
-exports.creerPerso = function(pMess, part) {
+/** Fonction pour créer le personnage
+ * @param {string} pMess - Message discord
+ * @param {Object} part - Objet json de la partie
+ */
+exports.creerPerso = function(pMess, part)
+{
   myBot.clear(pMess);
   partie = part;
   message = pMess;
@@ -108,33 +115,47 @@ exports.creerPerso = function(pMess, part) {
   genre();
 };
 
-function genre() {
+/** Fonction qui affiche un embed demandant le sexe de l'utilisateur
+ */
+function genre()
+{
   message.channel.send({ embed: {
     color:0x00AE86,
     title:'Création du personnage',
     description: 'Homme/Femme?',
   } }
 ).then(async function(mGenre) {
-    await mGenre.react('🚹');
-    await mGenre.react('🚺');
-  });
+  await mGenre.react('🚹');
+  await mGenre.react('🚺');
+});
 }
 
-function nom() {
+/** Fonction qui affiche un embed demandant le nom de l'utilisateur
+ */
+function nom()
+{
   message.channel.send({ embed: {
     title:'Création du personnage',
     color:0x00AE86,
     description: 'Quel est votre nom ?',
   } });
 }
-function prenom() {
+
+/** Fonction qui affiche un embed demandant le prénom de l'utilisateur
+ */
+function prenom()
+{
   message.channel.send({ embed: {
     color:0x00AE86,
     title:'Création du personnage',
     description: 'Quel est votre prénom ?',
   } });
 }
-function age() {
+
+/** Fonction qui affiche un embed demandant l'âge de l'utilisateur
+ */
+function age()
+{
   message.channel.send({ embed: {
     color:0x00AE86,
     title:'Création du personnage',
@@ -142,7 +163,10 @@ function age() {
   } });
 }
 
-function taille() {
+/** Fonction qui affiche un embed demandant la taille de l'utilisateur
+ */
+function taille()
+{
   message.channel.send({ embed: {
     color:0x00AE86,
     title:'Création du personnage',
@@ -150,8 +174,10 @@ function taille() {
   } });
 }
 
-
-function poids() {
+/** Fonction qui affiche un embed demandant le poids de l'utilisateur
+ */
+function poids()
+{
   message.channel.send({ embed: {
     color:0x00AE86,
     title:'Création du personnage',

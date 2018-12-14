@@ -42,3 +42,5 @@ Si vous souhaitez utiliser le **navigateur web** pour utiliser Discord :
 ## Screenshots
 
 Dossier contenant des screenshots du gameplay ➡️ https://drive.google.com/drive/folders/1hgOGmVy5mAWWaNiTNg0QX10_Z8Fwl6kV?usp=sharing
+
+PDF expliquant l'installation du serveur ➡️ https://drive.google.com/file/d/1xIPjbD2T-Nj7UkYkE-FKMP_X-kB9o_uR/view?usp=sharing

@@ -3,8 +3,8 @@ const sfm = require('./saveFileManagement.js');
 const myBot = require('./myBot.js');
 const calcul = require('../Evenement/calcul.js');
 const event = require('../Evenement/event.js');
-/**
-* Fonction installant la partie
+
+/** Fonction initialisant la partie
 * @param {string} message - Message discord
 * @param {Client} client - Le Client utilisé pour le jeu
 **/
@@ -12,12 +12,14 @@ exports.initJeu = function initJeu(message, client) {
 
 	if(!message.member.roles.some(r=>['Joueur'].includes(r.name))) {
 
-		// creation d'un fichier de sauvegarde de sauvegarde
-		// lecture de ce fichier de sauvegarde
+		//On récupère les informations concernant le joueur
 		const partie = sfm.loadSave(message.author.id);
 		const eventName = 'Joueur';
+
+		//Création et assignation des roles au joueur
 		const rolePers = initRole(message, eventName, client);
 
+		//Création des channels
 		initChannelGrp(message, partie, message.author.username, rolePers);
 
 		message.delete();
@@ -29,23 +31,25 @@ exports.initJeu = function initJeu(message, client) {
 	}
 };
 
-/**
-* Fonction créant un role joueur à l'utilisateur
+/** Fonction créant un role joueur à l'utilisateur
 * @param {string} message - Message discord
 * @param {string} eventName - Prefix du role de l'utilisateur
 * @param {Client} client - Le Client utilisé pour le jeu
-* @returns {string} Nom du role joueur de l'utilisateur
+* @return {string} Nom du role joueur de l'utilisateur
 **/
 function initRole(message, eventName, client) {
 
+	//Nom du role
 	const nomRole = eventName + '-' + message.author.username;
-	// let myRole = message.guild.roles.find('name', 'Joueur');
 
+	//Recherche du role 'Joueur'
 	const myRole = message.guild.roles.find(role => {
 		if(role.name == 'Joueur') {
 			return role;
 		}
 	});
+
+	//Ajout du role 'Joueur' au joueur
 	message.member.addRole(myRole);
 
 	message.guild.createRole({
@@ -53,6 +57,7 @@ function initRole(message, eventName, client) {
 		color: 0x00FF00,
 		permissions: 0,
 	}).then(role => {
+		//Ajout du role 'Joueur-pseudo' au joueur
 		message.member.addRole(role, nomRole)
 		.catch(error => client.catch(error));
 	})
@@ -60,14 +65,13 @@ function initRole(message, eventName, client) {
 	return nomRole;
 }
 
-/**
-* Fonction créant un channel visible que pour l'utilisateur
+/** Fonction créant un channel visible que pour l'utilisateur
 * @param {string} message - Message discord
 * @param {Object} partie - Objet json de la partie
 * @param {string} rolePers - Nom du role joueur de l'utilisateur
 * @param {string} channelName - Nom du channel à créer
 * @param {Snowflake} chanGrpId - Identifiant du channel catégorie
-* @returns {string} Texte vérifiant l'ajout
+* @return {string} Texte vérifiant l'ajout
 **/
 function initChannel(message, partie, rolePers, channelName, chanGrpId) {
 
@@ -79,7 +83,7 @@ function initChannel(message, partie, rolePers, channelName, chanGrpId) {
 		// Place le channel textuel dans la catégorie de jeu
 		chan.setParent(chanGrpId)
 		.then((chan2) => {
-
+			//On établit les permissions
 			chan2.overwritePermissions(message.guild.roles.find(role => {
 				if(role.name == '@everyone') {
 					return role;
@@ -126,8 +130,7 @@ function initChannel(message, partie, rolePers, channelName, chanGrpId) {
 	return '```Added```';
 }
 
-/**
-* Fonction initialisant les channels et les caractéristique de l'utilisateur
+/** Fonction initialisant les channels et les caractéristique de l'utilisateur
 * @param {string} message - Message discord
 * @param {Object} partie - Objet json de la partie
 * @param {Snowflake} partie.chanGrp - Identifiant du channel catégorie
@@ -142,13 +145,15 @@ function initChannel(message, partie, rolePers, channelName, chanGrpId) {
 * @param {number[]} partie.tabGlycemie - Tableau de tous les taux de glycémie de l'utilisateur
 * @param {string} channelGrpName - Nom du channel catégorie
 * @param {string} rolePers - Nom du role joueur de l'utilisateur
-* @returns {Snowflake} Identifiant du channel catégorie
+* @return {Snowflake} Identifiant du channel catégorie
 **/
 function initChannelGrp(message, partie, channelGrpName, rolePers) {
 	const server = message.guild;
 	let res = '';
 	server.createChannel(channelGrpName, 'category')
 	.then(async chanGrp => {
+
+		//On initialise toutes les informations du joueur
 		res = chanGrp.id;
 		partie.chanGrp = chanGrp.id;
 		partie.player = message.author.id;
@@ -188,14 +193,15 @@ function initChannelGrp(message, partie, channelGrpName, rolePers) {
 	return res;
 }
 
-/**
-* Fonction qui écrit le message de lancement de partie
+/** Fonction qui écrit le message de lancement de partie
 * @param {string} message - Message discord
 **/
 function bienvenue(message) {
 
+	//on récupère les informations du joueur
 	const partie = sfm.loadSave(message.author.id);
 
+	//On cherche l'id du channel 'hub'
 	const chanId = myBot.messageChannel(message, 'hub', partie);
 
 	if(partie.tuto) {
@@ -222,11 +228,10 @@ function bienvenue(message) {
 	});
 }
 
-/**
-* Fonction qui écrit le message de bienvenue du médecin
+/** Fonction qui écrit le message de bienvenue du médecin
 * @param {string} message - Message discord
+* @param {string} partie.nom - Nom du personnage
 **/
-
 exports.accueilMedecin = function accueilMedecin(message, partie)
 {
 	const doseInit = calcul.doses(partie)[0];
@@ -245,7 +250,7 @@ exports.accueilMedecin = function accueilMedecin(message, partie)
 						' à l\'aide d\'un bilan à chaque fin de journée dans lequel je vais vous donner des conseils ainsi qu\'un commentaire sur votre journée.')
 	.addField('(1)', '*Le diabète se caractérise par une hyperglycémie chronique,' +
 						'c’est-à-dire un excès de sucre dans le sang et donc un taux de glucose (glycémie) trop élevé*')
-	.addField('Conseil de début de partie', 'Pour ce début de partie, il sera recommandé de prendre une dose d\'insuline de ' + doseInit.toFixed().toString() + '. Votre objectif sera d\'atteindre une dose d\'insuline de ' + doseObj.toFixed().toString() + '. Pour cela il vous est recommandé d\'augmenter votre dose de ' + augmentation + ' lors de chacune de vos prises.')
+	.addField('Conseil de début de partie', 'Votre objectif sera d\'atteindre un taux de glycémie entre 0.7g/L et 1.3g/L. Pour cela il est recommandé de commencer en prenant une dose d\'insuline de ' + doseInit.toFixed().toString() + ' (un dixième de votre poids) et de l\'augmenter de ' + augmentation + ' lors de chacune de vos prises jusqu\'à arriver à un taux convenable.')
 
 	message.channel.send({ embed })
 	.then(async function(message) {

@@ -18,8 +18,6 @@ const bk = require('../Evenement/gestionBreakdown.js')
 const client = new Discord.Client();
 client.login(config.token);
 
-const conseq = ['crampe', 'courbatures'];
-
 /** Fonction qui lance l'évenement correspondant en fonction de la situation
 * @param {string} message - Message discord
 * @param {Object} partie - Objet json de la partie
@@ -37,16 +35,19 @@ exports.event = function event(message, partie, tabN, tabE) {
 	let fielText = '';
 	let image = '';
 
+	//On nettoie le channel des anciens messages
 	myBot.clear(message)
 	.catch((err) => {
 		console.log(err)
 	});
 
+	//Si le stress est négatif, on le met à 0
 	if(partie.stress < 0) {
 		partie.stress = 0;
 		sfm.save(partie.player, partie);
 	}
 
+	//Si la faim est négatif, on le met à 0
 	if(partie.faim < 0) {
 		partie.faim = 0;
 		sfm.save(partie.player, partie);
@@ -74,7 +75,7 @@ exports.event = function event(message, partie, tabN, tabE) {
 		}
 	}
 
-	// Mort (vie à 0)
+	//Si la vie du joueur est à 0, le joueur meurt
 	if(partie.vie == 0 && partie.numEvent == 0) {
 		console.log('mort');
 		partie.mort = true;
@@ -83,7 +84,7 @@ exports.event = function event(message, partie, tabN, tabE) {
 		return;
 	}
 
-	// Perte de membre (vie très basse)
+	//Si la vie du joueur est à 20, qu'il ne s'est pas fait amputer et qu'il est en hyperglycémie ou en hypoglycémie, il se fait amputer
 	else if(partie.vie == 20 && partie.amput == 0 && (partie.glycemie > 3 || partie.glycemie == 0)) {
 		console.log('amputation');
 		amput(message, partie);
@@ -92,8 +93,10 @@ exports.event = function event(message, partie, tabN, tabE) {
 		return;
 	}
 
-	// Passer à l'etape suivante
+	//Passage à l'etape suivante
 	partie.numEvent = (partie.numEvent + 1) % 3;
+
+	//Si on passe à un nouveau jour, on réinitialise le soda et les stylos d'insulines
 	if(partie.partJour == 0 && partie.numEvent == 0 && partie.evenement) {
 		partie.numJour++;
 		partie.soda = true; // On remet le soda à vrai afin qu'il puisse en reprendre le lendemain
@@ -101,19 +104,19 @@ exports.event = function event(message, partie, tabN, tabE) {
 	}
 	sfm.save(partie.player, partie);
 
-	// Journal et message du docteur en fin de journée
+	//Journal et message du docteur en fin de journée
 	if(partie.numJour > 0 && partie.partJour == 0 && partie.numEvent == 0 && partie.evenement) {
 		journal(message, partie);
 		calcul.glyMatin(partie);
 	}
 
-	// Fin du tuto
+	//Fin du tuto au bout d'une journée
 	if(partie.nbJour == partie.numJour) {
 		eventFin(message, partie);
 		return;
 	}
 
-	// Title + evenement glycemie
+	//Titre de la partie de la journée
 	if(partie.numEvent == 0 && partie.evenement) {
 
 		if(partie.partJour == 0) {
@@ -164,9 +167,11 @@ exports.event = function event(message, partie, tabN, tabE) {
 			}
 		}
 
+		//Ecriture du message
 		title(message, fieldTitle, fieldText, image);
 
-		if(partie.glycemie > 2) {		//hyperglycemie
+		//Hyperglycemie
+		if(partie.glycemie > 2) {
 			let rand = myBot.getRandomInt(4);
 			let title = '';
 			let text = '';
@@ -204,8 +209,9 @@ exports.event = function event(message, partie, tabN, tabE) {
 			sfm.save(partie.player, partie);
 			return;
 		}
-		else if(partie.glycemie < 0.6) {		// hypoglycemie
-			const rand = myBot.getRandomInt(3);
+		//Hypoglycemie
+		else if(partie.glycemie < 0.6) {
+			let rand = myBot.getRandomInt(3);
 			let title = '';
 			let text = '';
 
@@ -240,7 +246,7 @@ exports.event = function event(message, partie, tabN, tabE) {
 		}
 	}
 
-	// Rotation des evenements
+	//Rotation des evenements
 	if(partie.nbJour != partie.numJour) {
 		partie.evenement = true;
 		sfm.save(partie.player, partie);
@@ -248,6 +254,7 @@ exports.event = function event(message, partie, tabN, tabE) {
 			bk.breakdown(message);
 		}
 		else {
+			//Fonction appelé en fonction de la partie du jour et de l'évenement
 			switch(partie.partJour) {
 				case 0:
 					switch(partie.numEvent) {
@@ -301,8 +308,10 @@ exports.event = function event(message, partie, tabN, tabE) {
 * @param {number[]} partie.tabGlycemie - Tableau de tous les taux de glycémie du joueur
 **/
 function eventInsu(message, partie) {
+	//Affichage du graphique du taux de glycémie
 	as.graphString(message, partie)
 	.then(() => {
+		//Prise d'insuline
 		insuline.priseInsuline(message, partie);
 	});
 }
@@ -314,9 +323,10 @@ function eventInsu(message, partie) {
 * @param {number[]} partie.tabGlycemie - Tableau de tous les taux de glycémie du joueur
 **/
 function eventActu(message, partie) {
+	//Affichage du graphique du taux de glycémie
 	as.graphString(message, partie)
 	.then(() => {
-
+		//Message d'actualité
 		const rand = myBot.getRandomInt(28);
 		const embed = new Discord.RichEmbed()
 		.setColor(0x00AE86)
@@ -328,6 +338,7 @@ function eventActu(message, partie) {
 			mess.react('➡');
 		});
 
+		//Création d'une nouvelle valeur dans le tableau de glycemie
 		partie.tabGlycemie.push(partie.tabGlycemie[partie.tabGlycemie.length - 1]);
 		sfm.save(partie.player, partie);
 	});
@@ -339,6 +350,8 @@ function eventActu(message, partie) {
 * @param {string[]} tabE - Tableau des emojis d'activités
 **/
 function eventSport(message, tabN, tabE) {
+
+	//On génère 4 entiers différents aléatoirement
 
 	const rand1 = myBot.getRandomInt(tabN.length);
 
@@ -356,6 +369,7 @@ function eventSport(message, tabN, tabE) {
 	while(rand4 == rand1 || rand4 == rand2 || rand4 == rand3)
 		rand4 = myBot.getRandomInt(tabN.length);
 
+	//Création d'un message avec les activités associées aux entiers générées précédement
 	const embed = new Discord.RichEmbed()
 	.setColor(0x00AE86)
 	.setTitle('**J\'ai le temps de faire une activité, qu\'est ce que je fais ?**')
@@ -366,7 +380,7 @@ function eventSport(message, tabN, tabE) {
 	.addField(tabN[rand4] + ' : ', tabE[rand4])
 	.addField('Ne rien faire : ', '❌')
 
-
+	//Envoi du message
 	message.channel.send({ embed })
 	.then(async function(mess) {
 		await mess.react(tabE[rand1]);
@@ -384,6 +398,8 @@ function eventSport(message, tabN, tabE) {
 **/
 function eventRepas(message, tabN, tabE) {
 
+	//On génère 4 entiers différents aléatoirement
+
 	const rand1 = myBot.getRandomInt(tabN.length);
 
 	let rand2 = rand1;
@@ -398,6 +414,7 @@ function eventRepas(message, tabN, tabE) {
 	while(rand4 == rand1 || rand4 == rand2 || rand4 == rand3)
 		rand4 = myBot.getRandomInt(tabN.length);
 
+	//Création d'un message avec les repas associées aux entiers générées précédement
 	const embed = new Discord.RichEmbed()
 	.setColor(0x00AE86)
 	.setTitle('**Qu\'est ce que je vais manger ?**')
@@ -408,7 +425,7 @@ function eventRepas(message, tabN, tabE) {
 	.addField(tabN[rand4] + ' : ', tabE[rand4])
 	.addField('Ne rien manger : ', '❌');
 
-
+	//Envoi du message
 	message.channel.send({ embed })
 	.then(async function(mess) {
 		await mess.react(tabE[rand1]);
@@ -424,18 +441,19 @@ function eventRepas(message, tabN, tabE) {
 * @param {Object} partie - Objet json de la partie
 **/
 function eventFin(message, partie) {
-  if(partie.tuto)
-    fieldTextInfo = 'J\'espère que vous avez apprécié le tutoriel.';
-  else
-    fieldTextInfo = 'J\'espère que vous avez apprécié la partie.';
 
-  const embed = new Discord.RichEmbed()
-  .setColor(15013890)
+	if(partie.tuto)
+		fieldTextInfo = 'J\'espère que vous avez apprécié le tutoriel.';
+	else
+		fieldTextInfo = 'J\'espère que vous avez apprécié la partie.';
 
-  .addField('C\'est la fin de la partie.', fieldTextInfo)
-  .addField('Pour quitter la partie, tapez : ', '/end')
+	const embed = new Discord.RichEmbed()
+	.setColor(15013890)
 
-  message.channel.send({ embed });
+	.addField('C\'est la fin de la partie.', fieldTextInfo)
+	.addField('Pour quitter la partie, tapez : ', '/end')
+
+	message.channel.send({ embed });
 }
 
 /** Fonction qui écrit le message de perte de membre du joueur
@@ -443,6 +461,8 @@ function eventFin(message, partie) {
 * @param {Object} partie - Objet json de la partie
 **/
 function amput(message, partie) {
+
+	//Choix aléatoire du membre sectionner
 	const membre = ['bras gauche', 'bras droit', 'jambe gauche', 'jambe droit'];
 	const rand = myBot.getRandomInt(4);
 	const title = 'Aïe, aïe, aïe, coup dur pour le joueur français !';
@@ -452,6 +472,7 @@ function amput(message, partie) {
 	.setColor(0x00AE86)
 	.addField(title, text)
 
+	//Envoi du message d'amputation
 	message.channel.send({ embed })
 	.then(async function(mess) {
 		mess.react('➡');
@@ -462,6 +483,7 @@ function amput(message, partie) {
 * @param {string} message - Message discord
 * @param {string} title - Titre du message
 * @param {string} text - Texte du message
+* @param {string} image - Image du message
 **/
 function title(message, title, text, image) {
 	const embed = new Discord.RichEmbed()
@@ -514,8 +536,11 @@ function journal(message, partie) {
 	});
 }
 
-/** Fonction qui écrit le bilan du patient donné par la médecin
+/** Fonction qui affiche le bilan du patient donné par la médecin
 * @param {string} message - Message discord
+* @param {string} partie.nom - Nom du personnage
+* @param {number} partie.poids - Poids du personnage
+* @param {number} partie.tabGlycemie - Tableau contenant tous les taux de glycémie
 * @param {Object} partie - Objet json de la partie
 **/
 function eventMedecin(message, partie) {
@@ -568,6 +593,7 @@ function eventMedecin(message, partie) {
 
 /** Fonction qui permet de calculer l'impact des activités du joueur
 * @param {Object} partie - Objet json de la partie
+* @param {Integer} partie.impactActivite - Tableau contenant les impacts des activités du joueur
 * @return impactJour, qui est l'impact sportif journalière du joueur
 */
 function calculImpactActivite(partie) {
@@ -578,6 +604,7 @@ function calculImpactActivite(partie) {
 
 /** Fonction qui permet de calculer l'impact nutritionnel du joueur
 * @param {Object} partie - Objet json de la partie
+* @param {Integer} partie.impactNutrition - Tableau contenant les impacts de la nutrition du joueur
 * @return impactJour, qui est l'impact nutritionnel journalière du joueur
 */
 function calculImpactNutrition(partie) {
