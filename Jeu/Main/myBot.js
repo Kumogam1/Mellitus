@@ -240,13 +240,6 @@ client.on('messageReactionAdd', (reaction, user) => {
       }
       event.event(reaction.message, partie, tabNR, tabER);
       break;
-    /*
-    case '🔚':
-      finJeu.finJeu(reaction.message);
-      break;
-    */
-    default:
-      break;
   }
 
   //Quand le joueur choisit son personnage (A, B, C ou D)
@@ -378,7 +371,7 @@ client.on('messageReactionAdd', (reaction, user) => {
       event.event(reaction.message, partie, tabNA, tabEA);
   }
 
-  // Quand on choisi la sport
+  // Quand on choisi le sport
   if(tabEA.includes(reaction.emoji.name)) {
       let i = 0;
       while(tabEA[i] != reaction.emoji.name)
