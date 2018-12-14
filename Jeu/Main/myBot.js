@@ -343,6 +343,12 @@ client.on('messageReactionAdd', (reaction, user) => {
       while(tabER[i] != reaction.emoji.name)
           i++;
 
+      if(partie.breakdown <= 0){
+        if(i == 0)
+          i++;
+        else
+          i--;
+      }
       //Sauvegarde dans le tableau des activités
       writeAct(user.id, tabNR[i], partie);
 
