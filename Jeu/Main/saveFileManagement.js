@@ -16,7 +16,13 @@ exports.loadSave = function loadSave(userId) {
 **/
 exports.save = function save(userId, partie) {
   const fileName = '../Sauvegardes/' + userId + '.json';
-  fs.writeFileSync(fileName, JSON.stringify(partie, null, 2));
+  try{
+  	fs.writeFileSync(fileName, JSON.stringify(partie, null, 2));
+  }
+  catch(e){
+  	fs.createWriteStream(fileName);
+  	fs.writeFileSync(fileName, JSON.stringify(partie, null, 2));
+  }
 };
 
 

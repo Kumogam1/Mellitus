@@ -18,8 +18,12 @@ exports.doses = function doses(partie) {
 
 	if(doseObj < 15)
 		augmentation = 1
-	else
+	else if (doseObj < 30)
 		augmentation = 2
+	else if (doseObj < 45)
+		augmentation = 3
+	else
+		augmentation = 4
 
 	//On renvoie un tableau comprenant la dose initiale, la dose à atteindre et l'augmentation quotidienne
 	const doseGlycemie = [doseInit, doseObj, augmentation];

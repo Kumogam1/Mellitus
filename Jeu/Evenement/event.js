@@ -54,10 +54,12 @@ exports.event = function event(message, partie, tabN, tabE) {
 	}
 
 	//Si le joueur fait des actions contraires aux principes du personnage (ex: mangé equilibré alors qu'il est obèse) -> breakdown
-	if(partie.breakdown <= -10) {
+	if(partie.breakdown <= 0) {
 		bk.breakdown(message, partie);
-		partie.breakdown = -10;
-		sfm.save(partie.player, partie);
+		if(partie.breakdown <= -10) {
+			partie.breakdown = -10;
+			sfm.save(partie.player, partie);
+		}
 	}
 	//Si le breakdown est trop haut, le rééquilibré
 	if(partie.breakdown > 50) {
@@ -131,11 +133,11 @@ exports.event = function event(message, partie, tabN, tabE) {
 			}
 			else
 			{
-				if(partie.breakdown < 45) {
-					partie.breakdown += 30;
+				if(partie.breakdown < 15) {
+					partie.breakdown += 25;
 				}
 				else {
-					partie.breakdown = 50;
+					partie.breakdown = 40;
 				}
 				fieldText = 'Le soleil se réveille, il fait beau, il fait jour.';
 				image = 'https://i.pinimg.com/originals/33/d4/89/33d48901c6036628a03d0f7b0eab039c.jpg';
