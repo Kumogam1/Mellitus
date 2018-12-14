@@ -10,10 +10,10 @@
 	"impactAS" : [[4,-20,-0.4,15,15],[1,-5,-0.1,3,0],[2,-10,-0.1,10,10],[1,-10,0,6,6],[0,-5,0,5,5],[0,-5,0,5,5],[0,5,0,0,3]],
 
 	"nomRepasM" : ["Prendre un fruit", "Prendre du pain", "Prendre un croissant",  "Prendre un caf\u00e9", "Manger des pancakes"],
-	"impactRM" : [[5,-5,0.1,0,-10],[1,0,0.6,0,0],[2,0,0.3,0,0],[4,-5,0,0,0],[1,5,0.3,0,5]],
+	"impactRM" : [[5,-5,0.1,0,-10],[1,0,0.6,0,0],[2,0,0.3,0,0],[4,-5,0,0,0],[0,5,0.3,0,5]],
 
 	"nomRepasS" : ["Manger un fast-food", "Manger de la viande", "Manger des légumes", "Manger du riz", "Manger des nouilles"],
-	"impactRS" : [[1,10,0.8,0,5],[2,0,0,0,5],[5,-5,0.1,0,-10],[4,0,0.5,0,-5],[3,-5,0.2,0,-5]],
+	"impactRS" : [[0,10,0.8,0,5],[2,0,0,0,5],[5,-5,0.1,0,-10],[4,0,0.5,0,-5],[3,-5,0.2,0,-5]],
 
 	"actu" : 	[
 					["Sport", "Un raton-laveur vient de remporter un match d'échec contre le champion du monde en titre."],
