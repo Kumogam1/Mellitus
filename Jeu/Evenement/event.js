@@ -480,29 +480,37 @@ function title(message, title, text, image) {
 * @param {number} partie.numJour - Numéro du jour
 **/
 function journal(message, partie) {
-	const chanId = myBot.messageChannel(message, 'journal', partie);
 
+	const chanId = myBot.messageChannel(message, 'journal', partie);
 	const nbAct = partie.activite.length;
 	const activ = [partie.activite[nbAct-5], partie.activite[nbAct-3], partie.activite[nbAct-1]];
 	const repas = [partie.activite[nbAct-6], partie.activite[nbAct-4], partie.activite[nbAct-2]];
 
-	for(let i = 0; i < 3; i++) {
-		if(activ[i] == 'rienA') {
-			activ[i] = 'repos';
+	// Boucle sur les activités de la journée
+	for(let i = 0; i < 3; i++)
+	{
+		if(activ[i] == 'rienA') // Si l'activité était 'rienA'
+		{
+			activ[i] = 'repos'; // On le remplace par 'repos'
 		}
 	}
 
-	for(let i = 0; i < 3; i++) {
-		if(repas[i] == 'rienM') {
-			repas[i] = 'saut de repas';
+	// Boucle sur les repas de la journée
+	for(let i = 0; i < 3; i++)
+	{
+		if(repas[i] == 'rienM') // Si le repas était 'rienM'
+		{
+			repas[i] = 'saut de repas'; // On le remplace par 'saut de repas'
 		}
 	}
 
+	// On met en minuscule les activités et les repas
 	activ[1] = activ[1].toLowerCase();
 	activ[2] = activ[2].toLowerCase();
 	repas[1] = repas[1].toLowerCase();
 	repas[2] = repas[2].toLowerCase();
 
+	// Embed affichant le journal de bord, les récapitulatifs des activités et des repas
 	const embed = new Discord.RichEmbed()
 	.setColor(15013890)
 	.setTitle('Journal de bord - Jour ' + partie.numJour)
@@ -576,18 +584,18 @@ function eventMedecin(message, partie) {
 * @return impactJour, qui est l'impact sportif journalière du joueur
 */
 function calculImpactActivite(partie) {
-	const nbImpact = partie.impactActivite.length;
-	const impactJour = partie.impactActivite[nbImpact - 3] + partie.impactActivite[nbImpact - 2] + partie.impactActivite[nbImpact - 1];
-	return impactJour;
+	const nbImpact = partie.impactActivite.length; // On récupère le nombre d'impacts
+	const impactJour = partie.impactActivite[nbImpact - 3] + partie.impactActivite[nbImpact - 2] + partie.impactActivite[nbImpact - 1]; // On fait la somme des 3 impacts sur les activités
+	return impactJour; // On retourne l'impact sportif journalier du joueur
 }
 
 /** Fonction qui permet de calculer l'impact nutritionnel du joueur
 * @param {Object} partie - Objet json de la partie
 * @param {Integer} partie.impactNutrition - Tableau contenant les impacts de la nutrition du joueur
-* @return impactJour, qui est l'impact nutritionnel journalière du joueur
+* @return impactJour, qui est l'impact nutritionnel journalier du joueur
 */
 function calculImpactNutrition(partie) {
-	const nbImpact = partie.impactNutrition.length;
-	const impactJour = partie.impactNutrition[nbImpact - 3] + partie.impactNutrition[nbImpact - 2] + partie.impactNutrition[nbImpact - 1];
-	return impactJour;
+	const nbImpact = partie.impactNutrition.length; // On récupère le nombre d'impacts
+	const impactJour = partie.impactNutrition[nbImpact - 3] + partie.impactNutrition[nbImpact - 2] + partie.impactNutrition[nbImpact - 1]; // On fait la somme des 3 impacts sur les repas
+	return impactJour; // On retourne l'impact nutritionnel journalier du joueur
 }
