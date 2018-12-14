@@ -31,12 +31,12 @@ client.on('messageReactionAdd', (reaction, user) => {
         nom();
         break;
       case '🚬':
-        partie.tabPerso.push('Oui');
+        partie.tabPerso.push('oui');
         reaction.message.delete();
         finalisation();
         break;
       case '🚭':
-        partie.tabPerso.push('Non');
+        partie.tabPerso.push('non');
         reaction.message.delete();
         finalisation();
         break;
@@ -264,13 +264,14 @@ function finalisation() {
 }
 
 function calculIMC(partie) {
-    const imc = partie.poids / (partie.taille * partie.taille)
+    const tailEnM = partie.taille / 100;
+    const imc = partie.poids / (tailEnM * tailEnM);
     let obesite;
     if(imc < 30) {
-      obesite = 'non'
+      obesite = 'non';
     }
     else {
-      obesite = 'oui'
+      obesite = 'oui';
     }
     return obesite;
 }
@@ -283,6 +284,9 @@ function testNombre(message) {
         isNb = false;
       }
     }
+  }
+  else{
+    isNb = false;
   }
   return isNb;
 }

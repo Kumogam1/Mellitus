@@ -37,10 +37,14 @@ Si vous souhaitez utiliser le **navigateur web** pour utiliser Discord :
 * iOS ➡️ https://itunes.apple.com/fr/app/discord/id985746746
 
 
-**Lien vers le serveur Discord** ➡️ https://discord.gg/WuvrdZH
+#### c. Installation
+
+**Lien vers un serveur Discord qui contient un bot qui peut lançer le jeu** ➡️ https://discord.gg/WuvrdZH
+
+**Installation personnelle d'un serveur et d'un bot** ➡️ https://drive.google.com/file/d/1xIPjbD2T-Nj7UkYkE-FKMP_X-kB9o_uR/view?usp=sharing
+
 
 ## Screenshots
 
 Dossier contenant des screenshots du gameplay ➡️ https://drive.google.com/drive/folders/1hgOGmVy5mAWWaNiTNg0QX10_Z8Fwl6kV?usp=sharing
 
-PDF expliquant l'installation du serveur ➡️ https://drive.google.com/file/d/1xIPjbD2T-Nj7UkYkE-FKMP_X-kB9o_uR/view?usp=sharing

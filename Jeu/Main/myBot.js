@@ -8,6 +8,7 @@ const insuline = require('../Evenement/priseInsuline.js');
 const sfm = require('./saveFileManagement.js');
 const as = require('../Graphiques/affichageStats.js');
 const cp = require('../Personnage/creationPerso.js');
+const bk = require('../Evenement/gestionBreakdown.js')
 
 const client = new Discord.Client();
 
@@ -57,7 +58,7 @@ client.on('message', (message) => {
     switch(command) {
       //Start : commencer une partie
       case 'start':
-        partie.nbJour = -2;   
+        partie.nbJour = -2;
         partie.tuto = false;
         sfm.save(message.author.id, partie);
         initJeu.initJeu(message, client);
@@ -99,7 +100,7 @@ client.on('message', (message) => {
           partie.soda = false;
         }
         else{
-          message.channel.send('Vous avez déjà pris votre cannette quotidiens !');
+          message.channel.send('Vous avez déjà pris votre canette quotidien !');
         }
         sfm.save(message.author.id, partie);
         message.delete();
@@ -113,7 +114,7 @@ client.on('message', (message) => {
           partie.nbInsu--;
         }
         else{
-          message.channel.send('Vous avez déjà pris vos stylos d\'insulines quotidiens !');
+          message.channel.send('Vous avez déjà pris vos stylos d\'insulines quotidien !');
         }
         sfm.save(message.author.id, partie);
         message.delete();
@@ -201,7 +202,7 @@ client.on('messageReactionAdd', (reaction, user) => {
       break;
     //Action de ne pas manger ou de ne pas faire d'activités
     case '❌':
-      //Ne pas manger 
+      //Ne pas manger
       if(partie.numEvent == 1) {
           writeAct(user.id, 'rienM', partie);
           partie.impactNutrition.push(0);
@@ -269,17 +270,17 @@ client.on('messageReactionAdd', (reaction, user) => {
         break;
     }
 
-    //On cherche l'id du channel 'personnage'
+    // On cherche l'id du channel 'personnage'
     const chanId = myBot.messageChannel(reaction.message, 'personnage', partie);
 
-    //Si on est en tuto, on explique ce qu'est le channel personnage
+    // Si on est en tuto, on explique ce qu'est le channel personnage
     if(partie.tuto)
       fieldTextPerso = 'Voici le channel personnage.\nC\'est dans ce channel que vous pouvez voir les informations concernant votre personnage.';
     else
       fieldTextPerso = 'Voici votre personnage :';
 
-    //On écrit dans le channel un message décrivant le personnage
-    reaction.message.guild.channels.get(chanId).send({embed: {
+    // On écrit dans le channel un message décrivant le personnage
+    reaction.message.guild.channels.get(chanId).send({ embed: {
       color: 15013890,
       fields: [{
         name: 'Channel Personnage',
@@ -312,26 +313,32 @@ client.on('messageReactionAdd', (reaction, user) => {
         {
           name: 'Poids',
           value: perso.poids[numPerso],
+        },
+        {
+            name: 'Fumeur ?',
+            value: perso.fumeur[numPerso],
         }]
       } })
       .then(() => {
 
-        //Dès que le message est posté dans le channel, on supprime les messages du channel principal
+        // Dès que le message est posté dans le channel, on supprime les messages du channel principal
         myBot.clear(reaction.message)
         .catch((err) => {
           console.log(err);
         });
 
-        //Sauvegarde des caractéristiques du personnages
+        // Sauvegarde des caractéristiques du personnages
         partie.nom = perso.nom[numPerso];
         partie.sexe = perso.sexe[numPerso];
         partie.age = parseInt(perso.age[numPerso]);
         partie.taille = parseInt(perso.taille[numPerso]);
         partie.poids = parseInt(perso.poids[numPerso]);
+        partie.fumeur = perso.fumeur[numPerso];
+        partie.obesite = perso.obesite[numPerso];
         sfm.save(partie.player, partie);
 
 
-        //Message d'accueil du médecin
+        // Message d'accueil du médecin
         initJeu.accueilMedecin(reaction.message, partie);
       });
     });
@@ -349,23 +356,25 @@ client.on('messageReactionAdd', (reaction, user) => {
         else
           i--;
       }
-      //Sauvegarde dans le tableau des activités
+      // Sauvegarde dans le tableau des activités
       writeAct(user.id, tabNR[i], partie);
 
-      //Ajout d'un impact nutrition en fonction de ce qu'on vient de manger
+      partie.breakdown += bk.calculBk(partie, tabIR, i);
+
+      // Ajout d'un impact nutrition en fonction de ce qu'on vient de manger
       partie.impactNutrition.push(tabIR[i][0]);
 
-      //Modification du stress et de la faim
+      // Modification du stress et de la faim
       partie.stress += tabIR[i][1];
       partie.faim--;
 
-      //Modification de la glycémie 
+      // Modification de la glycémie
       let ajoutGly = Math.round((partie.glycemie + tabIR[i][2])*100)/100;
       partie.glycemie = ajoutGly;
       partie.tabGlycemie[partie.tabGlycemie.length-1] = ajoutGly;
       sfm.save(partie.player, partie);
 
-      //Passage à l'évenement suivant
+      // Passage à l'évenement suivant
       event.event(reaction.message, partie, tabNA, tabEA);
   }
 
@@ -374,31 +383,35 @@ client.on('messageReactionAdd', (reaction, user) => {
       let i = 0;
       while(tabEA[i] != reaction.emoji.name)
           i++;
-
-      //Sauvegarde dans le tableau des activités
+      if(partie.breakdown < 1) {
+        i = myBot.getRandomInt(tabEA.length);
+      }
+      // Sauvegarde dans le tableau des activités
       writeAct(user.id, tabNA[i], partie);
 
-      //Ajout d'un impact nutrition en fonction de ce qu'on vient de faire
+      partie.breakdown += bk.calculBk(partie, tabIA, i);
+
+      // Ajout d'un impact nutrition en fonction de ce qu'on vient de faire
       partie.impactActivite.push(tabIA[i][0]);
 
-      //Passage à la partie su jour suivant (matin/midi/soir)
+      // Passage à la partie su jour suivant (matin/midi/soir)
       partie.partJour = (partie.partJour + 1) % 3;
 
-      //Modification du stress
+      // Modification du stress
       partie.stress += tabIA[i][1];
 
-      //Modification de la glycémie 
+      // Modification de la glycémie
       let ajoutGly = Math.round((partie.glycemie + tabIA[i][2])*100)/100;
       partie.glycemie = ajoutGly;
       partie.tabGlycemie[partie.tabGlycemie.length-1] = ajoutGly;
       sfm.save(partie.player, partie);
 
-      //Passage à l'évenement suivant
+      // Passage à l'évenement suivant
       event.event(reaction.message, partie, tabNR, tabER);
   }
 });
 
-//Fonction qui s'active lorsqu'un joueur entre dans le serveur
+// Fonction qui s'active lorsqu'un joueur entre dans le serveur
 client.on('guildMemberAdd', (member) => {
     finJeu.initStat(member.user);
 });
@@ -411,7 +424,7 @@ client.on('guildMemberAdd', (member) => {
 **/
 exports.messageChannel = function messageChannel(message, chanName, partie) {
 
-  //Liste des channels de la partie du joueur
+  // Liste des channels de la partie du joueur
   const listChan2 = finJeu.listChan(message, partie);
 
   let id = 1;
@@ -449,7 +462,7 @@ exports.getRandomInt = function getRandomInt(max) {
 **/
 function text(message) {
 
-  //Supprime le message 
+  // Supprime le message
   message.delete();
 
   const embed = new Discord.RichEmbed()
@@ -475,7 +488,7 @@ function choixPerso(message, partie) {
         console.log(err);
     });
 
-    //Présente le choix du personnage
+    // Présente le choix du personnage
     if(partie.tuto)
         fieldText = 'C\'est ici que vous devez choisir un personnage.\nChaque personnage a des caractéristiques différentes, qui influeront sur votre partie.\n' +
                     'Pour choisir un personnage, cliquez sur la réaction correspondant au numéro du personnage choisit.';
@@ -518,7 +531,7 @@ function writePerso(message, numPerso) {
             break;
     }
 
-    //Affiche le texte de 3 personnages
+    // Affiche le texte de 3 personnages
     if(numPerso < 3) {
         message.channel.send({ embed: {
             color: 0x00AE86,
@@ -549,7 +562,7 @@ function writePerso(message, numPerso) {
             }],
         } });
     }
-    //Affiche le texte du 4e personnage avec les réactions
+    // Affiche le texte du 4e personnage avec les réactions
     else{
         message.channel.send({ embed: {
           color: 0x00AE86,
