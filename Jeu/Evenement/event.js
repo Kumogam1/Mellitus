@@ -52,12 +52,14 @@ exports.event = function event(message, partie, tabN, tabE) {
 		partie.faim = 0;
 		sfm.save(partie.player, partie);
 	}
-	if(partie.breakdown <= 0) {
+
+	//Si le joueur fait des actions contraires aux principes du personnage (ex: mangé equilibré alors qu'il est obèse) -> breakdown
+	if(partie.breakdown <= -10) {
 		bk.breakdown(message, partie);
-		partie.breakdown = 1;
+		partie.breakdown = -10;
 		sfm.save(partie.player, partie);
 	}
-
+	//Si le breakdown est trop haut, le rééquilibré
 	if(partie.breakdown > 50) {
 		partie.breakdown = 50;
 		sfm.save(partie.player, partie);
@@ -130,7 +132,7 @@ exports.event = function event(message, partie, tabN, tabE) {
 			else
 			{
 				if(partie.breakdown < 45) {
-					partie.breakdown += 15;
+					partie.breakdown += 30;
 				}
 				else {
 					partie.breakdown = 50;
