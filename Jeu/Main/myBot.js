@@ -8,6 +8,7 @@ const insuline = require('../Evenement/priseInsuline.js');
 const sfm = require('./saveFileManagement.js');
 const as = require('../Graphiques/affichageStats.js');
 const cp = require('../Personnage/creationPerso.js');
+const bk = require('../Evenement/gestionBreakdown.js')
 
 const client = new Discord.Client();
 
@@ -93,7 +94,7 @@ client.on('message', (message) => {
             if(partie.nbInsu > 0)
             {
               partie.glycemie -= 0.3;
-              partie.tabGlycemie[partie.tabGlycemie.length-1] -= 0.3;
+              partie.tabGlycemie[partie.tabGlycemie.length - 1] -= 0.3;
               partie.nbInsu--;
             }
             else{
@@ -235,7 +236,7 @@ client.on('messageReactionAdd', (reaction, user) => {
         else
             fieldTextPerso = 'Voici votre personnage :';
 
-        reaction.message.guild.channels.get(chanId).send({embed: {
+        reaction.message.guild.channels.get(chanId).send({ embed: {
             color: 15013890,
             fields: [{
                 name: 'Channel Personnage',
@@ -268,6 +269,10 @@ client.on('messageReactionAdd', (reaction, user) => {
                 {
                     name: 'Poids',
                     value: perso.poids[numPerso],
+                },
+                {
+                    name: 'Fumeur ?',
+                    value: perso.fumeur[numPerso],
                 }]
             } })
             .then(() => {
@@ -282,6 +287,8 @@ client.on('messageReactionAdd', (reaction, user) => {
               partie.age = parseInt(perso.age[numPerso]);
               partie.taille = parseInt(perso.taille[numPerso]);
               partie.poids = parseInt(perso.poids[numPerso]);
+              partie.fumeur = perso.fumeur[numPerso];
+              partie.obesite = perso.obesite[numPerso];
               sfm.save(partie.player, partie);
 
 
@@ -297,12 +304,13 @@ client.on('messageReactionAdd', (reaction, user) => {
         while(tabER[i] != reaction.emoji.name)
             i++;
         writeAct(user.id, tabNR[i], partie);
+        partie.breakdown += bk.calculBk(partie, tabIR, i);
         partie.impactNutrition.push(tabIR[i][0]);
         partie.stress += tabIR[i][1];
         partie.faim--;
-        let ajoutGly = Math.round((partie.glycemie + tabIR[i][2])*100)/100;
+        const ajoutGly = Math.round((partie.glycemie + tabIR[i][2]) * 100) / 100;
         partie.glycemie = ajoutGly;
-        partie.tabGlycemie[partie.tabGlycemie.length-1] = ajoutGly;
+        partie.tabGlycemie[partie.tabGlycemie.length - 1] = ajoutGly;
         sfm.save(partie.player, partie);
         event.event(reaction.message, partie, tabNA, tabEA);
     }
@@ -313,12 +321,13 @@ client.on('messageReactionAdd', (reaction, user) => {
         while(tabEA[i] != reaction.emoji.name)
             i++;
         writeAct(user.id, tabNA[i], partie);
+        partie.breakdown += bk.calculBk(partie, tabIA, i);
         partie.impactActivite.push(tabIA[i][0]);
         partie.partJour = (partie.partJour + 1) % 3;
         partie.stress += tabIA[i][1];
-        let ajoutGly = Math.round((partie.glycemie + tabIA[i][2])*100)/100;
+        const ajoutGly = Math.round((partie.glycemie + tabIA[i][2]) * 100) / 100;
         partie.glycemie = ajoutGly;
-        partie.tabGlycemie[partie.tabGlycemie.length-1] = ajoutGly;
+        partie.tabGlycemie[partie.tabGlycemie.length - 1] = ajoutGly;
         sfm.save(partie.player, partie);
         event.event(reaction.message, partie, tabNR, tabER);
     }
@@ -350,7 +359,7 @@ exports.messageChannel = function messageChannel(message, chanName, partie) {
             id = channel.id;
         }
     });
-    return id;  //----------Modifié----------//
+    return id;
 };
 
 /**
