@@ -53,7 +53,8 @@ exports.event = function event(message, partie, tabN, tabE) {
 		sfm.save(partie.player, partie);
 	}
 	if(partie.breakdown <= 0) {
-		partie.breakdown = 0;
+		bk.breakdown(message, partie);
+		partie.breakdown = 1;
 		sfm.save(partie.player, partie);
 	}
 
@@ -250,54 +251,48 @@ exports.event = function event(message, partie, tabN, tabE) {
 	if(partie.nbJour != partie.numJour) {
 		partie.evenement = true;
 		sfm.save(partie.player, partie);
-		if(partie.breakdown < 1) {
-			bk.breakdown(message);
+		//Fonction appelé en fonction de la partie du jour et de l'évenement
+		switch(partie.partJour) {
+			case 0:
+				switch(partie.numEvent) {
+					case 0:
+						eventInsu(message, partie);
+						break;
+					case 1:
+						eventRepas(message, tabN, tabE);
+						break;
+					case 2:
+						eventSport(message, tabN, tabE);
+						break;
+				}
+				break;
+			case 1:
+				switch(partie.numEvent) {
+					case 0:
+						eventActu(message, partie);
+						break;
+					case 1:
+						eventRepas(message, tabN, tabE);
+						break;
+					case 2:
+						eventSport(message, tabN, tabE);
+						break;
+				}
+				break;
+			case 2:
+				switch(partie.numEvent) {
+					case 0:
+						eventActu(message, partie);
+						break;
+					case 1:
+						eventRepas(message, tabN, tabE);
+						break;
+					case 2:
+						eventSport(message, tabN, tabE);
+						break;
+				}
+				break;
 		}
-		else {
-			//Fonction appelé en fonction de la partie du jour et de l'évenement
-			switch(partie.partJour) {
-				case 0:
-					switch(partie.numEvent) {
-						case 0:
-							eventInsu(message, partie);
-							break;
-						case 1:
-							eventRepas(message, tabN, tabE);
-							break;
-						case 2:
-							eventSport(message, tabN, tabE);
-							break;
-					}
-					break;
-				case 1:
-					switch(partie.numEvent) {
-						case 0:
-							eventActu(message, partie);
-							break;
-						case 1:
-							eventRepas(message, tabN, tabE);
-							break;
-						case 2:
-							eventSport(message, tabN, tabE);
-							break;
-					}
-					break;
-				case 2:
-					switch(partie.numEvent) {
-						case 0:
-							eventActu(message, partie);
-							break;
-						case 1:
-							eventRepas(message, tabN, tabE);
-							break;
-						case 2:
-							eventSport(message, tabN, tabE);
-							break;
-					}
-					break;
-			}
-		}
-
 	}
 };
 

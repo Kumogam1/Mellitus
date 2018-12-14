@@ -18,14 +18,17 @@ exports.calculBk = function(partie, tab, index) {
   return val;
 };
 
-exports.breakdown = function(message) {
+exports.breakdown = function(message, partie) {
+  let text;
+  if(partie.obesite == 'oui') {
+    text = 'J\'en ai marre de suivre un regime strict.';
+  }
+  else {
+    text = 'J\'en de faire des ativités que j\'aime pas.';
+  }
   const embed = new Discord.RichEmbed()
 	.setColor(0x00AE86)
-	.setTitle('**Crise de nerf**')
-	.addField('Vous faites une crise de nerf', 'Vous ne faites rien');
+	.addField('**Crise de nerf**', text + '\nJe fais ce que je veux maintenant');
 
   message.channel.send({ embed })
-  .then(async function(mess) {
-    mess.react('❌');
-  });
 }

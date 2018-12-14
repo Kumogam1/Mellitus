@@ -333,6 +333,8 @@ client.on('messageReactionAdd', (reaction, user) => {
         partie.age = parseInt(perso.age[numPerso]);
         partie.taille = parseInt(perso.taille[numPerso]);
         partie.poids = parseInt(perso.poids[numPerso]);
+        partie.fumeur = perso.fumeur[numPerso];
+        partie.obesite = perso.obesite[numPerso];
         sfm.save(partie.player, partie);
 
 
@@ -350,6 +352,8 @@ client.on('messageReactionAdd', (reaction, user) => {
 
       // Sauvegarde dans le tableau des activités
       writeAct(user.id, tabNR[i], partie);
+
+      partie.breakdown += bk.calculBk(partie, tabIR, i);
 
       // Ajout d'un impact nutrition en fonction de ce qu'on vient de manger
       partie.impactNutrition.push(tabIR[i][0]);
@@ -373,9 +377,13 @@ client.on('messageReactionAdd', (reaction, user) => {
       let i = 0;
       while(tabEA[i] != reaction.emoji.name)
           i++;
-
+      if(partie.breakdown < 1) {
+        i = myBot.getRandomInt(tabEA.length);
+      }
       // Sauvegarde dans le tableau des activités
       writeAct(user.id, tabNA[i], partie);
+
+      partie.breakdown += bk.calculBk(partie, tabIA, i);
 
       // Ajout d'un impact nutrition en fonction de ce qu'on vient de faire
       partie.impactActivite.push(tabIA[i][0]);
