@@ -13,6 +13,7 @@ const as = require('../Graphiques/affichageStats.js');
 const config = require('../token.json');
 const eventGly = require('./evenement.json');
 const tableaux = require('./tableaux.json');
+const bk = require('../Evenement/gestionBreakdown.js')
 
 const client = new Discord.Client();
 client.login(config.token);
@@ -51,8 +52,17 @@ exports.event = function event(message, partie, tabN, tabE) {
 		partie.faim = 0;
 		sfm.save(partie.player, partie);
 	}
+	if(partie.breakdown <= 0) {
+		bk.breakdown(message, partie);
+		partie.breakdown = 1;
+		sfm.save(partie.player, partie);
+	}
 
-	//Si le joueur est trop en hyperglycémie, en hypoglycémie, a trop faim ou est trop stréssé, il pert de la vie
+	if(partie.breakdown > 50) {
+		partie.breakdown = 50;
+		sfm.save(partie.player, partie);
+	}
+	// Perte de vie
 	if(partie.glycemie > 3 || partie.glycemie == 0 || partie.faim > 2 || partie.stress > 100) {
 		console.log(partie.faim + ' : c\'est ma faim');
 		if(partie.numEvent == 0 && partie.amput != 1) {
@@ -119,6 +129,12 @@ exports.event = function event(message, partie, tabN, tabE) {
 			}
 			else
 			{
+				if(partie.breakdown < 45) {
+					partie.breakdown += 15;
+				}
+				else {
+					partie.breakdown = 50;
+				}
 				fieldText = 'Le soleil se réveille, il fait beau, il fait jour.';
 				image = 'https://i.pinimg.com/originals/33/d4/89/33d48901c6036628a03d0f7b0eab039c.jpg';
 			}
@@ -161,7 +177,7 @@ exports.event = function event(message, partie, tabN, tabE) {
 			let title = '';
 			let text = '';
 
-			switch(rand){
+			switch(rand) {
 				case 0:
 					title = eventGly.hyper1[0];
 					text = eventGly.hyper1[1];
@@ -402,7 +418,7 @@ function eventRepas(message, tabN, tabE) {
 	.addField(tabN[rand2] + ' : ', tabE[rand2])
 	.addField(tabN[rand3] + ' : ', tabE[rand3])
 	.addField(tabN[rand4] + ' : ', tabE[rand4])
-	.addField('Ne rien manger : ', '❌')
+	.addField('Ne rien manger : ', '❌');
 
 	//Envoi du message
 	message.channel.send({ embed })
