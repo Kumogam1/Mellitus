@@ -100,7 +100,7 @@ client.on('message', (message) => {
           partie.soda = false;
         }
         else{
-          message.channel.send('Vous avez déjà pris votre cannette quotidiens !');
+          message.channel.send('Vous avez déjà pris votre canette quotidien !');
         }
         sfm.save(message.author.id, partie);
         message.delete();
@@ -114,7 +114,7 @@ client.on('message', (message) => {
           partie.nbInsu--;
         }
         else{
-          message.channel.send('Vous avez déjà pris vos stylos d\'insulines quotidiens !');
+          message.channel.send('Vous avez déjà pris vos stylos d\'insulines quotidien !');
         }
         sfm.save(message.author.id, partie);
         message.delete();
@@ -362,7 +362,11 @@ client.on('messageReactionAdd', (reaction, user) => {
       partie.stress += tabIR[i][1];
       partie.faim--;
 
+<<<<<<< HEAD
       // Modification de la glycémie
+=======
+      //Modification de la glycémie
+>>>>>>> 53a19ce521a6adce9992e8d6159e5c0873f2093b
       let ajoutGly = Math.round((partie.glycemie + tabIR[i][2])*100)/100;
       partie.glycemie = ajoutGly;
       partie.tabGlycemie[partie.tabGlycemie.length-1] = ajoutGly;
@@ -394,7 +398,11 @@ client.on('messageReactionAdd', (reaction, user) => {
       // Modification du stress
       partie.stress += tabIA[i][1];
 
+<<<<<<< HEAD
       // Modification de la glycémie
+=======
+      //Modification de la glycémie
+>>>>>>> 53a19ce521a6adce9992e8d6159e5c0873f2093b
       let ajoutGly = Math.round((partie.glycemie + tabIA[i][2])*100)/100;
       partie.glycemie = ajoutGly;
       partie.tabGlycemie[partie.tabGlycemie.length-1] = ajoutGly;
@@ -456,7 +464,11 @@ exports.getRandomInt = function getRandomInt(max) {
 **/
 function text(message) {
 
+<<<<<<< HEAD
   // Supprime le message
+=======
+  //Supprime le message
+>>>>>>> 53a19ce521a6adce9992e8d6159e5c0873f2093b
   message.delete();
 
   const embed = new Discord.RichEmbed()
