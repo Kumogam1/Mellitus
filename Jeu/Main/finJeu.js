@@ -96,7 +96,7 @@ exports.msgFin = function msgFin(message, partie) {
 	message.delete();
 
 	//Si le joueur est en partie
-	if(message.member.roles.some(r=>['Joueur'].includes(r.name))) {
+	if(message.member.roles.some(r=>['Joueur'].includes(r.name)) || message.author.bot) {
 
 		//Si le message ce situe dans le channel hub
 		if(message.channel.name == 'hub') {
@@ -117,7 +117,7 @@ exports.msgFin = function msgFin(message, partie) {
 				else if(partie.glycemie == 0)
 					textMort = 'Tu as fait une crise d\'hypoglycemie.';
 				else if(partie.faim > 2)
-					textMort = 'Tu est mort de faim.';
+					textMort = 'Tu es mort de faim.';
 				else
 					textMort = 'Tu as fait une crise de stress.';
 			}

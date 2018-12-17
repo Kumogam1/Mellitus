@@ -20,7 +20,7 @@ exports.breakdown = function(message, partie) {
     text = 'J\'en ai marre de suivre un regime strict.';
   }
   else {
-    text = 'J\'en de faire des ativités que j\'aime pas.';
+    text = 'J\'en ai marre de faire des ativités que j\'aime pas.';
   }
   const embed = new Discord.RichEmbed()
 	.setColor(0x00AE86)

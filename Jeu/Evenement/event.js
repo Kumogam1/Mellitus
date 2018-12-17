@@ -54,21 +54,22 @@ exports.event = function event(message, partie, tabN, tabE) {
 	}
 
 	//Si le joueur fait des actions contraires aux principes du personnage (ex: mangé equilibré alors qu'il est obèse) -> breakdown
-	if(partie.breakdown <= 0) {
-		bk.breakdown(message, partie);
-		if(partie.breakdown <= -10) {
-			partie.breakdown = -10;
-			sfm.save(partie.player, partie);
+	if(partie.obesite == 'oui' || partie.fumeur == 'oui') {
+		if(partie.breakdown <= 0) {
+			bk.breakdown(message, partie);
+			if(partie.breakdown <= -10) {
+				partie.breakdown = -10;
+				sfm.save(partie.player, partie);
+			}
 		}
 	}
 	//Si le breakdown est trop haut, le rééquilibré
-	if(partie.breakdown > 50) {
-		partie.breakdown = 50;
+	if(partie.breakdown > 60) {
+		partie.breakdown = 60;
 		sfm.save(partie.player, partie);
 	}
 	// Perte de vie
-	if(partie.glycemie > 3 || partie.glycemie == 0 || partie.faim > 2 || partie.stress > 100) {
-		console.log(partie.faim + ' : c\'est ma faim');
+	if(partie.glycemie > 3 || partie.glycemie <= 0 || partie.faim > 2 || partie.stress > 100) {
 		if(partie.numEvent == 0 && partie.amput != 1) {
 			console.log('vie-20');
 			partie.vie -= 20;
