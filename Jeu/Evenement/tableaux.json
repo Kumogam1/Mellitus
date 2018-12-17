@@ -1,7 +1,7 @@
 ﻿{
 
 	"nomActiviteM" : ["Faire une partie de jeux videos","Faire un jogging", "Faire la grasse matinée", "Lire un livre"],
-	"impactAM" : [[1,-10,0,7,7],[3,-10,-0.2,-10,-15],[0,5,0,10,15],[0,-5,0,5,5]],
+	"impactAM" : [[1,-10,0,7,7],[3,-10,-0.2,-10,-10],[0,5,0,10,15],[0,-5,0,5,5]],
 
 	"nomActiviteA" : ["Faire un sport collectif", "Faire un sport individuel", "Faire une partie de jeux videos", "Faire de la p\u00e8che", "Allez à la piscine", "Se promener", "Aller dans un bar", "Aller au cin\u00e9ma"],
 	"impactAA" : [[4,-10,-0.5,-7,-12],[3,-5,-0.5,-7,-12],[1,-10,0,7,7],[1,-5,0,0,0],[3,-5,-0.3,-5,-8],[2,-5,-0.10,3,0],[2,-15,-0.1,10,10],[1,-10,0,6,6]],
